@@ -167,6 +167,18 @@ app.route('/address-book/add-address')
             res.redirect('/address-book');
         });
 
+app.route('/customer-card/id=:id')
+        .get((req, res) => {
+            const addressId = req.params.id;
+            AddressBook.findOne({ _id: addressId }, (err, contact) => {
+                if (!err) {
+                    res.render('customer-card', { contact: contact });
+                } else {
+                    console.log(err);
+                }
+            });
+        });
+
 app.route('/delete-user/id=:id')
     .get((req, res) => {
         const userId = req.params.id;
