@@ -41,6 +41,7 @@ const addressBookSchema = new mongoose.Schema({
     phone: String,
     fax: String,
     email: String,
+    salesRep: String,
     customer: Boolean,
     carrier: Boolean,
     shipper: Boolean,
@@ -157,6 +158,7 @@ app.route('/address-book/add-address')
                 phone: req.body.phone,
                 fax: req.body.fax,
                 email: req.body.email,
+                salesRep: req.body.salesRep,
                 customer: customer,
                 carrier: carrier,
                 shipper: shipper,
@@ -165,6 +167,26 @@ app.route('/address-book/add-address')
             });
             newAddress.save();
             res.redirect('/address-book');
+        });
+
+app.route('/address-book/delete-address-id=:id')
+        .get((req, res) => {
+            const addressId = req.params.id;
+
+            const message = {
+                messageText: 'Contact Removed Successfully!',
+                page: 'Address Book',
+                link: '/address-book'
+            }
+
+            AddressBook.findByIdAndRemove(addressId, (err) => {
+                if (!err) {
+                    console.log(`Successfully Delete ${addressId}`);
+                    res.render('success', { message: message });
+                } else {
+                    console.log(`Error: ${err}`);
+                }
+            });
         });
 
 app.route('/customer-card/id=:id')
@@ -191,7 +213,7 @@ app.route('/delete-user/id=:id')
 
         User.findByIdAndRemove(userId, (err) => {
             if (!err) {
-                console.log('Successfully Deleted ' + userId);
+                console.log(`Successfully Deleted ${userId}`);
                 res.render('success', { message: message });
             } else {
                 console.log('Error: ' + err);
@@ -268,6 +290,10 @@ app.route('/search-address-book')
         const searchValue = req.body.searchValue;
         const searchFilter = req.body.searchFilter;
 
+        const searchQuery = {}
+
+        searchQuery[searchFilter] = {$regex: '.*' + searchValue + '.*' };
+
         const showAll = true;
 
         const perPage = 25;
@@ -275,9 +301,8 @@ app.route('/search-address-book')
         const pages = Math.ceil(total.length / perPage);
         const pageNumber = (req.query.page == null) ? 1 : req.query.page;
         const startFrom = (pageNumber - 1) * perPage;
-        
-        if (searchFilter === 'city') {
-            const query = AddressBook.find( { city: { $regex: '.*' + searchValue + '.*' } })
+
+        const query = AddressBook.find(searchQuery)
             .sort({ company: 1 })
             .skip(startFrom)
             .limit(perPage);
@@ -293,50 +318,9 @@ app.route('/search-address-book')
                     searchValue: searchValue
                 });
             } else {
-                console.log(err);
+                console.log(`Error: ${err}`)
             }
         });
-        } else if (searchFilter === 'state') {
-            const query = AddressBook.find( { state: { $regex: '.*' + searchValue + '.*' } })
-            .sort({ company: 1 })
-            .skip(startFrom)
-            .limit(perPage);
-        
-        query.exec((err, addresses) => {
-            if (!err) {
-                res.render('address-book', {
-                    addresses: addresses,
-                    showAll: showAll,
-                    pages: pages,
-                    pageNumber: pageNumber,
-                    searchFilter: searchFilter,
-                    searchValue: searchValue
-                });
-            } else {
-                console.log(err);
-            }
-        });
-        } else {
-            const query = AddressBook.find( { company: { $regex: '.*' + searchValue + '.*' } })
-            .sort({ company: 1 })
-            .skip(startFrom)
-            .limit(perPage);
-        
-        query.exec((err, addresses) => {
-            if (!err) {
-                res.render('address-book', {
-                    addresses: addresses,
-                    showAll: showAll,
-                    pages: pages,
-                    pageNumber: pageNumber,
-                    searchFilter: searchFilter,
-                    searchValue: searchValue
-                });
-            } else {
-                console.log(err);
-            }
-        });
-        }
     });
 
 app.route('/settings')
