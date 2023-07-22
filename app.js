@@ -169,6 +169,64 @@ app.route('/address-book/add-address')
             res.redirect('/address-book');
         });
 
+app.route('/address-book/edit-address')
+        .post((req, res) => {
+            const addressId = req.body.addressId;
+            var customer = false;
+            var carrier = false;
+            var shipper = false;
+            var consignee = false;
+            var broker = false;
+            
+            if (req.body.customer === 'on') {
+                customer = true;
+            }
+
+            if (req.body.carrier === 'on') {
+                carrier = true;
+            } 
+            
+            if (req.body.shipper === 'on') {
+                shipper = true;
+            }
+
+            if (req.body.consignee === 'on') {
+                consignee = true;
+            } 
+ 
+            if (req.body.broker === 'on') {
+                broker = true;  
+            } 
+
+            AddressBook.findByIdAndUpdate(addressId, {
+                company: req.body.company,
+                attention: req.body.attention,
+                addressOne: req.body.addressOne,
+                addressTwo: req.body.addressTwo,
+                city: req.body.city,
+                state: req.body.state,
+                postal: req.body.postal,
+                country: req.body.country,
+                phone: req.body.phone,
+                fax: req.body.fax,
+                email: req.body.email,
+                salesRep: req.body.salesRep,
+                customer: customer,
+                carrier: carrier,
+                shipper: shipper,
+                consignee: consignee,
+                broker: broker
+            }, (err, docs) => {
+                if (err) {
+                    console.log(`Error: ${err}`);
+                } else {
+                    console.log(docs);
+                }
+                res.redirect(`/customer-card/id=${addressId}`);
+            })
+
+        });
+
 app.route('/address-book/delete-address-id=:id')
         .get((req, res) => {
             const addressId = req.params.id;

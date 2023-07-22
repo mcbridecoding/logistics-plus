@@ -1,3 +1,5 @@
+// ** -- Models -- **
+
 function openDeleteModal(id) {
     document.getElementById(id).style.display = 'block';
     blurrBackground();
@@ -8,15 +10,17 @@ function closeDeleteModal(id) {
     cancelBlurrBackground(); 
 }
 
-function openAddCustomerModal() {
-    document.getElementById('add-address-modal').style.display = 'block';
+function openModal(id) {
+    document.getElementById(id).style.display = 'block';
     blurrBackground();
 }
 
-function closeAddCustomerModal() {
-    document.getElementById('add-address-modal').style.display = 'none';
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
     cancelBlurrBackground(); 
 }
+
+// ** -- Blurr / Un-Blurr BackGround -- **
 
 function blurrBackground() {
     document.getElementById('main').style.filter = 'blur(5px)';
@@ -27,6 +31,8 @@ function cancelBlurrBackground() {
     document.getElementById('main').style.filter = 'blur(0px)';
     document.getElementById('nav-panel').style.filter = 'blur(0px)';
 }
+
+// ** -- Quote Menus -- **
 
 function openShipmentHeader() {
     document.getElementById('quote-header').style.display = 'flex';

@@ -59,7 +59,7 @@
                     <% } %>
                 </div>
             </form>
-            <div class="options-button" onclick="openAddCustomerModal()">
+            <div class="options-button" onclick="openModal('add-address-modal')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-add" viewBox="0 0 16 16">
                     <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0Zm-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
                     <path d="M8.256 14a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z"/>
@@ -67,7 +67,7 @@
                 Add Address
             </div>
         </div>
-        <table class="table table-light table-striped table-hover table-bordered ">
+        <table class="table table-light table-striped table-hover table-bordered">
             <thead>
                 <tr>
                     <th class="table-options">#</th>
@@ -127,18 +127,18 @@
             <% } %>
     </div>
 </div>
-<div id="add-address-modal" class="address-book-modal">
+<div id="add-address-modal" class="modal-frame">
     <form action="/address-book/add-address" method="post" autocomplete="off">
-        <div class="address-book-modal-header">
+        <div class="modal-header">
             <h3>Add Address</h3>
-            <div class="close-button" onclick="closeAddCustomerModal()">
+            <div class="close-button" onclick="closeModal('add-address-modal')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                 </svg>
             </div>
         </div>
-        <div class="address-book-modal-body">
+        <div class="modal-body">
             <div class="costing-body-split">
                 <div>
                     <div class="flex-container flex-row flex-between flex-wrap gap-25">
@@ -235,8 +235,9 @@
                     </div>
                 </div>
             </div>
-            <div class="address-book-modal-buttons">
-                <button class="modal-button">Submit</button>
+            <div class="modal-button-group">
+                <button type="submit" class="modal-button">Submit</button>
+                <div onclick="closeModal('add-address-modal')" class="modal-button">Cancel</div>
             </div>
         </div>
     </form> 
