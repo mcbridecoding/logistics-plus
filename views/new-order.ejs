@@ -1,0 +1,822 @@
+<%- include('partials/header') %>
+
+<%- include('partials/nav-panel') %>
+<form action="" method="POST" autocomplete="off">
+    <div class="main" id="main">
+        <div class="page-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-plus" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7z"/>
+                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+            </svg>
+            New Order
+        </div>
+        <div class="new-quote-body">
+            <div class="new-quote-menu">
+                <div class="quote-sections">
+                    <div id="shipment-header-button" class="quote-selection" onclick="openShipmentHeader()">Shipment Header</div>
+                    <div id="shipment-detail-button" class="quote-selection" onclick="openShipmentDetails()">Shipment Details</div>
+                </div>
+                <div class="quote-buttons">
+                    <button type="submit" class="quote-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
+                            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                        </svg>
+                        Save & Exit</button>
+                </div>
+            </div>
+            <div id="quote-header" class="new-quote-form">
+                <div class="flex-container flex-row flex-between flex-wrap">
+                    <div class="">                    
+                        <label for="quoteTaker" class="form-label">Name:</label>
+                        <input class="form-control input-lg" type="text" id="quoteTaker" name="quoteTaker" required>
+                    </div>
+                    <div>
+                        <label for="freightSize" class="form-label">FTL / LTL:</label>
+                        <select class="form-select input-sm" name="freightSize" id="freightSize">
+                            <option value=""></option>
+                            <option value="LTL">LTL</option>
+                            <option value="FTL">FTL</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="shipmentType" class="form-label">Type:</label>
+                        <select class="form-select input-sm" name="shipmentType" id="shipmentType">
+                            <option value=""></option>
+                            <option value="Domestic">Domestic</option>
+                            <option value="Transborder">Transborder</option>
+                            <option value="Interstate">Interstate</option>
+                            <option value="IntraState">IntraState</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="quoteDate" class="form-label">Date:</label>
+                        <input class="form-control input-sm" type="date" id="quoteDate" name="quoteDate" value="<%= todayDate %>"> 
+                    </div>
+                    <div>
+                        <label for="quoteTime" class="form-label">Time:</label>
+                        <input class="form-control input-sm" type="time" id="quoteTime" name="quoteTime" value=""> 
+                    </div>
+                </div>
+                <div class="flex-container flex-row flex-wrap gap-50">
+                    <div>
+                        <label for="client" class="form-label">Client / Bill To:</label>
+                        <select class="form-select input-lg" name="client" id="client" onchange="showAddClientModal(this.value, 'add-client')" required>
+                            <option></option>
+                            <option value="new">-- Create New --</option>
+                            <% addressList.forEach((address) => { %>
+                                <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div id="add-client-button" class="flex-container flex-column flex-end" onclick="openModal('add-client-modal')">
+                        <div class="add-address-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                          </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="quoteNumber" class="form-label">Quote #:</label>
+                        <input class="form-control input-sm" type="text" id="quoteNumber" name="quoteNumber" required>  
+                    </div>
+                    <div>
+                        <label for="paymentTerms" class="form-label">Terms:</label>
+                        <select class="form-select input-sm" name="paymentTerms" id="paymentTerms" onchange="showThirdpartyInput(this.value)" required>
+                            <option value=""></option>
+                            <option value="PPD">Prepaid</option>
+                            <option value="COL">Collect</option>
+                            <option value="TP">Third Party</option>
+                        </select>
+                    </div>
+                    <div id="thirdPartyInformationPanel">
+                        <label for="thirdPartyInformation" id="" class="form-label">Third Party Bill To:</label>
+                        <input class="form-control input-sm" type="text" id="thirdPartyInformation" name="thirdPartyInformation">  
+                    </div>
+                </div>
+                <div class="address-information">
+                    <div class="address-form">
+                        <h2>Shipper:</h2>
+                        <div class="flex-container flex-row flex-wrap gap-50">
+                            <div>
+                                <select class="form-select input-xlg" name="shipper" id="shipper" onchange="showAddClientModal(this.value, 'add-shipper')" required>
+                                    <option></option>
+                                    <option value="new">-- Create New --</option>
+                                    <option value="generic">-- Generic --</option>
+                                    <% addressList.forEach((address) => { %>
+                                        <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div id="add-shipper-button" class="flex-container flex-column flex-end" onclick="openModal('add-shipper-modal')">
+                                <div class="add-address-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                  </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="generic-shipper" class="flex-container flex-row flex-wrap gap-25">
+                            <div>
+                                <label for="genericShipperCity" class="form-label">City:</label>
+                                <input class="form-control input-sm" type="text" id="genericShipperCity" name="genericShipperCity">  
+                            </div>
+                            <div>
+                                <label for="genericShipperState" class="form-label">State:</label>
+                                <input class="form-control input-xs" type="text" id="genericShipperState" name="genericShipperState">  
+                            </div>
+                            <div>
+                                <label for="genericShipperCountry" class="form-label">Country:</label>
+                                <input class="form-control input-sm" type="text" id="genericShipperCountry" name="genericShipperCountry">  
+                            </div>
+                        </div>
+                    </div>
+                    <div class="address-form">
+                        <h2>Consignee:</h2>
+                        <div class="flex-container flex-row flex-wrap gap-50">
+                            <div>
+                                <select class="form-select input-xlg" name="consignee" id="consignee" onchange="showAddClientModal(this.value, 'add-consignee')" required>
+                                    <option></option>
+                                    <option value="new">-- Create New --</option>
+                                    <option value="generic">-- Generic --</option>
+                                    <% addressList.forEach((address) => { %>
+                                        <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div id="add-consignee-button" class="flex-container flex-column flex-end" onclick="openModal('add-consignee-modal')">
+                                <div class="add-address-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                  </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="generic-consignee" class="flex-container flex-row flex-wrap gap-25">
+                            <div>
+                                <label for="genericConsigneeCity" class="form-label">City:</label>
+                                <input class="form-control input-sm" type="text" id="genericConsigneeCity" name="genericConsigneeCity">  
+                            </div>
+                            <div>
+                                <label for="genericConsigneeState" class="form-label">State:</label>
+                                <input class="form-control input-xs" type="text" id="genericConsigneeState" name="genericConsigneeState">  
+                            </div>
+                            <div>
+                                <label for="genericConsigneeCounty" class="form-label">Country:</label>
+                                <input class="form-control input-sm" type="text" id="genericConsigneeCounty" name="genericConsigneeCounty">  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quote-body-split">
+                    <div class="address-form">
+                        <div class="flex-container flex-row flex-wrap gap-50">
+                            <div>
+                                <label for="sbBroker" class="form-label">SB Broker:</label>
+                                <input class="form-control input-lg" type="text" id="sbBroker" name="sbBroker">
+                            </div>
+                            <div>
+                                <label for="nbBroker" class="form-label">NB Broker:</label>
+                                <input class="form-control input-lg" type="text" id="nbBroker" name="nbBroker">
+                            </div>
+                        </div>
+                        <h4>Equipment Required:</h4>
+                        <div class="equipment-checklist">
+                            <div class="flex-container flex-row flex-between">
+                                <div class="flex-container flex-column flex-start">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="DV" name="dv">
+                                        <label class="form-check-label" for="DV">DV - Dry Van</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="FD" name="fd">
+                                        <label class="form-check-label" for="FD">FD - Flat Deck</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="DD" name="dd">
+                                        <label class="form-check-label" for="DD">DD - Dbl Drop</label>
+                                    </div>
+                                </div>
+                                <div class="flex-container flex-column flex-start">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="RF" name="rf">
+                                        <label class="form-check-label" for="RF">RF - Reefer Unit</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="SD" name="sd">
+                                        <label class="form-check-label" for="SD">SD - Step Deck</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="FU" name="fu">
+                                        <label class="form-check-label" for="FU">FU - Flat Unit</label>
+                                    </div>
+                                </div>
+                                <div class="flex-container flex-column flex-start">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="DU" name="du">
+                                        <label class="form-check-label" for="DU">DU - Dry Unit</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="SB" name="sb">
+                                        <label class="form-check-label" for="SB">SB - Suber B</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="RL" name="rl">
+                                        <label class="form-check-label" for="RL">RL - Rail Unit</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="address-form">
+                        <div class="flex-container flex-start flex-wrap gap-50">
+                            <div>
+                                <label for="freightReadyDate" class="form-label">Ready Date:</label>
+                                <input class="form-control input-lg" type="date" id="freightReadyDate" name="freightReadyDate">
+                            </div>                        
+                            <div>
+                                <label for="freightReadyTime" class="form-label">Ready Time:</label>
+                                <input class="form-control input-lg" type="time" id="freightReadyTime" name="freightReadyTime">
+                            </div>                        
+                        </div>
+                        <div class="flex-container flex-start flex-wrap gap-50">
+                            <div>
+                                <label for="serviceLevel" class="form-label">Service Level:</label>
+                                <input class="form-control input-lg" type="text" id="serviceLevel" name="serviceLevel">
+                            </div>
+                            <div>
+                                <label for="deliveryEta" class="form-label">ETA:</label>
+                                <input class="form-control input-lg" type="date" id="deliveryEta" name="deliveryEta">
+                            </div>
+                        </div>
+                        <div class="flex-container flex-row flex-wrap gap-50">
+                            <div>
+                                <label for="pickupAppointmentDate" class="form-label">Pick up Appointment:</label>
+                                <input class="form-control input-lg" type="date" id="pickupAppointmentDate" name="pickupAppointmentDate">
+                            </div>
+                            <div>
+                                <label for="pickupAppointmentTime" class="form-label">Pick up Appointment Time:</label>
+                                <input class="form-control input-lg" type="time" id="pickupAppointmentTime" name="pickupAppointmentTime">
+                            </div>
+                        </div>
+                        <div class="flex-container flex-row flex-wrap gap-50">
+                            <div>
+                                <label for="deliveryAppointmentDate" class="form-label">Delivery up Appointment:</label>
+                                <input class="form-control input-lg" type="date" id="deliveryAppointmentDate" name="deliveryAppointmentDate">
+                            </div>
+                            <div>
+                                <label for="deliveryAppointmentTime" class="form-label">Delivery Appointment Time:</label>
+                                <input class="form-control input-lg" type="time" id="deliveryAppointmentTime" name="deliveryAppointmentTime">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="shipment-details" class="new-quote-form">
+                <div class="quote-body-split">
+                    <div class="details-column">
+                        <div class="dimension-table">
+                            <div class="flex-container flex-between gap-50">
+                                <h4>Shipments Dims:</h4>
+                                <h4 id="totalCUFT">CUFT: </h4>    
+                            </div>
+                            <div class="flex-container flex-row gap-10">
+                                <input class="form-control input-xs" type="text" placeholder="L" id="l1" name="l1" onchange="calculateCUFT(1)">
+                                <input class="form-control input-xs" type="text" placeholder="W" id="w1" name="w1" onchange="calculateCUFT(1)">
+                                <input class="form-control input-xs" type="text" placeholder="H" id="h1" name="h1" onchange="calculateCUFT(1)">
+                                <input class="form-control input-xs" type="text" placeholder="#" id="c1" name="c1" onchange="calculateCUFT(1)">
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf1" name="cf1" readonly>
+                            </div>
+                            <div class="flex-container flex-row gap-10">
+                                <input class="form-control input-xs" type="text" placeholder="L" id="l2" name="l2" onchange="calculateCUFT(2)">
+                                <input class="form-control input-xs" type="text" placeholder="W" id="w2" name="w2" onchange="calculateCUFT(2)">
+                                <input class="form-control input-xs" type="text" placeholder="H" id="h2" name="h2" onchange="calculateCUFT(2)">
+                                <input class="form-control input-xs" type="text" placeholder="#" id="c2" name="c2" onchange="calculateCUFT(2)">
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf2" name="cf2" disabled>
+                            </div>
+                            <div class="flex-container flex-row gap-10">
+                                <input class="form-control input-xs" type="text" placeholder="L" id="l3" name="l3" onchange="calculateCUFT(3)">
+                                <input class="form-control input-xs" type="text" placeholder="W" id="w3" name="w3" onchange="calculateCUFT(3)">
+                                <input class="form-control input-xs" type="text" placeholder="H" id="h3" name="h3" onchange="calculateCUFT(3)">
+                                <input class="form-control input-xs" type="text" placeholder="#" id="c3" name="c3" onchange="calculateCUFT(3)">
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf3" name="cf3" disabled>
+                            </div>
+                            <div class="flex-container flex-row gap-10">
+                                <input class="form-control input-xs" type="text" placeholder="L" id="l4" name="l4" onchange="calculateCUFT(4)">
+                                <input class="form-control input-xs" type="text" placeholder="W" id="w4" name="w4" onchange="calculateCUFT(4)">
+                                <input class="form-control input-xs" type="text" placeholder="H" id="h4" name="h4" onchange="calculateCUFT(4)">
+                                <input class="form-control input-xs" type="text" placeholder="#" id="c4" name="c4" onchange="calculateCUFT(4)">
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf4" name="cf4" value="" disabled>
+                            </div>
+                            <div class="flex-container flex-row gap-10">
+                                <input class="form-control input-xs" type="text" placeholder="L" id="l5" name="l5" onchange="calculateCUFT(5)">
+                                <input class="form-control input-xs" type="text" placeholder="W" id="w5" name="w5" onchange="calculateCUFT(5)">
+                                <input class="form-control input-xs" type="text" placeholder="H" id="h5" name="h5" onchange="calculateCUFT(5)">
+                                <input class="form-control input-xs" type="text" placeholder="#" id="c5" name="c5" onchange="calculateCUFT(5)">
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf5" name="cf5" value="" disabled>
+                            </div>
+                            <div class="flex-container flex-row gap-10">
+                                <input class="form-control input-xs" type="text" placeholder="L" id="l6" name="l6" onchange="calculateCUFT(6)">
+                                <input class="form-control input-xs" type="text" placeholder="W" id="w6" name="w6" onchange="calculateCUFT(6)">
+                                <input class="form-control input-xs" type="text" placeholder="H" id="h6" name="h6" onchange="calculateCUFT(6)">
+                                <input class="form-control input-xs" type="text" placeholder="#" id="c6" name="c6" onchange="calculateCUFT(6)">
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf6" name="cf6" value="" disabled>
+                            </div>
+                            <div class="flex-container flex-row gap-10">
+                                <input class="form-control input-xs" type="text" placeholder="L" id="l7" name="l7" onchange="calculateCUFT(7)">
+                                <input class="form-control input-xs" type="text" placeholder="W" id="w7" name="w7" onchange="calculateCUFT(7)">
+                                <input class="form-control input-xs" type="text" placeholder="H" id="h7" name="h7" onchange="calculateCUFT(7)">
+                                <input class="form-control input-xs" type="text" placeholder="#" id="c7" name="c7" onchange="calculateCUFT(7)">
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf7" name="cf7" value="" disabled>
+                            </div>
+                            <div class="flex-container flex-row gap-10">
+                                <input class="form-control input-xs" type="text" placeholder="L" id="l8" name="l8" onchange="calculateCUFT(8)">
+                                <input class="form-control input-xs" type="text" placeholder="W" id="w8" name="w8" onchange="calculateCUFT(8)">
+                                <input class="form-control input-xs" type="text" placeholder="H" id="h8" name="h8" onchange="calculateCUFT(8)">
+                                <input class="form-control input-xs" type="text" placeholder="#" id="c8" name="c8" onchange="calculateCUFT(8)">
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf8" name="cf8" value="" disabled>
+                            </div>
+                            <div class="flex-container flex-row gap-10">
+                                <input class="form-control input-xs" type="text" placeholder="L" id="l9" name="l9" onchange="calculateCUFT(9)">
+                                <input class="form-control input-xs" type="text" placeholder="W" id="w9" name="w9" onchange="calculateCUFT(9)">
+                                <input class="form-control input-xs" type="text" placeholder="H" id="h9" name="h9" onchange="calculateCUFT(9)">
+                                <input class="form-control input-xs" type="text" placeholder="#" id="c9" name="c9" onchange="calculateCUFT(9)">
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf9" name="cf9" value="" disabled>
+                            </div>
+                            <div class="flex-container flex-row gap-10">
+                                <input class="form-control input-xs" type="text" placeholder="L" id="l10" name="l10" onchange="calculateCUFT(10)">
+                                <input class="form-control input-xs" type="text" placeholder="W" id="w10" name="w10" onchange="calculateCUFT(10)">
+                                <input class="form-control input-xs" type="text" placeholder="H" id="h10" name="h10" onchange="calculateCUFT(10)">
+                                <input class="form-control input-xs" type="text" placeholder="#" id="c10" name="c10" onchange="calculateCUFT(10)">
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf10" name="cf10" value="" disabled>
+                            </div>
+                        </div>
+                        <div class="flex-container flex-between flex-wrap gap-50">
+                            <div>
+                                <label for="dryTemp" class="form-label">Dry / Temp Controlled:</label>
+                                <select class="form-select input-lg" name="dryTemp" id="dryTemp">
+                                    <option value="Dry" selected>Dry</option>
+                                    <option value="Temp">Temp Controlled</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="temp" class="form-label">Temp:</label>
+                                <input class="form-control input-lg" type="text" id="temp" name="temp">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="details-column">
+                        <div class="dimension-table">
+                            <div class="flex-container flex-row flex-wrap gap-10">
+                                <div>
+                                    <label for="commodity" class="form-label">Commodity:</label>
+                                    <input class="form-control input-xs" type="text" id="commodity" name="commodity">
+                                </div>
+                                <div>
+                                    <label for="totalPieces" class="form-label">Total Pieces:</label>
+                                    <input class="form-control input-xs" type="text" id="totalPieces" name="totalPieces">
+                                </div>
+                                <div>
+                                    <label for="totalWeight" class="form-label">Total Weight:</label>
+                                    <input class="form-control input-xs" type="text" id="totalWeight" name="totalWeight">
+                                </div>
+                                <div>
+                                    <label for="weightMeasurement" class="form-label">Measurement:</label>
+                                    <select class="form-select input-xs" name="weightMeasurement" id="weightMeasurement">
+                                        <option value="lbs">lbs.</option>
+                                        <option value="kgs">kgs.</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex-container flex-row flex-wrap gap-10">
+                                <div>
+                                    <label for="stackable" class="form-label">Stackable?:</label>
+                                    <select class="form-select input-xs" name="stackable" id="stackable">
+                                        <option value=""></option>
+                                        <option value="Non-Stackable">Non-Stackable</option>
+                                        <option value="Stackable">Stackable</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="tarp" class="form-label">Tarp?:</label>
+                                    <select class="form-select input-xs" name="tarp" id="tarp">
+                                        <option value="false" selected>No</option>
+                                        <option value="true">Yes</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="tailgate" class="form-label">Power Tailgate?:</label>
+                                    <select class="form-select input-xs" name="tailgate" id="tailgate">
+                                        <option value="false" selected>No</option>
+                                        <option value="true">Yes</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="team-required" class="form-label">Team Required?:</label>
+                                    <select class="form-select input-xs" name="team-required" id="team-required">
+                                        <option value="false" selected>No</option>
+                                        <option value="true">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dimension-table">
+                            <div class="flex-container flex-row flex-wrap gap-10">
+                                <div class="flex-container flex-between gap-50">
+                                    <h4>PO & Reference Numbers:</h4>    
+                                </div>
+                                <div>
+                                    <label for="poNumber" class="form-label">PO #:</label>
+                                    <input class="form-control input-xs" type="text" id="poNumber" name="poNumber">
+                                </div>
+                                <div>
+                                    <label for="soNumber" class="form-label">SO #:</label>
+                                    <input class="form-control input-xs" type="text" id="soNumber" name="soNumber">
+                                </div>
+                                <div>
+                                    <label for="refNumber" class="form-label">Ref #:</label>
+                                    <input class="form-control input-xs" type="text" id="refNumber" name="refNumber">
+                                </div>
+                                <div>
+                                    <label for="invNumber" class="form-label">Inv #:</label>
+                                    <input class="form-control input-xs" type="text" id="invNumber" name="invNumber">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dimension-table">
+                            <div class="flex-container flex-between gap-50">
+                                <h4>Dangerous Goods:</h4>    
+                            </div>
+                            <div class="flex-container flex-row flex-wrap gap-10">
+                                <div>
+                                    <label for="un" class="form-label">UN#:</label>
+                                    <input class="form-control input-sm" type="text" id="un" name="un">
+                                </div>
+                                <div>
+                                    <label for="class" class="form-label">Class:</label>
+                                    <input class="form-control input-sm" type="text" id="class" name="class">
+                                </div>
+                                <div>
+                                    <label for="pg" class="form-label">PG:</label>
+                                    <input class="form-control input-xs" type="text" id="pg" name="pg">
+                                </div>
+                                <div>
+                                    <label for="dgDescription" class="form-label">Description:</label>
+                                    <input class="form-control input-xl" type="text" id="dgDescription" name="dgDescription">
+                                </div>
+                                <div>
+                                    <label for="emergencyContact" class="form-label">Emergency Contact:</label>
+                                    <input class="form-control input-xl" type="text" id="emergencyContact" name="emergencyContact">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="add-client-modal" class="modal-frame">
+        <div class="modal-header">
+            <h3>Add Client</h3>
+            <div class="close-button" onclick="closeModal('add-client-modal')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="costing-body-split">
+                <div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-25">
+                        <div>
+                            <label for="newClientCompany" class="form-label">Company:</label>
+                            <input class="form-control input-lg" type="text" id="newClientCompany" name="newClientCompany">  
+                        </div>
+                        <div>
+                            <label for="newClientAttention" class="form-label">Attention:</label>
+                            <input class="form-control input-lg" type="text" id="newClientAttention" name="newClientAttention">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-wrap">
+                        <div>
+                            <label for="newClientAddressOne" class="form-label">Address Line 1:</label>
+                            <input class="form-control input-xlg" type="text" id="newClientAddressOne" name="newClientAddressOne">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-wrap">
+                        <div>
+                            <label for="newClientAddressTwo" class="form-label">Address Line 2:</label>
+                            <input class="form-control input-xlg" type="text" id="newClientAddressTwo" name="newClientAddressTwo">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
+                        <div>
+                            <label for="newClientCity" class="form-label">City:</label>
+                            <input class="form-control input-sm" type="text" id="newClientCity" name="newClientCity">  
+                        </div>
+                        <div>
+                            <label for="newClientState" class="form-label">State:</label>
+                            <input class="form-control input-xs" type="text" id="newClientState" name="newClientState">  
+                        </div>
+                        <div>
+                            <label for="newClientPostal" class="form-label">Postal:</label>
+                            <input class="form-control input-xs" type="text" id="newClientPostal" name="newClientPostal">  
+                        </div>
+                        <div>
+                            <label for="newClientCountry" class="form-label">Country:</label>
+                            <input class="form-control input-xs" type="text" id="newClientCountry" name="newClientCountry">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
+                        <div>
+                            <label for="newClientPhone" class="form-label">Phone:</label>
+                            <input class="form-control input-sm" type="text" id="newClientPhone" name="newClientPhone">  
+                        </div>
+                        <div>
+                            <label for="newClientFax" class="form-label">Fax:</label>
+                            <input class="form-control input-sm" type="text" id="newClientFax" name="newClientFax">  
+                        </div>
+                        <div>
+                            <label for="newClientEmail" class="form-label">Email:</label>
+                            <input class="form-control input-sm" type="email" id="newClientEmail" name="newClientEmail">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
+                        <div>
+                            <label for="newClientSalesRep" class="form-label">Sales Rep:</label>
+                            <input class="form-control input-lg" type="text" id="newClientSalesRep" name="newClientSalesRep">  
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-column gap-25 address-book-checklist">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newClientCustomer" name="newClientCustomer">
+                        <label class="form-check-label" for="customer">
+                        Customer
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newclientCarrier" name="newclientCarrier">
+                        <label class="form-check-label" for="carrier">
+                        Carrier
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newClientShipper" name="newClientShipper">
+                        <label class="form-check-label" for="shipper">
+                        Shipper
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newClientConsignee" name="newClientConsignee">
+                        <label class="form-check-label" for="consignee">
+                        Consignee
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newClientBroker" name="newClientBroker">
+                        <label class="form-check-label" for="broker">
+                        Broker
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-button-group">
+                <div onclick="closeModal('add-client-modal')" class="modal-button">Close</div>
+            </div>
+        </div>
+    </div>
+    <div id="add-shipper-modal" class="modal-frame">
+        <div class="modal-header">
+            <h3>Add Shipper</h3>
+            <div class="close-button" onclick="closeModal('add-shipper-modal')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="costing-body-split">
+                <div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-25">
+                        <div>
+                            <label for="newShipperCompany" class="form-label">Company:</label>
+                            <input class="form-control input-lg" type="text" id="newShipperCompany" name="newShipperCompany">  
+                        </div>
+                        <div>
+                            <label for="newShipperAttention" class="form-label">Attention:</label>
+                            <input class="form-control input-lg" type="text" id="newShipperAttention" name="newShipperAttention">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-wrap">
+                        <div>
+                            <label for="newShipperAddressOne" class="form-label">Address Line 1:</label>
+                            <input class="form-control input-xlg" type="text" id="newShipperAddressOne" name="newShipperAddressOne">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-wrap">
+                        <div>
+                            <label for="newShipperAddressTwo" class="form-label">Address Line 2:</label>
+                            <input class="form-control input-xlg" type="text" id="newShipperAddressTwo" name="newShipperAddressTwo">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
+                        <div>
+                            <label for="newShipperCity" class="form-label">City:</label>
+                            <input class="form-control input-sm" type="text" id="newShipperCity" name="newShipperCity">  
+                        </div>
+                        <div>
+                            <label for="newShipperState" class="form-label">State:</label>
+                            <input class="form-control input-xs" type="text" id="newShipperState" name="newShipperState">  
+                        </div>
+                        <div>
+                            <label for="newShipperPostal" class="form-label">Postal:</label>
+                            <input class="form-control input-xs" type="text" id="newShipperPostal" name="newShipperPostal">  
+                        </div>
+                        <div>
+                            <label for="newShipperCountry" class="form-label">Country:</label>
+                            <input class="form-control input-xs" type="text" id="newShipperCountry" name="newShipperCountry">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
+                        <div>
+                            <label for="newShipperPhone" class="form-label">Phone:</label>
+                            <input class="form-control input-sm" type="text" id="newShipperPhone" name="newShipperPhone">  
+                        </div>
+                        <div>
+                            <label for="newShipperFax" class="form-label">Fax:</label>
+                            <input class="form-control input-sm" type="text" id="newShipperFax" name="newShipperFax">  
+                        </div>
+                        <div>
+                            <label for="newShipperEmail" class="form-label">Email:</label>
+                            <input class="form-control input-sm" type="email" id="newShipperEmail" name="newShipperEmail">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
+                        <div>
+                            <label for="newShipperSalesRep" class="form-label">Sales Rep:</label>
+                            <input class="form-control input-lg" type="text" id="newShipperSalesRep" name="newShipperSalesRep">  
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="shipperSameAsClient" name="shipperSameAsClient">
+                            <label class="form-check-label" for="shipperSameAsClient">Same As Client?</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-column gap-25 address-book-checklist">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newShipperCustomer" name="newShipperCustomer">
+                        <label class="form-check-label" for="customer">
+                        Customer
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newShipperCarrier" name="newShipperCarrier">
+                        <label class="form-check-label" for="carrier">
+                        Carrier
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newShipperShipper" name="newShipperShipper">
+                        <label class="form-check-label" for="shipper">
+                        Shipper
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newShipperConsignee" name="newShipperConsignee">
+                        <label class="form-check-label" for="consignee">
+                        Consignee
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newShipperBroker" name="newShipperBroker">
+                        <label class="form-check-label" for="broker">
+                        Broker
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-button-group">
+                <div onclick="closeModal('add-shipper-modal')" class="modal-button">Close</div>
+            </div>
+        </div>
+    </div>
+    <div id="add-consignee-modal" class="modal-frame">
+        <div class="modal-header">
+            <h3>Add Consignee</h3>
+            <div class="close-button" onclick="closeModal('add-consignee-modal')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="costing-body-split">
+                <div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-25">
+                        <div>
+                            <label for="newConsigneeCompany" class="form-label">Company:</label>
+                            <input class="form-control input-lg" type="text" id="newConsigneeCompany" name="newConsigneeCompany">  
+                        </div>
+                        <div>
+                            <label for="newConsigneeAttention" class="form-label">Attention:</label>
+                            <input class="form-control input-lg" type="text" id="newConsigneeAttention" name="newConsigneeAttention">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-wrap">
+                        <div>
+                            <label for="newConsigneeAddressOne" class="form-label">Address Line 1:</label>
+                            <input class="form-control input-xlg" type="text" id="newConsigneeAddressOne" name="newConsigneeAddressOne">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-wrap">
+                        <div>
+                            <label for="newConsigneeAddressTwo" class="form-label">Address Line 2:</label>
+                            <input class="form-control input-xlg" type="text" id="newConsigneeAddressTwo" name="newConsigneeAddressTwo">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
+                        <div>
+                            <label for="newConsigneeCity" class="form-label">City:</label>
+                            <input class="form-control input-sm" type="text" id="newConsigneeCity" name="newConsigneeCity">  
+                        </div>
+                        <div>
+                            <label for="newConsigneeState" class="form-label">State:</label>
+                            <input class="form-control input-xs" type="text" id="newConsigneeState" name="newConsigneeState">  
+                        </div>
+                        <div>
+                            <label for="newConsigneePostal" class="form-label">Postal:</label>
+                            <input class="form-control input-xs" type="text" id="newConsigneePostal" name="newConsigneePostal">  
+                        </div>
+                        <div>
+                            <label for="newConsigneeCountry" class="form-label">Country:</label>
+                            <input class="form-control input-xs" type="text" id="newConsigneeCountry" name="newConsigneeCountry">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
+                        <div>
+                            <label for="newConsigneePhone" class="form-label">Phone:</label>
+                            <input class="form-control input-sm" type="text" id="newConsigneePhone" name="newConsigneePhone">  
+                        </div>
+                        <div>
+                            <label for="newConsigneeFax" class="form-label">Fax:</label>
+                            <input class="form-control input-sm" type="text" id="newConsigneeFax" name="newConsigneeFax">  
+                        </div>
+                        <div>
+                            <label for="newConsigneeEmail" class="form-label">Email:</label>
+                            <input class="form-control input-sm" type="email" id="newConsigneeEmail" name="newConsigneeEmail">  
+                        </div>
+                    </div>
+                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
+                        <div>
+                            <label for="newConsigneeSalesRep" class="form-label">Sales Rep:</label>
+                            <input class="form-control input-lg" type="text" id="newConsigneeSalesRep" name="newConsigneeSalesRep">  
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="consigneeSameAsClient" name="consigneeSameAsClient">
+                            <label class="form-check-label" for="consigneeSameAsClient">Same As Client?</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container flex-column gap-25 address-book-checklist">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newConsigneeCustomer" name="newConsigneeCustomer">
+                        <label class="form-check-label" for="customer">
+                        Customer
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newConsigneeCarrier" name="newConsigneeCarrier">
+                        <label class="form-check-label" for="carrier">
+                        Carrier
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newConsigneeShipper" name="newConsigneeShipper">
+                        <label class="form-check-label" for="shipper">
+                        Shipper
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newConsigneeConsignee" name="newConsigneeConsignee">
+                        <label class="form-check-label" for="consignee">
+                        Consignee
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newConsigneeBroker" name="newConsigneeBroker">
+                        <label class="form-check-label" for="broker">
+                        Broker
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-button-group">
+                <div onclick="closeModal('add-consignee-modal')" class="modal-button">Close</div>
+            </div>
+        </div>
+</form>
+<%- include('partials/footer') %>

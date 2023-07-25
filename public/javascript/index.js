@@ -104,3 +104,61 @@ function closeShippingCost() {
     document.getElementById('shipment-costing-button').style.color = '#242424';
     document.getElementById('shipment-costing-button').style.fontWeight = '100';
 }
+
+function calculateCUFT(row) {
+    let length = document.getElementById(`l${row}`).value;    
+    let width = document.getElementById(`w${row}`).value;    
+    let height = document.getElementById(`h${row}`).value;    
+    let count = document.getElementById(`c${row}`).value;  
+    
+    let cuft = length * width * height * count;
+
+    document.getElementById(`cf${row}`).value = cuft;
+}
+
+function openGenericAddress(value, modal) {
+    if (value === 'generic') {
+        document.getElementById(`generic-${modal}`).style.display = 'flex';
+    } else if (value === 'new') {
+        openModal(`add-${modal}-modal`);
+        showButton(`add-${modal}`);
+    } else {
+        document.getElementById(`generic-${modal}`).style.display = 'none';
+    }
+}
+
+function showThirdpartyInput(value) {
+    if (value === 'TP') {
+        document.getElementById(`thirdPartyInformationPanel`).style.display = 'block';
+    } else {
+        document.getElementById(`thirdPartyInformationPanel`).style.display = 'none';
+    }
+}
+
+function showAddClientModal(value, modal) {
+    if (value === 'new') {
+        openModal(`${modal}-modal`);
+        showButton(modal);
+    } else {
+        closeModal(`${modal}-modal`);
+        hideButton(modal)
+    }    
+}
+
+function showButton(modal) {
+    document.getElementById(`${modal}-button`).style.display = 'flex';
+}
+
+function hideButton(modal) {
+    document.getElementById(`${modal}-button`).style.display = 'none';
+}
+
+function calculateTotalCUFT() {
+    var totalCUFT = 0;
+
+    for (let i=0; i < 11; i++) {
+        totalCUFT += document.getElementById(`cf${i+1}`).value;
+    }
+
+    document.getElementById('totalCUFT').innerHTML = `CUFT: ${ totalCUFT / 1728 } Total`;
+}
