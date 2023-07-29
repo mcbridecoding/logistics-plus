@@ -39,9 +39,11 @@ function openShipmentHeader() {
     document.getElementById('shipment-header-button').style.backgroundColor = '#2B2A4C';
     document.getElementById('shipment-header-button').style.color = '#ffff';
     document.getElementById('shipment-header-button').style.fontWeight = 'bold';
+    
     closeShipmentDetails();
     closeShipmentChecklist();
     closeShippingCost();
+    closeShipmentBOL();
 }
 
 function closeShipmentHeader() {
@@ -59,7 +61,8 @@ function openShipmentDetails() {
     
     closeShipmentHeader();
     closeShipmentChecklist();
-    closeShippingCost()
+    closeShippingCost();
+    closeShipmentBOL();
 }
 
 function closeShipmentDetails() {
@@ -77,7 +80,8 @@ function openShipmentChecklist() {
     
     closeShipmentHeader();
     closeShipmentDetails();
-    closeShippingCost()
+    closeShippingCost();
+    closeShipmentBOL();
 }
 
 function closeShipmentChecklist() {
@@ -96,6 +100,7 @@ function openShippingCost() {
     closeShipmentHeader();
     closeShipmentDetails();
     closeShipmentChecklist();
+    closeShipmentBOL();
 }
 
 function closeShippingCost() {
@@ -103,6 +108,25 @@ function closeShippingCost() {
     document.getElementById('shipment-costing-button').style.backgroundColor = '#EEE2DE';
     document.getElementById('shipment-costing-button').style.color = '#242424';
     document.getElementById('shipment-costing-button').style.fontWeight = '100';
+}
+
+function openShipmentBOL() {
+    document.getElementById('shipment-bol').style.display = 'flex';
+    document.getElementById('shipment-bol-button').style.backgroundColor = '#2B2A4C';
+    document.getElementById('shipment-bol-button').style.color = '#ffff';
+    document.getElementById('shipment-bol-button').style.fontWeight = 'bold';
+
+    closeShipmentHeader();
+    closeShipmentDetails();
+    closeShipmentChecklist();    
+    closeShippingCost();
+}
+
+function closeShipmentBOL() {
+    document.getElementById('shipment-bol').style.display = 'none';
+    document.getElementById('shipment-bol-button').style.backgroundColor = '#EEE2DE';
+    document.getElementById('shipment-bol-button').style.color = '#242424';
+    document.getElementById('shipment-bol-button').style.fontWeight = '100';
 }
 
 function calculateCUFT(row) {
@@ -114,17 +138,7 @@ function calculateCUFT(row) {
     let cuft = length * width * height * count;
 
     document.getElementById(`cf${row}`).value = cuft;
-}
-
-function openGenericAddress(value, modal) {
-    if (value === 'generic') {
-        document.getElementById(`generic-${modal}`).style.display = 'flex';
-    } else if (value === 'new') {
-        openModal(`add-${modal}-modal`);
-        showButton(`add-${modal}`);
-    } else {
-        document.getElementById(`generic-${modal}`).style.display = 'none';
-    }
+    calculateTotalCUFT();
 }
 
 function showThirdpartyInput(value) {
@@ -154,11 +168,22 @@ function hideButton(modal) {
 }
 
 function calculateTotalCUFT() {
-    var totalCUFT = 0;
+    let sumCUFT = 0;
 
-    for (let i=0; i < 11; i++) {
-        totalCUFT += document.getElementById(`cf${i+1}`).value;
-    }
+    let row1 = Number(document.getElementById('cf1').value);
+    let row2 = Number(document.getElementById('cf2').value);
+    let row3 = Number(document.getElementById('cf3').value);
+    let row4 = Number(document.getElementById('cf4').value);
+    let row5 = Number(document.getElementById('cf5').value);
+    let row6 = Number(document.getElementById('cf6').value);
+    let row7 = Number(document.getElementById('cf7').value);
+    let row8 = Number(document.getElementById('cf8').value);
+    let row9 = Number(document.getElementById('cf9').value);
+    let row10 = Number(document.getElementById('cf10').value);
+    
+    sumCUFT = row1 + row2 + row3 + row4 + row5 + row6 + row7 + row8 + row9 + row10;
+    
+    let cuftTotal = Number(sumCUFT) / 1728
 
-    document.getElementById('totalCUFT').innerHTML = `CUFT: ${ totalCUFT / 1728 } Total`;
+    document.getElementById('totalCUFT').value = Number(cuftTotal).toFixed(2); 
 }

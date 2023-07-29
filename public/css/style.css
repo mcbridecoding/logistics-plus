@@ -58,6 +58,10 @@
     width: 50%;
 }
 
+#address-information-sm {
+    width: calc(100% - 100px);
+}
+
 .address-form h2 {
     border-bottom: 1px solid #242424;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
@@ -301,7 +305,7 @@
     box-shadow: var(--boxShadow);
     margin: 10px 0;
     padding: 15px;
-    width: calc(100% - 50px);
+    width: calc(100% - 75px);
 }
 
 .equipment-checklist .form-check {
@@ -1094,6 +1098,16 @@
     max-width: 450px;
 }
 
+.shipper-box {
+    border-bottom: 1px solid #242424;
+    margin-bottom: 25px;   
+    padding-bottom: 25px;
+}
+
+#shipment-bol {
+    display: none;
+}
+
 #shipment-costing {
     display: none;
 }
@@ -1186,6 +1200,10 @@
 
 #thirdPartyInformationPanel {
     display: none;
+}
+
+#totalCUFT {
+    text-align: right;
 }
 
 @media screen and (min-width: 320px) and (max-width: 1125px) {

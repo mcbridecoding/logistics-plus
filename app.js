@@ -65,11 +65,11 @@ const orderSchema = new mongoose.Schema({
     genericConsignee: Object,
     broker: Object,
     equipmentRequired: Object,
-    freightReady: Object,
+    freightReady: String,
     serviceLevel: String,
     deliveryEta: String,
-    pickupAppointment: Object,
-    deliveryAppointment: Object,
+    pickupAppointment: String,
+    deliveryAppointment: String,
     shipmentDims: Object,
     dryTemp: String,
     temperature: String,
@@ -111,6 +111,204 @@ function dateStringFormat(format) {
     } else return format
 }
 
+async function addNewAddress(req) {
+    const newClient = {};
+    const newShipper = {};
+    const newConsignee = {};
+    
+    const newAddress = {
+        newClient: newClient,
+        newShipper: newShipper,
+        newConsignee: newConsignee
+    }
+
+    if (req.body.client === 'new') {
+        var newClientCustomer = false;
+        var newClientCarrier = false;
+        var newClientShipper = false;
+        var newClientConsignee = false;
+        var newClientBroker = false;
+        
+        if (req.body.newClientCustomer === 'on') {
+            newClientCustomer = true;
+        }
+
+        if (req.body.newClientCarrier === 'on') {
+            newClientCarrier = true;
+        } 
+        
+        if (req.body.newClientShipper === 'on') {
+            newClientShipper = true;
+        }
+
+        if (req.body.newClientConsignee === 'on') {
+            newClientConsignee = true;
+        } 
+
+        if (req.body.newClientBroker === 'on') {
+            newClientBroker = true;  
+        } 
+        
+        const newClientaddress = new AddressBook({
+            company: req.body.newClientCompany,
+            attention: req.body.newClientAttention,
+            addressOne: req.body.newClientAddressOne,
+            addressTwo: req.body.newClientAddressTwo,
+            city: req.body.newClientCity,
+            state: req.body.newClientState,
+            postal: req.body.newClientPostal,
+            country: req.body.newClientCountry,
+            phone: req.body.newClientPhone,
+            fax: req.body.newClientFax,
+            email: req.body.newClientEmail,
+            salesRep: req.body.newClientSalesRep,
+            customer: newClientCustomer,
+            carrier: newClientCarrier,
+            shipper: newClientShipper,
+            consignee: newClientConsignee,
+            broker: newClientBroker
+        });
+        newClientaddress.save(); 
+        
+        newClient.id = String(newClientaddress._id);
+        newClient.company = req.body.newClientCompany    
+    } else {
+        newClient.id = req.body.client
+        let clientName = await AddressBook.findOne({ _id: req.body.client });
+        newClient.company = clientName.company;
+    }
+
+    if (req.body.shipper === 'new') {
+        if (req.body.shipperSameAsClient === 'on') {
+            newShipper.id = newClient.id;
+            newShipper.company = newClient.company;                
+        } else {
+            var newShipperCustomer = false;
+            var newShipperCarrier = false;
+            var newShipperShipper = false;
+            var newShipperConsignee = false;
+            var newShipperBroker = false;
+            
+            if (req.body.newShipperCustomer === 'on') {
+                newShipperCustomer = true;
+            }
+
+            if (req.body.newShipperCarrier === 'on') {
+                newShipperCarrier = true;
+            } 
+            
+            if (req.body.newShipperShipper === 'on') {
+                newShipperShipper = true;
+            }
+
+            if (req.body.newShipperConsignee === 'on') {
+                newShipperConsignee = true;
+            } 
+ 
+            if (req.body.newShipperBroker === 'on') {
+                newShipperBroker = true;  
+            } 
+            
+            const shipperAddress = new AddressBook({
+                company: req.body.newShipperCompany,
+                attention: req.body.newShipperAttention,
+                addressOne: req.body.newShipperAddressOne,
+                addressTwo: req.body.newShipperAddressTwo,
+                city: req.body.newShipperCity,
+                state: req.body.newShipperState,
+                postal: req.body.newShipperPostal,
+                country: req.body.newShipperCountry,
+                phone: req.body.newShipperPhone,
+                fax: req.body.newShipperFax,
+                email: req.body.newShipperEmail,
+                salesRep: req.body.newShipperSalesRep,
+                customer: newShipperCustomer,
+                carrier: newShipperCarrier,
+                shipper: newShipperShipper,
+                consignee: newShipperConsignee,
+                broker: newShipperBroker
+            });
+            shipperAddress.save(); 
+            
+            newShipper.id = String(shipperAddress._id);
+            newShipper.company = req.body.newShipperCompany; 
+        }
+    } else if (req.body.shipper === '') {
+        newShipper.id = '',
+        newShipper.company = ''
+    } else {
+        newShipper.id = req.body.shipper;
+        let shipperName = await AddressBook.findOne({ _id: req.body.shipper });
+        newShipper.company = shipperName.company;
+    }
+
+    if (req.body.consignee === 'new') {
+        if (req.body.consigneeSameAsClient === 'on') {
+            newConsignee.id = newClient.id;
+            newConsignee.company = newClient.company;                
+        } else {
+            var newConsigneeCustomer = false;
+            var newConsigneeCarrier = false;
+            var newConsigneeShipper = false;
+            var newConsigneeConsignee = false;
+            var newConsigneeBroker = false;
+            
+            if (req.body.newConsigneeCustomer === 'on') {
+                newConsigneeCustomer = true;
+            }
+
+            if (req.body.newConsigneeCarrier === 'on') {
+                newConsigneeCarrier = true;
+            } 
+            
+            if (req.body.newConsigneeShipper === 'on') {
+                newConsigneeShipper = true;
+            }
+
+            if (req.body.newConsigneeConsignee === 'on') {
+                newConsigneeConsignee = true;
+            } 
+ 
+            if (req.body.newConsigneeBroker === 'on') {
+                newConsigneeBroker = true;  
+            } 
+            
+            const consigneeAddress = new AddressBook({
+                company: req.body.newConsigneeCompany,
+                attention: req.body.newConsigneeAttention,
+                addressOne: req.body.newConsigneeAddressOne,
+                addressTwo: req.body.newConsigneeAddressTwo,
+                city: req.body.newConsigneeCity,
+                state: req.body.newConsigneeState,
+                postal: req.body.newConsigneePostal,
+                country: req.body.newConsigneeCountry,
+                phone: req.body.newConsigneePhone,
+                fax: req.body.newConsigneeFax,
+                email: req.body.newConsigneeEmail,
+                salesRep: req.body.newConsigneeSalesRep,
+                customer: newConsigneeCustomer,
+                carrier: newConsigneeCarrier,
+                shipper: newConsigneeShipper,
+                consignee: newConsigneeConsignee,
+                broker: newConsigneeBroker
+            });
+            consigneeAddress.save(); 
+            
+            newConsignee.id = String(consigneeAddress._id);
+            newConsignee.company = req.body.newConsigneeCompany 
+        }
+    } else if (req.body.consignee === '') {
+        newConsignee.id = '',
+        newConsignee.company = ''
+    }else {
+        newConsignee.id = req.body.consignee;
+        let consigneeName = await AddressBook.findOne({ _id: req.body.consignee });
+        newConsignee.company = consigneeName.company;
+    }
+
+    return newAddress
+}
+
 app.route('/')
     .get((req, res) => {
         if (req.isAuthenticated()) {
@@ -144,7 +342,7 @@ app.route('/address-book')
         .get(async (req, res) => {
             const showAll = false;
 
-            const perPage = 25;
+        const perPage = 10;
             const total = await AddressBook.find({});
             const pages = Math.ceil(total.length / perPage);
             const pageNumber = (req.query.page == null) ? 1 : req.query.page;
@@ -498,6 +696,8 @@ app.route('/orders/new-order')
         });
     })
     .post(async(req,res) => {
+        const addressInformation = await addNewAddress(req);
+        
         var dv = false;
         var rf = false;
         var du = false;
@@ -507,194 +707,6 @@ app.route('/orders/new-order')
         var dd = false;
         var fu = false;
         var rl = false;
-
-        let clientId = '';
-        let clientName = '';
-        
-        let shipperId = '';
-        let shipperName = '';
-        
-        let consigneeId = '';
-        let consigneeName = '';
-    
-
-        if (req.body.client === 'new') {
-            var newClientCustomer = false;
-            var newClientCarrier = false;
-            var newClientShipper = false;
-            var newClientConsignee = false;
-            var newClientBroker = false;
-            
-            if (req.body.newClientCustomer === 'on') {
-                newClientCustomer = true;
-            }
-
-            if (req.body.newClientCarrier === 'on') {
-                newClientCarrier = true;
-            } 
-            
-            if (req.body.newClientShipper === 'on') {
-                newClientShipper = true;
-            }
-
-            if (req.body.newClientConsignee === 'on') {
-                newClientConsignee = true;
-            } 
- 
-            if (req.body.newClientBroker === 'on') {
-                newClientBroker = true;  
-            } 
-            
-            const newClientaddress = new AddressBook({
-                company: req.body.newClientCompany,
-                attention: req.body.newClientAttention,
-                addressOne: req.body.newClientAddressOne,
-                addressTwo: req.body.newClientAddressTwo,
-                city: req.body.newClientCity,
-                state: req.body.newClientState,
-                postal: req.body.newClientPostal,
-                country: req.body.newClientCountry,
-                phone: req.body.newClientPhone,
-                fax: req.body.newClientFax,
-                email: req.body.newClientEmail,
-                salesRep: req.body.newClientSalesRep,
-                customer: newClientCustomer,
-                carrier: newClientCarrier,
-                shipper: newClientShipper,
-                consignee: newClientConsignee,
-                broker: newClientBroker
-            });
-            newClientaddress.save(); 
-            
-            clientId = String(newClientaddress._id);
-            clientName = req.body.newClientCompany    
-        } else {
-            clientId = req.body.client
-            clientName = await AddressBook.findOne({ _id: req.body.client });
-            clientName = clientName.company;
-        }
-
-        if (req.body.shipper === 'new') {
-            if (req.body.shipperSameAsClient === 'on') {
-                shipperId = clientId;
-                shipperName = clientName;                
-            } else {
-                var newShipperCustomer = false;
-                var newShipperCarrier = false;
-                var newShipperShipper = false;
-                var newShipperConsignee = false;
-                var newShipperBroker = false;
-                
-                if (req.body.newShipperCustomer === 'on') {
-                    newShipperCustomer = true;
-                }
-    
-                if (req.body.newShipperCarrier === 'on') {
-                    newShipperCarrier = true;
-                } 
-                
-                if (req.body.newShipperShipper === 'on') {
-                    newShipperShipper = true;
-                }
-    
-                if (req.body.newShipperConsignee === 'on') {
-                    newShipperConsignee = true;
-                } 
-     
-                if (req.body.newShipperBroker === 'on') {
-                    newShipperBroker = true;  
-                } 
-                
-                const shipperAddress = new AddressBook({
-                    company: req.body.newShipperCompany,
-                    attention: req.body.newShipperAttention,
-                    addressOne: req.body.newShipperAddressOne,
-                    addressTwo: req.body.newShipperAddressTwo,
-                    city: req.body.newShipperCity,
-                    state: req.body.newShipperState,
-                    postal: req.body.newShipperPostal,
-                    country: req.body.newShipperCountry,
-                    phone: req.body.newShipperPhone,
-                    fax: req.body.newShipperFax,
-                    email: req.body.newShipperEmail,
-                    salesRep: req.body.newShipperSalesRep,
-                    customer: newShipperCustomer,
-                    carrier: newShipperCarrier,
-                    shipper: newShipperShipper,
-                    consignee: newShipperConsignee,
-                    broker: newShipperBroker
-                });
-                shipperAddress.save(); 
-                
-                shipperId = String(shipperAddress._id);
-                shipperName = req.body.newShipperCompany 
-            }
-        } else {
-            shipperId = req.body.shipper;
-            shipperName = await AddressBook.findOne({ _id: req.body.shipper });
-            shipperName = shipperName.company;
-        }
-
-        if (req.body.consignee === 'new') {
-            if (req.body.consigneeSameAsClient === 'on') {
-                consigneeId = clientId;
-                consigneeName = clientName                
-            } else {
-                var newConsigneeCustomer = false;
-                var newConsigneeCarrier = false;
-                var newConsigneeShipper = false;
-                var newConsigneeConsignee = false;
-                var newConsigneeBroker = false;
-                
-                if (req.body.newConsigneeCustomer === 'on') {
-                    newConsigneeCustomer = true;
-                }
-    
-                if (req.body.newConsigneeCarrier === 'on') {
-                    newConsigneeCarrier = true;
-                } 
-                
-                if (req.body.newConsigneeShipper === 'on') {
-                    newConsigneeShipper = true;
-                }
-    
-                if (req.body.newConsigneeConsignee === 'on') {
-                    newConsigneeConsignee = true;
-                } 
-     
-                if (req.body.newConsigneeBroker === 'on') {
-                    newConsigneeBroker = true;  
-                } 
-                
-                const consigneeAddress = new AddressBook({
-                    company: req.body.newConsigneeCompany,
-                    attention: req.body.newConsigneeAttention,
-                    addressOne: req.body.newConsigneeAddressOne,
-                    addressTwo: req.body.newConsigneeAddressTwo,
-                    city: req.body.newConsigneeCity,
-                    state: req.body.newConsigneeState,
-                    postal: req.body.newConsigneePostal,
-                    country: req.body.newConsigneeCountry,
-                    phone: req.body.newConsigneePhone,
-                    fax: req.body.newConsigneeFax,
-                    email: req.body.newConsigneeEmail,
-                    salesRep: req.body.newConsigneeSalesRep,
-                    customer: newConsigneeCustomer,
-                    carrier: newConsigneeCarrier,
-                    shipper: newConsigneeShipper,
-                    consignee: newConsigneeConsignee,
-                    broker: newConsigneeBroker
-                });
-                consigneeAddress.save(); 
-                
-                consigneeId = String(consigneeAddress._id);
-                consigneeName = req.body.newConsigneeCompany 
-            }
-        } else {
-            consigneeId = req.body.consignee;
-            consigneeName = await AddressBook.findOne({ _id: req.body.consignee });
-            consigneeName = consigneeName.company;
-        }
         
         if (req.body.dv === 'on') {
             dv = true;
@@ -733,15 +745,15 @@ app.route('/orders/new-order')
                 time: req.body.quoteTime
             },
             client: {
-                id: clientId,
-                company: clientName
+                id: addressInformation.newClient.id,
+                company: addressInformation.newClient.company
             },
             quoteNumber: req.body.quoteNumber,
             paymentTerms: req.body.paymentTerms,
             thirdPartyInformation: req.body.thirdPartyInformation,
             shipper: {
-                id: shipperId,
-                company: shipperName
+                id: addressInformation.newShipper.id,
+                company: addressInformation.newShipper.company
             },
             genericShipper: {
                 city: req.body.genericShipperCity,
@@ -749,8 +761,8 @@ app.route('/orders/new-order')
                 country: req.body.genericShipperCountry
             },
             consignee: {
-                id: consigneeId,
-                company: consigneeName
+                id: addressInformation.newConsignee.id,
+                company: addressInformation.newConsignee.company
             },
             genericConsignee: {
                 city: req.body.genericConsigneeCity,
@@ -772,20 +784,11 @@ app.route('/orders/new-order')
                 fu: fu,
                 rl: rl
             },
-            freightReady: {
-                date: req.body.freightReadyDate,
-                time: req.body.freightReadyTime
-            },
+            freightReady: req.body.freightReadyDate,
             serviceLevel: req.body.serviceLevel,
             deliveryEta: req.body.deliveryEta,
-            pickupAppointment: {
-                date: req.body.pickupAppointmentDate,
-                time: req.body.pickupAppointmentTime
-            },
-            deliveryAppointment: {
-                date: req.body.deliveryAppointmentDate,
-                time: req.body.deliveryAppointmentTime
-            },
+            pickupAppointment: req.body.pickupAppointment, 
+            deliveryAppointment: req.body.deliveryAppointment,
             shipmentDims: {
                 row1: {
                     l: req.body.l1,
@@ -857,6 +860,7 @@ app.route('/orders/new-order')
                     c: req.body.c10,
                     cf: req.body.cf10,
                 },
+                totalCuft: req.body.totalCUFT
             },
             dryTemp: req.body.dryTemp,
             temperature: req.body.temperature,

@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div id="quote-header" class="new-quote-form">
-                <div class="flex-container flex-row flex-between flex-wrap">
+                <div class="flex-container flex-row flex-start flex-wrap gap-50">
                     <div class="">                    
                         <label for="quoteTaker" class="form-label">Name:</label>
                         <input class="form-control input-lg" type="text" id="quoteTaker" name="quoteTaker" required>
@@ -93,16 +93,19 @@
                         <label for="thirdPartyInformation" id="" class="form-label">Third Party Bill To:</label>
                         <input class="form-control input-sm" type="text" id="thirdPartyInformation" name="thirdPartyInformation">  
                     </div>
+                    <div>
+                        <label for="serviceLevel" class="form-label">Service Level:</label>
+                        <input class="form-control input-sm" type="text" id="serviceLevel" name="serviceLevel">
+                    </div>
                 </div>
                 <div class="address-information">
                     <div class="address-form">
-                        <h2>Shipper:</h2>
                         <div class="flex-container flex-row flex-wrap gap-50">
                             <div>
-                                <select class="form-select input-xlg" name="shipper" id="shipper" onchange="showAddClientModal(this.value, 'add-shipper')" required>
+                                <label for="shipper" class="form-label">Shipper:</label>
+                                <select class="form-select input-xlg" name="shipper" id="shipper" onchange="showAddClientModal(this.value, 'add-shipper')">
                                     <option></option>
                                     <option value="new">-- Create New --</option>
-                                    <option value="generic">-- Generic --</option>
                                     <% addressList.forEach((address) => { %>
                                         <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
                                     <% }) %>
@@ -116,7 +119,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="generic-shipper" class="flex-container flex-row flex-wrap gap-25">
+                        <div id="" class="flex-container flex-row flex-wrap gap-25 shipper-box">
                             <div>
                                 <label for="genericShipperCity" class="form-label">City:</label>
                                 <input class="form-control input-sm" type="text" id="genericShipperCity" name="genericShipperCity">  
@@ -127,18 +130,15 @@
                             </div>
                             <div>
                                 <label for="genericShipperCountry" class="form-label">Country:</label>
-                                <input class="form-control input-sm" type="text" id="genericShipperCountry" name="genericShipperCountry">  
+                                <input class="form-control input-xs" type="text" id="genericShipperCountry" name="genericShipperCountry">  
                             </div>
                         </div>
-                    </div>
-                    <div class="address-form">
-                        <h2>Consignee:</h2>
                         <div class="flex-container flex-row flex-wrap gap-50">
                             <div>
-                                <select class="form-select input-xlg" name="consignee" id="consignee" onchange="showAddClientModal(this.value, 'add-consignee')" required>
-                                    <option></option>
+                                <label for="consignee" class="form-label">Consignee:</label>
+                                <select class="form-select input-xlg" name="consignee" id="consignee" onchange="showAddClientModal(this.value, 'add-consignee')">
+                                    <option value=""></option>
                                     <option value="new">-- Create New --</option>
-                                    <option value="generic">-- Generic --</option>
                                     <% addressList.forEach((address) => { %>
                                         <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
                                     <% }) %>
@@ -152,7 +152,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="generic-consignee" class="flex-container flex-row flex-wrap gap-25">
+                        <div id="" class="flex-container flex-row flex-wrap gap-25">
                             <div>
                                 <label for="genericConsigneeCity" class="form-label">City:</label>
                                 <input class="form-control input-sm" type="text" id="genericConsigneeCity" name="genericConsigneeCity">  
@@ -163,23 +163,11 @@
                             </div>
                             <div>
                                 <label for="genericConsigneeCounty" class="form-label">Country:</label>
-                                <input class="form-control input-sm" type="text" id="genericConsigneeCounty" name="genericConsigneeCounty">  
+                                <input class="form-control input-xs" type="text" id="genericConsigneeCounty" name="genericConsigneeCounty">  
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="quote-body-split">
                     <div class="address-form">
-                        <div class="flex-container flex-row flex-wrap gap-50">
-                            <div>
-                                <label for="sbBroker" class="form-label">SB Broker:</label>
-                                <input class="form-control input-lg" type="text" id="sbBroker" name="sbBroker">
-                            </div>
-                            <div>
-                                <label for="nbBroker" class="form-label">NB Broker:</label>
-                                <input class="form-control input-lg" type="text" id="nbBroker" name="nbBroker">
-                            </div>
-                        </div>
                         <h4>Equipment Required:</h4>
                         <div class="equipment-checklist">
                             <div class="flex-container flex-row flex-between">
@@ -227,49 +215,37 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="address-form">
-                        <div class="flex-container flex-start flex-wrap gap-50">
+                        <div class="flex-container flex-row flex-wrap gap-25">
                             <div>
-                                <label for="freightReadyDate" class="form-label">Ready Date:</label>
-                                <input class="form-control input-lg" type="date" id="freightReadyDate" name="freightReadyDate">
-                            </div>                        
-                            <div>
-                                <label for="freightReadyTime" class="form-label">Ready Time:</label>
-                                <input class="form-control input-lg" type="time" id="freightReadyTime" name="freightReadyTime">
-                            </div>                        
-                        </div>
-                        <div class="flex-container flex-start flex-wrap gap-50">
-                            <div>
-                                <label for="serviceLevel" class="form-label">Service Level:</label>
-                                <input class="form-control input-lg" type="text" id="serviceLevel" name="serviceLevel">
-                            </div>
-                            <div>
-                                <label for="deliveryEta" class="form-label">ETA:</label>
-                                <input class="form-control input-lg" type="date" id="deliveryEta" name="deliveryEta">
+                                <label for="sbBroker" class="form-label">SB Broker:</label>
+                                <input class="form-control input-md" type="text" id="sbBroker" name="sbBroker">
                             </div>
                         </div>
-                        <div class="flex-container flex-row flex-wrap gap-50">
+                        <div class="flex-container flex-row flex-wrap gap-25">
                             <div>
-                                <label for="pickupAppointmentDate" class="form-label">Pick up Appointment:</label>
-                                <input class="form-control input-lg" type="date" id="pickupAppointmentDate" name="pickupAppointmentDate">
-                            </div>
-                            <div>
-                                <label for="pickupAppointmentTime" class="form-label">Pick up Appointment Time:</label>
-                                <input class="form-control input-lg" type="time" id="pickupAppointmentTime" name="pickupAppointmentTime">
-                            </div>
-                        </div>
-                        <div class="flex-container flex-row flex-wrap gap-50">
-                            <div>
-                                <label for="deliveryAppointmentDate" class="form-label">Delivery up Appointment:</label>
-                                <input class="form-control input-lg" type="date" id="deliveryAppointmentDate" name="deliveryAppointmentDate">
-                            </div>
-                            <div>
-                                <label for="deliveryAppointmentTime" class="form-label">Delivery Appointment Time:</label>
-                                <input class="form-control input-lg" type="time" id="deliveryAppointmentTime" name="deliveryAppointmentTime">
+                                <label for="nbBroker" class="form-label">NB Broker:</label>
+                                <input class="form-control input-md" type="text" id="nbBroker" name="nbBroker">
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="flex-container flex-row flex-start flex-wrap gap-50">
+                    <div>
+                        <label for="deliveryEta" class="form-label">ETA:</label>
+                        <input class="form-control input-lg" type="date" id="deliveryEta" name="deliveryEta">
+                    </div>
+                    <div>
+                        <label for="freightReadyDate" class="form-label">Ready Date / Time:</label>
+                        <input class="form-control input-lg" type="text" id="freightReadyDate" name="freightReadyDate">
+                    </div>
+                    <div>
+                        <label for="pickupAppointmentDate" class="form-label">Pick-up Appointment:</label>
+                        <input class="form-control input-lg" type="text" id="pickupAppointment" name="pickupAppointment">
+                    </div>
+                    <div>
+                        <label for="deliveryAppointmentDate" class="form-label">Delivery Appointment:</label>
+                        <input class="form-control input-lg" type="text" id="deliveryAppointment" name="deliveryAppointment">
+                    </div>  
                 </div>
             </div>
             <div id="shipment-details" class="new-quote-form">
@@ -278,7 +254,7 @@
                         <div class="dimension-table">
                             <div class="flex-container flex-between gap-50">
                                 <h4>Shipments Dims:</h4>
-                                <h4 id="totalCUFT">CUFT: </h4>    
+                                <h4>CUFT: </h4>    
                             </div>
                             <div class="flex-container flex-row gap-10">
                                 <input class="form-control input-xs" type="text" placeholder="L" id="l1" name="l1" onchange="calculateCUFT(1)">
@@ -292,63 +268,82 @@
                                 <input class="form-control input-xs" type="text" placeholder="W" id="w2" name="w2" onchange="calculateCUFT(2)">
                                 <input class="form-control input-xs" type="text" placeholder="H" id="h2" name="h2" onchange="calculateCUFT(2)">
                                 <input class="form-control input-xs" type="text" placeholder="#" id="c2" name="c2" onchange="calculateCUFT(2)">
-                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf2" name="cf2" disabled>
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf2" name="cf2" readonly>
                             </div>
                             <div class="flex-container flex-row gap-10">
                                 <input class="form-control input-xs" type="text" placeholder="L" id="l3" name="l3" onchange="calculateCUFT(3)">
                                 <input class="form-control input-xs" type="text" placeholder="W" id="w3" name="w3" onchange="calculateCUFT(3)">
                                 <input class="form-control input-xs" type="text" placeholder="H" id="h3" name="h3" onchange="calculateCUFT(3)">
                                 <input class="form-control input-xs" type="text" placeholder="#" id="c3" name="c3" onchange="calculateCUFT(3)">
-                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf3" name="cf3" disabled>
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf3" name="cf3" readonly>
                             </div>
                             <div class="flex-container flex-row gap-10">
                                 <input class="form-control input-xs" type="text" placeholder="L" id="l4" name="l4" onchange="calculateCUFT(4)">
                                 <input class="form-control input-xs" type="text" placeholder="W" id="w4" name="w4" onchange="calculateCUFT(4)">
                                 <input class="form-control input-xs" type="text" placeholder="H" id="h4" name="h4" onchange="calculateCUFT(4)">
                                 <input class="form-control input-xs" type="text" placeholder="#" id="c4" name="c4" onchange="calculateCUFT(4)">
-                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf4" name="cf4" value="" disabled>
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf4" name="cf4" value="" readonly>
                             </div>
                             <div class="flex-container flex-row gap-10">
                                 <input class="form-control input-xs" type="text" placeholder="L" id="l5" name="l5" onchange="calculateCUFT(5)">
                                 <input class="form-control input-xs" type="text" placeholder="W" id="w5" name="w5" onchange="calculateCUFT(5)">
                                 <input class="form-control input-xs" type="text" placeholder="H" id="h5" name="h5" onchange="calculateCUFT(5)">
                                 <input class="form-control input-xs" type="text" placeholder="#" id="c5" name="c5" onchange="calculateCUFT(5)">
-                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf5" name="cf5" value="" disabled>
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf5" name="cf5" value="" readonly>
                             </div>
                             <div class="flex-container flex-row gap-10">
                                 <input class="form-control input-xs" type="text" placeholder="L" id="l6" name="l6" onchange="calculateCUFT(6)">
                                 <input class="form-control input-xs" type="text" placeholder="W" id="w6" name="w6" onchange="calculateCUFT(6)">
                                 <input class="form-control input-xs" type="text" placeholder="H" id="h6" name="h6" onchange="calculateCUFT(6)">
                                 <input class="form-control input-xs" type="text" placeholder="#" id="c6" name="c6" onchange="calculateCUFT(6)">
-                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf6" name="cf6" value="" disabled>
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf6" name="cf6" value="" readonly>
                             </div>
                             <div class="flex-container flex-row gap-10">
                                 <input class="form-control input-xs" type="text" placeholder="L" id="l7" name="l7" onchange="calculateCUFT(7)">
                                 <input class="form-control input-xs" type="text" placeholder="W" id="w7" name="w7" onchange="calculateCUFT(7)">
                                 <input class="form-control input-xs" type="text" placeholder="H" id="h7" name="h7" onchange="calculateCUFT(7)">
                                 <input class="form-control input-xs" type="text" placeholder="#" id="c7" name="c7" onchange="calculateCUFT(7)">
-                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf7" name="cf7" value="" disabled>
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf7" name="cf7" value="" readonly>
                             </div>
                             <div class="flex-container flex-row gap-10">
                                 <input class="form-control input-xs" type="text" placeholder="L" id="l8" name="l8" onchange="calculateCUFT(8)">
                                 <input class="form-control input-xs" type="text" placeholder="W" id="w8" name="w8" onchange="calculateCUFT(8)">
                                 <input class="form-control input-xs" type="text" placeholder="H" id="h8" name="h8" onchange="calculateCUFT(8)">
                                 <input class="form-control input-xs" type="text" placeholder="#" id="c8" name="c8" onchange="calculateCUFT(8)">
-                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf8" name="cf8" value="" disabled>
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf8" name="cf8" value="" readonly>
                             </div>
                             <div class="flex-container flex-row gap-10">
                                 <input class="form-control input-xs" type="text" placeholder="L" id="l9" name="l9" onchange="calculateCUFT(9)">
                                 <input class="form-control input-xs" type="text" placeholder="W" id="w9" name="w9" onchange="calculateCUFT(9)">
                                 <input class="form-control input-xs" type="text" placeholder="H" id="h9" name="h9" onchange="calculateCUFT(9)">
                                 <input class="form-control input-xs" type="text" placeholder="#" id="c9" name="c9" onchange="calculateCUFT(9)">
-                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf9" name="cf9" value="" disabled>
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf9" name="cf9" value="" readonly>
                             </div>
                             <div class="flex-container flex-row gap-10">
                                 <input class="form-control input-xs" type="text" placeholder="L" id="l10" name="l10" onchange="calculateCUFT(10)">
                                 <input class="form-control input-xs" type="text" placeholder="W" id="w10" name="w10" onchange="calculateCUFT(10)">
                                 <input class="form-control input-xs" type="text" placeholder="H" id="h10" name="h10" onchange="calculateCUFT(10)">
                                 <input class="form-control input-xs" type="text" placeholder="#" id="c10" name="c10" onchange="calculateCUFT(10)">
-                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf10" name="cf10" value="" disabled>
+                                <input class="form-control input-xs" type="text" placeholder="CF" id="cf10" name="cf10" value="" readonly>
+                            </div>
+                            <div class="flex-container flex-row flex-between gap-25">
+                                <div class="flex-container flex-row flex-start gap-10">
+                                    <div>
+                                        <label for="totalWeight" class="form-label">Total Weight:</label>
+                                        <input class="form-control input-sm" type="text" id="totalWeight" name="totalWeight">
+                                    </div>
+                                    <div>
+                                        <label for="weightMeasurement" class="form-label">Measurement:</label>
+                                        <select class="form-select input-xs" name="weightMeasurement" id="weightMeasurement">
+                                            <option value="lbs">lbs.</option>
+                                            <option value="kgs">kgs.</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="totalCUFT" class="form-label">Total CUFT:</label>
+                                    <input class="form-control input-sm" type="text" id="totalCUFT" name="totalCUFT" value="0" readonly>
+                                </div>
                             </div>
                         </div>
                         <div class="flex-container flex-between flex-wrap gap-50">
@@ -361,7 +356,7 @@
                             </div>
                             <div>
                                 <label for="temp" class="form-label">Temp:</label>
-                                <input class="form-control input-lg" type="text" id="temp" name="temp">
+                                <input class="form-control input-lg" type="text" id="temperature" name="temperature">
                             </div>
                         </div>
                     </div>
@@ -370,29 +365,17 @@
                             <div class="flex-container flex-row flex-wrap gap-10">
                                 <div>
                                     <label for="commodity" class="form-label">Commodity:</label>
-                                    <input class="form-control input-xs" type="text" id="commodity" name="commodity">
+                                    <input class="form-control input-lg" type="text" id="commodity" name="commodity">
                                 </div>
                                 <div>
                                     <label for="totalPieces" class="form-label">Total Pieces:</label>
                                     <input class="form-control input-xs" type="text" id="totalPieces" name="totalPieces">
-                                </div>
-                                <div>
-                                    <label for="totalWeight" class="form-label">Total Weight:</label>
-                                    <input class="form-control input-xs" type="text" id="totalWeight" name="totalWeight">
-                                </div>
-                                <div>
-                                    <label for="weightMeasurement" class="form-label">Measurement:</label>
-                                    <select class="form-select input-xs" name="weightMeasurement" id="weightMeasurement">
-                                        <option value="lbs">lbs.</option>
-                                        <option value="kgs">kgs.</option>
-                                    </select>
                                 </div>
                             </div>
                             <div class="flex-container flex-row flex-wrap gap-10">
                                 <div>
                                     <label for="stackable" class="form-label">Stackable?:</label>
                                     <select class="form-select input-xs" name="stackable" id="stackable">
-                                        <option value=""></option>
                                         <option value="Non-Stackable">Non-Stackable</option>
                                         <option value="Stackable">Stackable</option>
                                     </select>
@@ -413,7 +396,7 @@
                                 </div>
                                 <div>
                                     <label for="team-required" class="form-label">Team Required?:</label>
-                                    <select class="form-select input-xs" name="team-required" id="team-required">
+                                    <select class="form-select input-xs" name="teamRequired" id="team-required">
                                         <option value="false" selected>No</option>
                                         <option value="true">Yes</option>
                                     </select>
