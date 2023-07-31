@@ -911,6 +911,23 @@ app.route('/orders/view-order-id=:id')
         });
     });
 
+app.route('/purchasing')
+    .get(async(req, res) => {
+        const showAll = false;
+
+        const perPage = 25;
+        const total = 0
+        const pages = 0
+        const pageNumber = (req.query.page == null) ? 1 : req.query.page;
+        const startFrom = (pageNumber - 1) * perPage;
+        
+        res.render('purchasing', {
+            showAll: showAll,
+            pages: pages,
+            pageNumber: pageNumber
+        });
+    });
+
 let port = process.env.PORT;
 if (port == null || port == '') {
     port = 3000;
