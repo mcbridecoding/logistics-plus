@@ -502,18 +502,20 @@ app.route('/customer-card/id=:id')
 
             const showAll = false;
 
-            const perPage = 15;
-            const orders = await Order.find({ 'client.id': addressId });
-            const pages = Math.ceil(orders.length / perPage);
+            const contact = await AddressBook.findOne({ _id: addressId });
+
+            const perPage = 10;
+            const total = await Order.find({ 'client.id': addressId });
+            const pages = Math.ceil(total.length / perPage);
             const pageNumber = (req.query.page == null) ? 1 : req.query.page;
             const startFrom = (pageNumber - 1) * perPage;
 
-            const query = AddressBook.findOne({ _id: addressId })
+            const query = Order.find({ 'client.id': addressId })
             .sort({ 'quoteDate.date': 1 })
             .skip(startFrom)
             .limit(perPage);
             
-            query.exec((err, contact) => {
+            query.exec((err, orders) => {
                 if (!err) {
                     res.render('customer-card', { 
                         contact: contact,
