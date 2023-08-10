@@ -5,6 +5,7 @@ const _ = require('lodash');
 const session = require('express-session');
 const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
+const crypto = require('crypto');
 
 const app = express();
 
@@ -23,12 +24,6 @@ app.use(passport.session());
 
 mongoose.connect('mongodb://127.0.0.1:27017/logistics');
 
-const userSchema = new mongoose.Schema({
-    username: String,
-    password: String,
-    lastSignIn: String,
-});
-
 const addressBookSchema = new mongoose.Schema({
     company: String,
     attention: String,
@@ -46,7 +41,22 @@ const addressBookSchema = new mongoose.Schema({
     carrier: Boolean,
     shipper: Boolean,
     consignee: Boolean,
-    broker: Boolean
+    broker: Boolean,
+    vendor: Boolean
+});
+
+const defaultSettingsSchema = new mongoose.Schema({
+    purchasing: Object,   
+});
+
+const inventorySchema = new mongoose.Schema({
+    itemId: String,
+    itemDescription: String,
+    vendor: Array,
+    unitOfMeasure: String,
+    reOrderPoint: String,
+    sellPrice: String,
+    notes: String,
 });
 
 const orderSchema = new mongoose.Schema({
@@ -92,9 +102,36 @@ const orderSchema = new mongoose.Schema({
     brokerPricing: Object
 });
 
+const purchasingSchema = new mongoose.Schema({
+    purchaseOrderNumber: String,
+    date: String,
+    soldTo: Object,
+    vendor: Object,
+    shipTo: Object,
+    paidVia: String,
+    orderStatus: String,
+    shipMethod: String,
+    lineItems: Array,
+    currency: String,
+    invoiceTotal: String,
+    notes: String,
+});
+
+const userSchema = new mongoose.Schema({
+    username: String,
+    password: String,
+    lastSignIn: String,
+});
+
 const AddressBook = new mongoose.model('Address', addressBookSchema);
 
+const Default = new mongoose.model('Default', defaultSettingsSchema);
+
+const Inventory = new mongoose.model('Item', inventorySchema);
+
 const Order = new mongoose.model('Order', orderSchema);
+
+const Purchasing = new mongoose.model('Purchase', purchasingSchema);
 
 userSchema.plugin(passportLocalMongoose);
 
@@ -128,6 +165,7 @@ async function addNewAddress(req) {
         var newClientShipper = false;
         var newClientConsignee = false;
         var newClientBroker = false;
+        var newClientVendor = false;
         
         if (req.body.newClientCustomer === 'on') {
             newClientCustomer = true;
@@ -148,6 +186,10 @@ async function addNewAddress(req) {
         if (req.body.newClientBroker === 'on') {
             newClientBroker = true;  
         } 
+
+        if (req.body.newClientVendor === 'on') {
+            newClientVendor = true;
+        }
         
         const newClientaddress = new AddressBook({
             company: req.body.newClientCompany,
@@ -166,7 +208,8 @@ async function addNewAddress(req) {
             carrier: newClientCarrier,
             shipper: newClientShipper,
             consignee: newClientConsignee,
-            broker: newClientBroker
+            broker: newClientBroker,
+            vendor: newClientVendor
         });
         newClientaddress.save(); 
         
@@ -188,6 +231,7 @@ async function addNewAddress(req) {
             var newShipperShipper = false;
             var newShipperConsignee = false;
             var newShipperBroker = false;
+            var newShipperVendor = false;
             
             if (req.body.newShipperCustomer === 'on') {
                 newShipperCustomer = true;
@@ -208,6 +252,10 @@ async function addNewAddress(req) {
             if (req.body.newShipperBroker === 'on') {
                 newShipperBroker = true;  
             } 
+
+            if (req.body.newShipperVendor === 'on') {
+                newShipperVendor = true;
+            }
             
             const shipperAddress = new AddressBook({
                 company: req.body.newShipperCompany,
@@ -226,7 +274,8 @@ async function addNewAddress(req) {
                 carrier: newShipperCarrier,
                 shipper: newShipperShipper,
                 consignee: newShipperConsignee,
-                broker: newShipperBroker
+                broker: newShipperBroker,
+                vendor: newShipperVendor
             });
             shipperAddress.save(); 
             
@@ -252,6 +301,7 @@ async function addNewAddress(req) {
             var newConsigneeShipper = false;
             var newConsigneeConsignee = false;
             var newConsigneeBroker = false;
+            var newConsigneeVendor = false;
             
             if (req.body.newConsigneeCustomer === 'on') {
                 newConsigneeCustomer = true;
@@ -272,6 +322,10 @@ async function addNewAddress(req) {
             if (req.body.newConsigneeBroker === 'on') {
                 newConsigneeBroker = true;  
             } 
+
+            if (req.body.newConsigneeVendor === 'on') {
+                newConsigneeVendor = true;
+            }
             
             const consigneeAddress = new AddressBook({
                 company: req.body.newConsigneeCompany,
@@ -290,7 +344,8 @@ async function addNewAddress(req) {
                 carrier: newConsigneeCarrier,
                 shipper: newConsigneeShipper,
                 consignee: newConsigneeConsignee,
-                broker: newConsigneeBroker
+                broker: newConsigneeBroker,
+                vendor: newConsigneeVendor
             });
             consigneeAddress.save(); 
             
@@ -307,6 +362,25 @@ async function addNewAddress(req) {
     }
 
     return newAddress
+}
+
+function calculateNextOrder(previousNumber) {
+    const nextOrder = previousNumber + 1;
+    if (nextOrder < 9) {
+        return '00' + String(nextOrder);
+    } else if (nextOrder <= 9 || nextOrder <= 99){
+        return '0' + String(nextOrder);
+    } else return String(nextOrder); 
+}
+
+async function findOwnerName(id) {
+    const owner = await AddressBook.findOne({ _id: id });
+    return owner.company;
+}
+
+async function findItemDetails(id) {
+    const item = await Inventory.findOne({ _id: id });
+    return item;
 }
 
 app.route('/')
@@ -339,145 +413,157 @@ app.route('/add-user')
         }); 
 
 app.route('/address-book')
-        .get(async (req, res) => {
-            const showAll = false;
+    .get(async (req, res) => {
+        const showAll = false;
 
         const perPage = 10;
-            const total = await AddressBook.find({});
-            const pages = Math.ceil(total.length / perPage);
-            const pageNumber = (req.query.page == null) ? 1 : req.query.page;
-            const startFrom = (pageNumber - 1) * perPage;
+        const total = await AddressBook.find({});
+        const pages = Math.ceil(total.length / perPage);
+        const pageNumber = (req.query.page == null) ? 1 : req.query.page;
+        const startFrom = (pageNumber - 1) * perPage;
 
-            const query = AddressBook.find({})
-                .sort({ company: 1 })
-                .skip(startFrom)
-                .limit(perPage);
-            
-            query.exec((err, addresses) => {
-                if (!err) {
-                    res.render('address-book', {
-                        addresses: addresses,
-                        showAll: showAll,
-                        pages: pages,
-                        pageNumber: pageNumber
-                    });
-                } else {
-                    console.log(err);
-                }
-            }); 
-        });
+        const query = AddressBook.find({})
+            .sort({ company: 1 })
+            .skip(startFrom)
+            .limit(perPage);
+        
+        query.exec((err, addresses) => {
+            if (!err) {
+                res.render('address-book', {
+                    addresses: addresses,
+                    showAll: showAll,
+                    pages: pages,
+                    pageNumber: pageNumber
+                });
+            } else {
+                console.log(err);
+            }
+        }); 
+    });
 
 app.route('/address-book/add-address')
-        .post((req, res) => {            
-            var customer = false;
-            var carrier = false;
-            var shipper = false;
-            var consignee = false;
-            var broker = false;
-            
-            if (req.body.customer === 'on') {
-                customer = true;
-            }
+    .post((req, res) => {            
+        var customer = false;
+        var carrier = false;
+        var shipper = false;
+        var consignee = false;
+        var broker = false;
+        var vendor = false;
+        
+        if (req.body.customer === 'on') {
+            customer = true;
+        }
 
-            if (req.body.carrier === 'on') {
-                carrier = true;
-            } 
-            
-            if (req.body.shipper === 'on') {
-                shipper = true;
-            }
+        if (req.body.carrier === 'on') {
+            carrier = true;
+        } 
+        
+        if (req.body.shipper === 'on') {
+            shipper = true;
+        }
 
-            if (req.body.consignee === 'on') {
-                consignee = true;
-            } 
- 
-            if (req.body.broker === 'on') {
-                broker = true;  
-            } 
-            
-            const newAddress = new AddressBook({
-                company: req.body.company,
-                attention: req.body.attention,
-                addressOne: req.body.addressOne,
-                addressTwo: req.body.addressTwo,
-                city: req.body.city,
-                state: req.body.state,
-                postal: req.body.postal,
-                country: req.body.country,
-                phone: req.body.phone,
-                fax: req.body.fax,
-                email: req.body.email,
-                salesRep: req.body.salesRep,
-                customer: customer,
-                carrier: carrier,
-                shipper: shipper,
-                consignee: consignee,
-                broker: broker
-            });
-            newAddress.save();
-            res.redirect('/address-book');
+        if (req.body.consignee === 'on') {
+            consignee = true;
+        } 
+
+        if (req.body.broker === 'on') {
+            broker = true;  
+        } 
+        
+        if (req.body.vendor === 'on') {
+            vendor = true;
+        }
+
+        const newAddress = new AddressBook({
+            company: req.body.company,
+            attention: req.body.attention,
+            addressOne: req.body.addressOne,
+            addressTwo: req.body.addressTwo,
+            city: req.body.city,
+            state: req.body.state,
+            postal: req.body.postal,
+            country: req.body.country,
+            phone: req.body.phone,
+            fax: req.body.fax,
+            email: req.body.email,
+            salesRep: req.body.salesRep,
+            customer: customer,
+            carrier: carrier,
+            shipper: shipper,
+            consignee: consignee,
+            broker: broker,
+            vendor: vendor
         });
+        newAddress.save();
+        res.redirect('/address-book');
+    });
 
 app.route('/address-book/edit-address')
-        .post((req, res) => {
-            const addressId = req.body.addressId;
-            var customer = false;
-            var carrier = false;
-            var shipper = false;
-            var consignee = false;
-            var broker = false;
-            
-            if (req.body.customer === 'on') {
-                customer = true;
+    .post((req, res) => {
+        const addressId = req.body.addressId;
+        var customer = false;
+        var carrier = false;
+        var shipper = false;
+        var consignee = false;
+        var broker = false;
+        var vendor = false;
+        
+        if (req.body.customer === 'on') {
+            customer = true;
+        }
+
+        if (req.body.carrier === 'on') {
+            carrier = true;
+        } 
+        
+        if (req.body.shipper === 'on') {
+            shipper = true;
+        }
+
+        if (req.body.consignee === 'on') {
+            consignee = true;
+        } 
+
+        if (req.body.broker === 'on') {
+            broker = true;  
+        } 
+
+        if (req.body.vendor === 'on') {
+            vendor = true;
+        }
+
+        AddressBook.findByIdAndUpdate(addressId, {
+            company: req.body.company,
+            attention: req.body.attention,
+            addressOne: req.body.addressOne,
+            addressTwo: req.body.addressTwo,
+            city: req.body.city,
+            state: req.body.state,
+            postal: req.body.postal,
+            country: req.body.country,
+            phone: req.body.phone,
+            fax: req.body.fax,
+            email: req.body.email,
+            salesRep: req.body.salesRep,
+            customer: customer,
+            carrier: carrier,
+            shipper: shipper,
+            consignee: consignee,
+            broker: broker,
+            vendor: vendor
+        }, (err, docs) => {
+            if (err) {
+                console.log(`Error: ${err}`);
+            } else {
+                console.log(docs);
             }
+            res.redirect(`/customer-card/id=${addressId}`);
+        })
 
-            if (req.body.carrier === 'on') {
-                carrier = true;
-            } 
-            
-            if (req.body.shipper === 'on') {
-                shipper = true;
-            }
-
-            if (req.body.consignee === 'on') {
-                consignee = true;
-            } 
- 
-            if (req.body.broker === 'on') {
-                broker = true;  
-            } 
-
-            AddressBook.findByIdAndUpdate(addressId, {
-                company: req.body.company,
-                attention: req.body.attention,
-                addressOne: req.body.addressOne,
-                addressTwo: req.body.addressTwo,
-                city: req.body.city,
-                state: req.body.state,
-                postal: req.body.postal,
-                country: req.body.country,
-                phone: req.body.phone,
-                fax: req.body.fax,
-                email: req.body.email,
-                salesRep: req.body.salesRep,
-                customer: customer,
-                carrier: carrier,
-                shipper: shipper,
-                consignee: consignee,
-                broker: broker
-            }, (err, docs) => {
-                if (err) {
-                    console.log(`Error: ${err}`);
-                } else {
-                    console.log(docs);
-                }
-                res.redirect(`/customer-card/id=${addressId}`);
-            })
-
-        });
+    });
 
 app.route('/address-book/delete-address-id=:id')
-        .get((req, res) => {
+    .get((req, res) => {
             const addressId = req.params.id;
 
             const message = {
@@ -494,10 +580,10 @@ app.route('/address-book/delete-address-id=:id')
                     console.log(`Error: ${err}`);
                 }
             });
-        });
+    });
 
 app.route('/customer-card/id=:id')
-        .get(async(req, res) => {
+    .get(async(req, res) => {
             const addressId = req.params.id;
 
             const showAll = false;
@@ -528,7 +614,7 @@ app.route('/customer-card/id=:id')
                     console.log(err);
                 }
             });
-        });
+    });
 
 app.route('/delete-user/id=:id')
     .get((req, res) => {
@@ -547,6 +633,154 @@ app.route('/delete-user/id=:id')
             } else {
                 console.log('Error: ' + err);
             }
+        });
+    });
+
+app.route('/inventory/add-item')
+    .post((req, res) => {
+        const newItem = new Inventory({
+            itemId: req.body.itemId,
+            itemDescription: req.body.itemDescription,
+            unitOfMeasure: req.body.uom,
+            reOrderPoint: req.body.reOrderPoint,
+            sellPrice: req.body.sellPrice,
+            notes: req.body.itemNotes,
+        });
+        newItem.save();
+        res.redirect(`/inventory/view-item-id=${newItem._id}`);
+    });
+
+app.route('/inventory/add-vendor')
+    .post(async (req, res) => {
+        const vendorName = await AddressBook.findOne({ _id: req.body.vendor });
+        const vendor = {
+            id: req.body.vendor,
+            company: vendorName.company
+        }
+
+        Inventory.findOneAndUpdate({ _id: req.body.itemId }, {
+            $push : { 
+                vendor: {
+                    _id: crypto.randomUUID(),
+                    company: vendor,
+                    itemId: req.body.vendorItemId,
+                    cost: req.body.vendorItemCost,
+                    currency: req.body.vendorItemCurrency,
+                    url: req.body.url
+                }
+            }
+        },(err, success) => { 
+            if (!err) { 
+                console.log(`${success}`);
+                res.redirect(`/inventory/view-item-id=${req.body.itemId}`);
+            } else { 
+                console.log(`Error: ${err}`) 
+            } 
+        });
+    });
+
+app.route('/inventory/delete-item-id=:id')
+    .get((req, res) => {
+        const itemId = req.params.id;
+
+        const message = {
+            messageText: 'Item Removed Successfully!',
+            page: 'Product Inquiry',
+            link: '/inventory/product-inquiry'
+        }
+
+        Inventory.findByIdAndRemove(itemId, (err) => {
+            if (!err) {
+                console.log(`Successfully Deleted ${itemId}`);
+                res.render('success', { message: message });
+            } else {
+                console.log('Error: ' + err);
+            }
+        });
+    });
+
+app.route('/inventory/item-id=:itemId/delete-vendor-id=:vendorId')
+    .get(async (req, res) => {
+        const itemId = req.params.itemId;
+        const vendorId = req.params.vendorId;
+
+        Inventory.findOneAndUpdate({ _id: itemId }, {
+            $pull: {
+                vendor: {
+                    _id: vendorId
+                }
+            }
+        }, (err, success) => {
+            if (!err) { 
+                console.log(`${success}`); 
+                res.redirect(`/inventory/view-item-id=${itemId}`);
+            } else {
+                console.log(`Error: ${err}`);
+            } 
+        });
+    });
+
+app.route('/inventory/item-id=:itemId/edit-vendor-id=:vendorId')
+    .post(async (req, res) => {
+        const itemId = req.params.itemId;
+        const vendorId = req.params.vendorId;
+
+        const vendorName = await AddressBook.findOne({ _id: req.body.vendor });
+        const vendor = {
+            id: req.body.vendor,
+            company: vendorName.company
+        }
+
+        Inventory.findOneAndUpdate({ 'vendor._id': vendorId }, {
+            $set: {
+                'vendor.$': {
+                    _id: vendorId,
+                    company: vendor,
+                    itemId: req.body.vendorItemId,
+                    cost: req.body.vendorItemCost,
+                    currency: req.body.vendorItemCurrency,
+                    url: req.body.url
+                }
+            }
+        }, (err, success) => {
+            if (!err) { 
+                console.log(`${success}`); 
+                res.redirect(`/inventory/view-item-id=${itemId}`);
+            } else {
+                console.log(`Error: ${err}`);
+            } 
+        });
+    });
+
+app.route('/inventory/edit-item')
+    .post((req, res) => {
+        const editId = req.body.editId;
+        Inventory.findByIdAndUpdate(editId, {
+            itemId: req.body.itemId,
+            itemDescription: req.body.itemDescription,
+            unitOfMeasure: req.body.uom,
+            reOrderPoint: req.body.reOrderPoint,
+            sellPrice: req.body.sellPrice,
+            notes: req.body.itemNotes,
+        }, (err, docs) => {
+            if (err) {
+                console.log(`Error: ${err}`);
+            } else {
+                console.log(docs);
+            }
+        });
+        res.redirect(`/inventory/view-item-id=${editId}`);
+    });
+
+app.route('/inventory/view-item-id=:id')
+    .get(async (req, res) => {
+        const item = await Inventory.findOne({ _id: req.params.id });
+        
+        const vendorList = await AddressBook.find({ vendor: true }).sort({ company: 1 });
+        
+        res.render('view-item', {
+            item: item,
+            vendorList: vendorList
         });
     });
 
@@ -653,22 +887,90 @@ app.route('/search-address-book')
     });
 
 app.route('/settings')
-    .get((req, res) => {
+    .get(async(req, res) => {
         const userQuery = User.find({}).sort({ username: 1 });
         const showAll = false;
         const username = '';
+        
+        const addressList = await AddressBook.find({}).sort({company: 1})
+        
+        const defaultInformation = await Default.findOne({})
+
         userQuery.exec((err, users) => {
             if (!err) {
                 res.render('settings', {
                     users: users,
                     showAll: showAll,
-                    userId: username
+                    userId: username,
+                    addressList: addressList,
+                    defaultInformation: defaultInformation
                 });
             } else {
                 console.log(err);
             }
         })
     });
+
+app.route('/settings/create-defaults')
+    .post(async(req, res) => {
+        const defaultId = req.body.defaultId;
+
+        const newValues = {}
+        
+        newValues[defaultId] = {
+                billTo: {
+                    id: req.body.billTo,
+                    company: await findOwnerName(req.body.billTo)
+                },
+                vendor: {
+                    id: req.body.vendor,
+                    company: await findOwnerName(req.body.vendor)
+
+                },
+                shipTo: {
+                    id: req.body.shipTo,
+                    company: await findOwnerName(req.body.shipTo)
+                }       
+            }
+
+        const newDefault = new Default(newValues)
+        newDefault.save();
+        res.redirect('/settings');
+    });
+
+app.route('/settings/edit-defaults')
+    .post(async(req, res) => {
+        const defaultId = req.body.defaultId;
+        
+        const defaultSetting = await Default.findOne({});
+
+        const updateValues = {}
+
+        updateValues[defaultId] = {
+                billTo: {
+                    id: req.body.billTo,
+                    company: await findOwnerName(req.body.billTo)
+                },
+                vendor: {
+                    id: req.body.vendor,
+                    company: await findOwnerName(req.body.vendor)
+
+                },
+                shipTo: {
+                    id: req.body.shipTo,
+                    company: await findOwnerName(req.body.shipTo)
+                }     
+            } 
+
+        Default.findByIdAndUpdate(defaultSetting._id, updateValues, (err, docs) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(docs);
+                res.redirect('/settings');
+            }
+        });
+    });    
 
 app.route('/success')
     .get((req, res) => {
@@ -916,17 +1218,230 @@ app.route('/purchasing')
         const showAll = false;
 
         const perPage = 25;
-        const total = 0
-        const pages = 0
+        const total = await Purchasing.find({ status: 'Open' });
+        const pages = Math.ceil(total.length / perPage);
         const pageNumber = (req.query.page == null) ? 1 : req.query.page;
         const startFrom = (pageNumber - 1) * perPage;
+
+        const purchaseOrders = await Purchasing.find({ orderStatus: 'Open' }).sort({ purchaseOrderNumber: 1 }).skip(startFrom).limit(perPage);
         
         res.render('purchasing', {
             showAll: showAll,
             pages: pages,
-            pageNumber: pageNumber
+            pageNumber: pageNumber,
+            purchaseOrders: purchaseOrders
         });
     });
+
+app.route('/purchasing/type=:typeId/po=:poId/add-line-item')
+    .post(async (req, res) => {
+        const purchaseOrder = req.params.poId;
+        const lineTotal = Number(req.body.quantity) * Number(req.body.unitValue); 
+
+        const lineItems = {
+            _id: crypto.randomUUID(),
+            type: req.params.typeId,
+            quantity: req.body.quantity,
+            unitValue: Number(req.body.unitValue).toFixed(2),
+            lineTotal: lineTotal.toFixed(2)
+        };
+
+        if (req.body.lineItem === 'new') {
+            lineItems.itemId = req.body.itemId;
+            lineItems.itemDescription = req.body.itemDescription;
+
+            const newItem = new Inventory({
+                itemId: req.body.itemId,
+                itemDescription: req.body.itemDescription,
+                unitOfMeasure: req.body.uom,
+                reOrderPoint: req.body.reOrderPoint,
+                sellPrice: Number(req.body.sellPrice).toFixed(2),
+            }); 
+            newItem.save();
+        } else {
+            const item = await findItemDetails(req.body.lineItem);
+            lineItems.itemId = item.itemId;
+            lineItems.itemDescription = item.itemDescription;
+        }
+
+        Purchasing.findOneAndUpdate({ _id: purchaseOrder }, {
+            $push : {lineItems: lineItems}
+        },(err, success) => { 
+            if (!err) { 
+                console.log(`${success}`);
+                res.redirect(`/purchasing/view-po-id=${purchaseOrder}`);
+            } else { 
+                console.log(`Error: ${err}`) 
+            } 
+        });
+    })
+
+app.route('/purchasing/edit-po/id=:id')
+    .post(async (req, res) => {
+        const editId = req.params.id;
+        const soldToCompany = await findOwnerName(req.body.soldTo); 
+        const vendorCompany = await findOwnerName(req.body.vendor);
+        const shipToCompany = await findOwnerName(req.body.shipTo);
+
+        const soldTo = {
+            id: req.body.soldTo,
+            company: soldToCompany
+        }
+    
+        const vendor = {
+            id: req.body.vendor,
+            company: vendorCompany
+        }
+        
+        const shipTo = {
+            id: req.body.shipTo,
+            company: shipToCompany
+        }
+
+        Purchasing.findByIdAndUpdate(editId, {
+            date: req.body.date,
+            soldTo: soldTo,
+            vendor: vendor,
+            shipTo: shipTo,
+            shipMethod: req.body.shipVia,
+            currency: req.body.currency,
+            notes: req.body.notes, 
+        }, (err, docs) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(docs);
+                res.redirect('/purchasing');
+            }
+        });
+    });
+
+app.route('/purchasing/new-order')
+    .get(async(req, res) => {
+        const date = new Date();
+        const todayDate = `${date.getFullYear()}-${dateStringFormat(date.getUTCMonth() +1)}-${dateStringFormat(date.getUTCDate())}`
+
+        let nextPurchaseOrder = '';
+
+        let purchaseOrderQuery = await Purchasing.find({}).sort({ purchaseOrderNumber: 1 });
+        (purchaseOrderQuery.length === 0) ? '001' : nextPurchaseOrder = calculateNextOrder(Number(purchaseOrderQuery[purchaseOrderQuery.length -1].purchaseOrderNumber)); 
+
+        const addressList = await AddressBook.find({}).sort({ company: 1 });
+
+        const defaultInformation = await Default.findOne({})
+
+        res.render('new-purchase-order', {
+            todayDate: todayDate,
+            nextPurchaseOrder: nextPurchaseOrder,
+            addressList: addressList,
+            defaultInformation: defaultInformation
+        });
+    })
+    .post(async(req, res) => {
+        const soldToCompany = await findOwnerName(req.body.soldTo); 
+        const vendorCompany = await findOwnerName(req.body.vendor);
+        const shipToCompany = await findOwnerName(req.body.shipTo);
+
+        const soldTo = {
+            id: req.body.soldTo,
+            company: soldToCompany
+        }
+    
+        const vendor = {
+            id: req.body.vendor,
+            company: vendorCompany
+        }
+
+        const shipTo = {
+            id: req.body.shipTo,
+            company: shipToCompany
+        }
+        
+        const newPurchaseOrder = new Purchasing({
+            purchaseOrderNumber: req.body.poNumber,
+            date: req.body.date,
+            soldTo: soldTo,
+            vendor: vendor,
+            shipTo: shipTo,
+            paidVia: req.body.paidVia,
+            orderStatus: 'Open',
+            shipMethod: req.body.shipVia,
+            currency: req.body.currency,
+            notes: req.body.notes, 
+        });
+        newPurchaseOrder.save();
+        res.redirect(`/purchasing/view-po-id=${newPurchaseOrder._id}`);
+    });
+
+app.route('/purchasing/orders=:id')
+    .get(async(req, res) => {
+        const showAll = false;
+
+        const perPage = 25;
+        const total = (req.params.id === 'All') ? await Purchasing.find({}) : await Purchasing.find({ orderStatus: req.params.id }) ;
+        const pages = Math.ceil(total.length / perPage);
+        const pageNumber = (req.query.page == null) ? 1 : req.query.page;
+        const startFrom = (pageNumber - 1) * perPage;
+        
+        const purchaseOrders = (req.params.id === 'All') ? await Purchasing.find({})
+        .sort({ purchaseOrderNumber: 1 })
+        .skip(startFrom)
+        .limit(perPage) 
+        : await Purchasing.find({ orderStatus: req.params.id })
+        .sort({ purchaseOrderNumber: 1 })
+        .skip(startFrom)
+        .limit(perPage)
+
+        res.render('purchasing', {
+            showAll: showAll,
+            pages: pages,
+            pageNumber: pageNumber,
+            purchaseOrders: purchaseOrders
+        })
+    });
+
+app.route('/purchasing/search-PO')
+    .post(async (req, res) => {
+        const searchValue = req.body.searchValue;
+        
+        const showAll = true;
+
+        const perPage = 1;
+        const total = await Purchasing.find({ purchaseOrderNumber: searchValue });
+        const pages = Math.ceil(total.length / perPage);
+        const pageNumber = (req.query.page == null) ? 1 : req.query.page;
+        const startFrom = (pageNumber - 1) * perPage;
+
+        const purchaseOrders = await Purchasing.find({ purchaseOrderNumber: searchValue }).sort({ purchaseOrderNumber: 1 }).skip(startFrom).limit(perPage);
+        
+        res.render('purchasing', {
+            showAll: showAll,
+            pages: pages,
+            pageNumber: pageNumber,
+            purchaseOrders: purchaseOrders,
+            searchValue: searchValue
+        });
+
+    });
+
+app.route('/purchasing/view-po-id=:id')
+    .get(async (req, res) => {
+        const purchaseOrder = await Purchasing.findOne({ _id: req.params.id });
+        const addressList = await AddressBook.find({}).sort({ company: 1 });
+
+        const items = await Inventory.find({}).sort({ itemId: 1 });
+        
+        res.render('view-purchase-order', {
+            purchaseOrder: purchaseOrder,
+            addressList: addressList,
+            items: items
+        });
+    });
+
+app.route('/warehousing')
+    .get((req, res) => {
+        res.render('warehousing', {});
+    })
 
 let port = process.env.PORT;
 if (port == null || port == '') {

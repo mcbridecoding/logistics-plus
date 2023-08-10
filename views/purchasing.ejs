@@ -15,31 +15,32 @@
             <div class="purchasing-report">
                 <div class="purchasing-table">
                     <div class="report-header">
-                        <form action="" method="post">
-                            <div class="search-frame">
-                                <% if (showAll) { %>
-                                    <input type="text" name="searchValue" id="searchValue" class="form-control input-md" value="<%= searchValue %>" placeholder="Search...">
-                                    <button class="search-button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                        </svg>
-                                        Search
-                                    </button>
-                                    <a class="" href="/address-book">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                        </svg>
-                                        Show All
-                                    </a>
-                                <% } else { %>
-                                    <input type="text" name="searchValue" id="searchValue" class="form-control input-md" placeholder="Search...">
-                                    <button class="search-button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                        </svg>
-                                        Search
-                                    </button>
-                                <% } %>
+                        <form action="/purchasing/search-PO" method="post" autocomplete="off">
+                            <div class="flex-container flex-row flex-between">
+                                <div class="search-frame">
+                                    <% if (showAll) { %>
+                                        <input type="text" name="searchValue" id="searchValue" class="form-control input-md" value="<%= searchValue %>" placeholder="PO#">
+                                        <a class="search-button" href="/purchasing">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                            </svg>
+                                            Reset
+                                        </a>
+                                    <% } else { %>
+                                        <input type="text" name="searchValue" id="searchValue" class="form-control input-md" placeholder="PO#">
+                                        <button class="search-button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                            </svg>
+                                            Search
+                                        </button>
+                                    <% } %>
+                                </div>
+                                <div class="search-frame">
+                                    <a class="search-button" href="/purchasing/orders=Open">Open Orders</a>
+                                    <a class="search-button" href="/purchasing/orders=Closed">Closed Orders</a>
+                                    <a class="search-button" href="/purchasing/orders=All">All Orders</a>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -47,24 +48,39 @@
                         <thead>
                             <tr class="align-center">
                                 <th scope="col" class="table-options">#</th>
+                                <th scope="col" class="table-options-checkbox">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    </div>
+                                </th>
                                 <th scope="col" class="table-column-small">Date</th>
                                 <th scope="col">PO#</th>
                                 <th scope="col">Vendor</th>
-                                <th scope="col" class="table-column-small">Inv Total</th>
+                                <th scope="col" class="table-column-small">Invoice Total</th>
                                 <th scope="col" class="table-column-small">Status</th>
                                 <th scope="col" colspan="2" class="table-options">Options</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="align-center">1</td>
-                                <td>07/30/2023</td>
-                                <td>0001</td>
-                                <td>Michaels Canada</td>
-                                <td class="align-right">$1500.00</td>
-                                <td class="align-center">Open</td>
+                            <% purchaseOrders.forEach((purchaseOrder, index) => { %>
+                            <tr class="align-center">
+                                <td><%= index + 1 %></td>
+                                <td class="table-options-checkbox align-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    </div>
+                                </td>
+                                <td><%= purchaseOrder.date %></td>
+                                <td><%= purchaseOrder.purchaseOrderNumber %></td>
+                                <td class="align-left"><%= purchaseOrder.vendor.company %></td>
+                                <% if (purchaseOrder.invoiceTotal === '') { %>
+                                    <td class="align-center">-</td>
+                                <% } else { %>
+                                    <td class="align-right"><%= purchaseOrder.invoiceTotal %></td>
+                                <% } %>
+                                <td class="align-center"><%= purchaseOrder.orderStatus %></td>
                                 <td class="table-options align-middle">                        
-                                    <a class="table-delete-sm" href="#">              
+                                    <a class="table-delete-sm" href="/purchasing/view-po-id=<%= purchaseOrder._id %>">              
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                                     </svg>
@@ -78,9 +94,10 @@
                                     </a>
                                 </td>
                             </tr>
+                            <% }) %>
                         </tbody>
                     </table>
-                    <% if (pages >= 1) { %>
+                    <% if (pages >= 2) { %>
                         <div class="pagination-panel">
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination">
@@ -101,12 +118,12 @@
             </div>
             <div class="purchasing-menu">
                 <h2>Purchasing Menu:</h2>
-                <div class="purchasing-button">
+                <a href="/purchasing/new-order" class="purchasing-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus-fill" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zM8.5 8a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V12a.5.5 0 0 0 1 0v-1.5H10a.5.5 0 0 0 0-1H8.5V8z"/>
                     </svg>
                     New Purchase Order
-                </div>
+                </a>
                 <div class="purchasing-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-columns-reverse" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M0 .5A.5.5 0 0 1 .5 0h2a.5.5 0 0 1 0 1h-2A.5.5 0 0 1 0 .5Zm4 0a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1h-10A.5.5 0 0 1 4 .5Zm-4 2A.5.5 0 0 1 .5 2h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm4 0a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5Zm-4 2A.5.5 0 0 1 .5 4h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm4 0a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5Zm-4 2A.5.5 0 0 1 .5 6h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm4 0a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5Zm-4 2A.5.5 0 0 1 .5 8h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm4 0a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5Zm-4 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm4 0a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1h-10a.5.5 0 0 1-.5-.5Zm-4 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm4 0a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5Zm-4 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm4 0a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5Z"/>

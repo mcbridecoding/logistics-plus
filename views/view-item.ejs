@@ -1,0 +1,307 @@
+<%- include('partials/header') %>
+
+<%- include('partials/nav-panel') %>
+
+<div id="main" class="main">
+    <div class="page-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-seam-fill" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15.528 2.973a.75.75 0 0 1 .472.696v8.662a.75.75 0 0 1-.472.696l-7.25 2.9a.75.75 0 0 1-.557 0l-7.25-2.9A.75.75 0 0 1 0 12.331V3.669a.75.75 0 0 1 .471-.696L7.443.184l.01-.003.268-.108a.75.75 0 0 1 .558 0l.269.108.01.003 6.97 2.789ZM10.404 2 4.25 4.461 1.846 3.5 1 3.839v.4l6.5 2.6v7.922l.5.2.5-.2V6.84l6.5-2.6v-.4l-.846-.339L8 5.961 5.596 5l6.154-2.461L10.404 2Z"/>
+        </svg>
+        View Item
+    </div>
+    <div class="report-button-group">
+        <a href="#" class="report-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+            </svg>
+            Back
+        </a>
+        <!-- <a class="report-button" onclick="openModal('edit-modal')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+            </svg>
+            Edit
+        </a> -->
+        <div class="report-button" onclick="openModal('delete-item-modal')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+            </svg>
+            Delete
+        </div>
+    </div> 
+    <div class="purchase-order-body">
+        <div class="quote-body-split">
+            <div class="inventory-split-column">
+                <div class="default-header">
+                    <h3>Item Information:</h3>
+                    <div onclick="unlockItems()">Edit</div>
+                </div>
+                <div class="default-body">
+                    <form action="/inventory/edit-item" method="post" autocomplete="off">
+                        <div class="flex-container flex-row flex-between">
+                            <div class="item-information-panel">
+                                <h4>Item Id:</h4>
+                                <h4>Item Description:</h4>
+                                <h4>Sell Price:</h4>
+                            </div>
+                            <div class="item-information-panel">
+                                <input type="text" class="form-control" name="itemId" id="itemId" value="<%= item.itemId %>" readonly> 
+                                <input type="text" class="form-control" name="itemDescription" id="itemDescription" value="<%= item.itemDescription %>" readonly> 
+                                <div class="flex-container flex-row flex-start gap-25">
+                                    <input type="text" class="form-control input-xs" name="sellPrice" id="sellPrice" value="<%= item.sellPrice %>" readonly>
+                                    <select class="form-select input-xs" name="uom" id="uom" disabled>
+                                        <% if (item.unitOfMeasure === 'ea') { %>
+                                            <option value="ea" selected>ea</option>
+                                            <option value="cubic inch">Cubic Inch</option>
+                                        <% } else { %>
+                                            <option value="ea">ea</option>
+                                            <option value="cubic inch" selected>Cubic Inch</option>
+                                        <% } %>
+                                    </select>  
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="flex-container flex-row flex-between">
+                            <div class="item-information-panel margin-top-25">
+                                <h4>Re-Order Point:</h4>
+                            </div>
+                            <div class="item-information-panel">
+                                <div class="flex-container flex-row flex-start gap-10"> 
+                                    <input type="text" class="form-control input-xs" name="reOrderPoint" id="reOrderPoint" value="<%= item.reOrderPoint %>" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-container flex-row flex-between">
+                            <div class="item-information-panel">
+                                <h4>Notes:</h4>
+                            </div>
+                            <div class="item-information-panel">
+                                <textarea name="itemNotes" id="itemNotes" rows="5" class="form-control" readonly><%= item.notes %></textarea>
+                            </div>
+                        </div>
+                        <div id="items-footer" class="default-footer">
+                            <button class="options-button-small" name="editId" value="<%= item._id %>">Submit</button>
+                            <div class="options-button-small" onclick="lockItems()">Cancel</div>
+                        </div>
+                    </form>
+                </div>  
+            </div>  
+            <div class="inventory-split-column">
+                <div class="default-header">
+                    <h3>Vendors:</h3>
+                    <div onclick="openModal('add-vendor-modal')">Add Vendor</div>
+                </div>
+                <% if (item.vendor.length >= 5 ) { %>
+                <div class="default-body v-scroll">
+                <% } else { %>
+                <div class="default-body">
+                <% } %>
+                    <table class="table table-secondary table-striped table-hover table-bordered">
+                        <thead>
+                            <tr class="align-center">
+                                <th scope="col" class="">#</th>
+                                <th scope="col" class="">Vendor</th>
+                                <th scope="col" class="">Item Id</th>
+                                <th scope="col" class="table-column-small">Cost</th>
+                                <th scope="col" class="" colspan="3"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% item.vendor.forEach((vendor, index) => { %>
+                            <tr>
+                                <td class="table-options"><%= index + 1 %></td>
+                                <td class="no-overflow"><%= vendor.company.company %></td>
+                                <td class="no-overflow"><%= vendor.itemId %></td>
+                                <td class="align-right">$<%= vendor.cost %> - <%= vendor.currency %></td>
+                                <% if (vendor.url === '') { %>
+                                    <td class="table-options"></td>
+                                <% } else { %>
+                                    <td class="table-options align-middle">
+                                        <a href="<%= vendor.url %>" target="_blank" class="table-delete-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-globe" viewBox="0 0 16 16">
+                                                <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a6.958 6.958 0 0 0-.656 2.5h2.49zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5H4.847zM8.5 5v2.5h2.99a12.495 12.495 0 0 0-.337-2.5H8.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5H4.51zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5H8.5zM5.145 12c.138.386.295.744.468 1.068.552 1.035 1.218 1.65 1.887 1.855V12H5.145zm.182 2.472a6.696 6.696 0 0 1-.597-.933A9.268 9.268 0 0 1 4.09 12H2.255a7.024 7.024 0 0 0 3.072 2.472zM3.82 11a13.652 13.652 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5H3.82zm6.853 3.472A7.024 7.024 0 0 0 13.745 12H11.91a9.27 9.27 0 0 1-.64 1.539 6.688 6.688 0 0 1-.597.933zM8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855.173-.324.33-.682.468-1.068H8.5zm3.68-1h2.146c.365-.767.594-1.61.656-2.5h-2.49a13.65 13.65 0 0 1-.312 2.5zm2.802-3.5a6.959 6.959 0 0 0-.656-2.5H12.18c.174.782.282 1.623.312 2.5h2.49zM11.27 2.461c.247.464.462.98.64 1.539h1.835a7.024 7.024 0 0 0-3.072-2.472c.218.284.418.598.597.933zM10.855 4a7.966 7.966 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077V4h2.355z"/>
+                                            </svg>
+                                        </a>
+                                    </td>
+                                <% } %>
+                                <td class="table-options align-middle">
+                                    <div href="#" class="table-delete-sm" onclick="openModal('edit-<%= vendor._id %>')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                        </svg>
+                                    </div>
+                                </td>
+                                <td class="table-options align-middle">
+                                    <div class="table-delete-sm" onclick="openModal('delete-<%= vendor._id %>')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                                        </svg>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="add-vendor-modal" class="modal-frame">
+    <form action="/inventory/add-vendor" method="post" autocomplete="off">
+        <div class="modal-header">
+            <h3>Add Vendor</h3>
+            <div class="close-button" onclick="closeModal('add-vendor-modal')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="flex-container flex-row flex-start gap-25">
+                <div>
+                    <label for="vendor" class="form-label">Vendor:</label>
+                    <select name="vendor" id="" class="form-select input-xlg">
+                        <option value=""></option>
+                        <% vendorList.forEach((vendor) => { %>
+                            <option value="<%= vendor._id %>"><%= vendor.company %> - <%= vendor.addressOne %>. <%= vendor.city %>. <%= vendor.state %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div>
+                    <label for="vendorItemId" class="form-label">Item Id:</label>
+                    <input class="form-control input-lg" type="text" id="vendorItemId" name="vendorItemId">  
+                </div>
+            </div>
+            <div class="flex-container flex-row flex-between">
+                <div>
+                    <label for="itemCost" class="form-label">Cost:</label>
+                    <input class="form-control input-md" type="text" id="vendorItemCost" name="vendorItemCost">  
+                </div>
+                <div>
+                    <label for="vendorItemCurrency" class="form-label">Currency:</label>
+                    <select name="vendorItemCurrency" id="" class="form-select input-sm">
+                        <option value=""></option>
+                        <option value="CAD">CAD</option>
+                        <option value="USD">USD</option>
+                    </select>  
+                </div>
+                <div>
+                    <label for="url" class="form-label">URL:</label>
+                    <input class="form-control input-lg" type="text" id="url" name="url">  
+                </div>
+            </div>
+            <div class="modal-button-group">
+                <button type="submit" class="modal-button" name="itemId" value="<%= item._id %>">Submit</button>
+                <div onclick="closeModal('add-vendor-modal')" class="modal-button">Cancel</div>
+            </div>
+        </div>
+    </form> 
+</div>
+<div id="delete-item-modal" class="modal-frame">
+    <div class="modal-header">
+        <h3>Delete Item?</h3>
+        <div class="close-button" onclick="closeModal('delete-item-modal')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="modal-body">
+        <h3>Are you sure you would like to delete this Item?</h3>
+        <div class="modal-button-group">
+            <a href="/inventory/delete-item-id=<%= item._id %>" class="modal-button">Yes</a>
+            <div onclick="closeModal('delete-item-modal')" class="modal-button">Cancel</div>
+        </div>
+    </div>
+</div>
+<% item.vendor.forEach((vendor) => { %>
+<div id="delete-<%= vendor._id %>" class="modal-frame">
+    <div class="modal-header">
+        <h3>Delete Vendor?</h3>
+        <div class="close-button" onclick="closeModal('delete-<%= vendor._id %>')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="modal-body">
+        <h3>Are you sure you would like to delete this Vendor?</h3>
+        <div class="modal-button-group">
+            <a href="/inventory/item-id=<%= item._id %>/delete-vendor-id=<%= vendor._id %>" class="modal-button">Yes</a>
+            <div onclick="closeModal('delete-<%= vendor._id %>')" class="modal-button">Cancel</div>
+        </div>
+    </div>
+</div>
+<div id="edit-<%= vendor._id %>" class="modal-frame">
+    <form action="/inventory/item-id=<%= item._id %>/edit-vendor-id=<%= vendor._id %>" method="post" autocomplete="off">
+        <div class="modal-header">
+            <h3>Edit Vendor</h3>
+            <div class="close-button" onclick="closeModal('edit-<%= vendor._id %>')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="flex-container flex-row flex-start gap-25">
+                <div>
+                    <label for="vendor" class="form-label">Vendor:</label>
+                    <select name="vendor" id="" class="form-select input-xlg">
+                        <option value=""></option>
+                        <% vendorList.forEach((vendorList) => { %>
+                            <% if (vendorList._id == vendor.company.id) { %>
+                                <option value="<%= vendorList._id %>" selected><%= vendorList.company %> - <%= vendorList.addressOne %>. <%= vendorList.city %>. <%= vendorList.state %></option>
+                            <% } else { %>
+                                <option value="<%= vendorList._id %>"><%= vendorList.company %> - <%= vendorList.addressOne %>. <%= vendorList.city %>. <%= vendorList.state %></option>
+                            <% } %>
+                        <% }) %>
+                    </select>
+                </div>
+                <div>
+                    <label for="vendorItemId" class="form-label">Item Id:</label>
+                    <input class="form-control input-lg" type="text" id="vendorItemId" name="vendorItemId" value="<%= vendor.itemId %>">  
+                </div>
+            </div>
+            <div class="flex-container flex-row flex-between">
+                <div>
+                    <label for="itemCost" class="form-label">Cost:</label>
+                    <input class="form-control input-md" type="text" id="vendorItemCost" name="vendorItemCost" value="<%= vendor.cost %>">  
+                </div>
+                <div>
+                    <label for="vendorItemCurrency" class="form-label">Currency:</label>
+                    <select name="vendorItemCurrency" id="" class="form-select input-sm">
+                        <% if (vendor.currency === 'CAD') { %>
+                            <option value=""></option>
+                            <option value="CAD" selected>CAD</option>
+                            <option value="USD">USD</option>
+                        <% } else if (vendor.currency === 'USD') { %>
+                            <option value=""></option>
+                            <option value="CAD">CAD</option>
+                            <option value="USD" selected>USD</option>
+                        <% } else { %>
+                            <option value="" selected></option>
+                            <option value="CAD">CAD</option>
+                            <option value="USD">USD</option>
+                        <% } %>
+                    </select>  
+                </div>
+                <div>
+                    <label for="url" class="form-label">URL:</label>
+                    <input class="form-control input-lg" type="text" id="url" name="url" value="<%= vendor.url %>">  
+                </div>
+            </div>
+            <div class="modal-button-group">
+                <button type="submit" class="modal-button" name="itemId" value="<%= item._id %>">Submit</button>
+                <div onclick="closeModal('edit-<%= vendor._id %>')" class="modal-button">Cancel</div>
+            </div>
+        </div>
+    </form> 
+</div>
+<% }) %>
+
+<%- include('partials/footer') %>

@@ -25,11 +25,13 @@ function closeModal(id) {
 function blurrBackground() {
     document.getElementById('main').style.filter = 'blur(5px)';
     document.getElementById('nav-panel').style.filter = 'blur(5px)';
+    document.getElementById('logout-button').style.display = 'none';
 }
 
 function cancelBlurrBackground() {
     document.getElementById('main').style.filter = 'blur(0px)';
     document.getElementById('nav-panel').style.filter = 'blur(0px)';
+    document.getElementById('logout-button').style.display = 'block';
 }
 
 // ** -- Quote Menus -- **
@@ -186,4 +188,52 @@ function calculateTotalCUFT() {
     let cuftTotal = Number(sumCUFT) / 1728
 
     document.getElementById('totalCUFT').value = Number(cuftTotal).toFixed(2); 
+}
+
+function unlockElement(id) {
+    if (id === 'defaultPurchasing') {
+        document.getElementById(`${id}BillTo`).disabled = false;
+        document.getElementById(`${id}Vendor`).disabled = false;
+        document.getElementById(`${id}ShipTo`).disabled = false;
+    }
+    document.getElementById(`${id}Footer`).style.display = 'flex';  
+}
+
+function lockElement(id) {
+    if (id === 'defaultPurchasing') {
+        document.getElementById(`${id}BillTo`).disabled = true;
+        document.getElementById(`${id}Vendor`).disabled = true;
+        document.getElementById(`${id}ShipTo`).disabled = true;
+    }
+    document.getElementById(`${id}Footer`).style.display = 'none';
+}
+
+function addSku(id) {
+    if (id === 'new') {
+        document.getElementById('sku').style.display = 'flex';
+        document.getElementById('reorder').style.display = 'flex';
+    } else {
+        document.getElementById('sku').style.display = 'none';           
+        document.getElementById('reorder').style.display = 'none';           
+    }
+}
+
+function unlockItems() {
+    document.getElementById('itemId').readOnly = false;
+    document.getElementById('itemDescription').readOnly = false;
+    document.getElementById('sellPrice').readOnly = false;
+    document.getElementById('uom').disabled = false;
+    document.getElementById('reOrderPoint').readOnly = false;
+    document.getElementById('itemNotes').readOnly = false;
+    document.getElementById('items-footer').style.display = 'flex';
+}
+
+function lockItems() {
+    document.getElementById('itemId').readOnly = true;
+    document.getElementById('itemDescription').readOnly = true;
+    document.getElementById('sellPrice').readOnly = true;
+    document.getElementById('uom').disabled = true;
+    document.getElementById('reOrderPoint').readOnly = true;
+    document.getElementById('itemNotes').readOnly = true; 
+    document.getElementById('items-footer').style.display = 'none';
 }
