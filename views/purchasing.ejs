@@ -37,8 +37,8 @@
                                     <% } %>
                                 </div>
                                 <div class="search-frame">
-                                    <a class="search-button" href="/purchasing/orders=Open">Open Orders</a>
-                                    <a class="search-button" href="/purchasing/orders=Closed">Closed Orders</a>
+                                    <a class="search-button" href="/purchasing/orders=open">Open Orders</a>
+                                    <a class="search-button" href="/purchasing/orders=closed">Closed Orders</a>
                                     <a class="search-button" href="/purchasing/orders=All">All Orders</a>
                                 </div>
                             </div>
@@ -78,7 +78,7 @@
                                 <% } else { %>
                                     <td class="align-right"><%= purchaseOrder.invoiceTotal %></td>
                                 <% } %>
-                                <td class="align-center"><%= purchaseOrder.orderStatus %></td>
+                                <td class="align-center proper-case"><%= purchaseOrder.orderStatus.status %></td>
                                 <td class="table-options align-middle">                        
                                     <a class="table-delete-sm" href="/purchasing/view-po-id=<%= purchaseOrder._id %>">              
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
@@ -87,11 +87,11 @@
                                     </a>
                                 </td>
                                 <td class="table-options">
-                                    <a href="#" class="table-delete-sm">
+                                    <div class="table-delete-sm" onclick="openModal('<%= purchaseOrder._id %>')">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                                             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                                         </svg>
-                                    </a>
+                                    </div>
                                 </td>
                             </tr>
                             <% }) %>
@@ -134,5 +134,60 @@
         </div>
     </div>
 </div>
+<% purchaseOrders.forEach((purchaseOrder) => { %>
+    <div id="<%= purchaseOrder._id %>" class="modal-frame">
+        <form action="/purchasing/update-status" method="POST" autocomplete="off">
+            <div class="modal-header">
+                <h3>Update Purchase Order</h3>
+                <div class="close-button" onclick="closeModal('<%= purchaseOrder._id %>')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="flex-container flex-row gap-25">
+                    <div>
+                        <label for="status" class="form-label">Status:</label>
+                        <select class="form-select input-sm" name="status" id="" required>
+                            <% if (purchaseOrder.orderStatus.status === 'open') { %>
+                                <option value="closed">Closed</option>
+                                <option value="open" selected>Open</option>
+                            <% } else { %>
+                                <option value="closed" selected>Closed</option>
+                                <option value="open">Open</option>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="">                    
+                        <label for="paymentDate" class="form-label">Payment Date:</label>
+                        <input class="form-control input-sm" type="date" id="" name="paymentDate" value="<%= purchaseOrder.orderStatus.paymentDate %>" required>
+                    </div> 
+                    <div class="">                    
+                        <label for="paymentType" class="form-label">Payment Type:</label>
+                        <input class="form-control input-sm" type="text" id="" name="paymentType" value="<%= purchaseOrder.orderStatus.paymentType %>" required autocomplete="on">
+                    </div>
+                    <div class="">
+                        <label for="productReceived" class="form-label">Product Recieved:</label>
+                        <select class="form-select input-sm" name="productReceived" id="" required>
+                            <% if (purchaseOrder.orderStatus.productReceived) { %>
+                                <option value="true" selected>True</option>
+                                <option value="false">False</option>
+                            <% } else { %>
+                                <option value="true">True</option>
+                                <option value="false" selected>False</option>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-button-group">
+                    <button type="submit" name="poId" class="modal-button" value="<%= purchaseOrder._id %>">Update</button>
+                    <div onclick="closeModal('<%= purchaseOrder._id %>')" class="modal-button">Cancel</div>
+                </div>
+            </form>
+        </div>
+    </div>
+<% }) %>
 
 <%- include('partials/footer') %>

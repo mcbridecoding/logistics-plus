@@ -1,4 +1,16 @@
+window.addEventListener('DOMContentLoaded', (event) => {
+    const myText = document.getElementById('notes');
+    const wordCount = document.getElementById('wordCount');
+    
+    myText.addEventListener('keyup', function () {
+        let characters = myText.value.split('');
+        wordCount.innerText = characters.length;
+    });
+});
+
 // ** -- Models -- **
+
+const { text } = require("pdfkit");
 
 function openDeleteModal(id) {
     document.getElementById(id).style.display = 'block';
@@ -236,4 +248,14 @@ function lockItems() {
     document.getElementById('reOrderPoint').readOnly = true;
     document.getElementById('itemNotes').readOnly = true; 
     document.getElementById('items-footer').style.display = 'none';
+}
+
+function openAccessorial(id) {
+    if (id === 'accessorial') {
+        document.getElementById('accessorial').style.display = 'block';
+        document.getElementById('product').style.display = 'none';
+    } else {
+        document.getElementById('accessorial').style.display = 'none';
+        document.getElementById('product').style.display = 'block'; 
+    }
 }

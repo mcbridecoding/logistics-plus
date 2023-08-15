@@ -6,6 +6,8 @@ const session = require('express-session');
 const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
 const crypto = require('crypto');
+const pdfService = require('./public/javascript/pdfService');
+require('dotenv').config();
 
 const app = express();
 
@@ -109,7 +111,7 @@ const purchasingSchema = new mongoose.Schema({
     vendor: Object,
     shipTo: Object,
     paidVia: String,
-    orderStatus: String,
+    orderStatus: Object,
     shipMethod: String,
     lineItems: Array,
     currency: String,
@@ -368,7 +370,7 @@ function calculateNextOrder(previousNumber) {
     const nextOrder = previousNumber + 1;
     if (nextOrder < 9) {
         return '00' + String(nextOrder);
-    } else if (nextOrder <= 9 || nextOrder <= 99){
+    } else if (nextOrder <= 10 || nextOrder <= 99){
         return '0' + String(nextOrder);
     } else return String(nextOrder); 
 }
@@ -381,6 +383,11 @@ async function findOwnerName(id) {
 async function findItemDetails(id) {
     const item = await Inventory.findOne({ _id: id });
     return item;
+}
+
+const taxes = {
+    PST: process.env.PST,
+    GST: process.env.GST
 }
 
 app.route('/')
@@ -1213,17 +1220,44 @@ app.route('/orders/view-order-id=:id')
         });
     });
 
+app.route('/print-purchase-order-:id')
+    .get(async (req, res) => {
+        const id = req.params.id;
+
+        const purchaseOrder = await Purchasing.findOne({ _id: id });
+
+        const soldTo = await AddressBook.findOne({ _id: purchaseOrder.soldTo.id });
+        const vendor = await AddressBook.findOne({ _id: purchaseOrder.vendor.id });
+        const shipTo = await AddressBook.findOne({ _id: purchaseOrder.shipTo.id });
+        
+        const stream = res.writeHead(200, {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment;filename=PO#${purchaseOrder.purchaseOrderNumber}.pdf`  
+        });
+
+        pdfService.buildPurchaseOrder(
+            (chunk) => stream.write(chunk),
+            () => stream.end(),
+            purchaseOrder,
+            soldTo,
+            vendor,
+            shipTo,
+            taxes
+        ); 
+        console.log(purchaseOrder.notes.length)
+    });
+
 app.route('/purchasing')
     .get(async(req, res) => {
         const showAll = false;
 
         const perPage = 25;
-        const total = await Purchasing.find({ status: 'Open' });
+        const total = await Purchasing.find({ orderStatus: { status: 'open' } });
         const pages = Math.ceil(total.length / perPage);
         const pageNumber = (req.query.page == null) ? 1 : req.query.page;
         const startFrom = (pageNumber - 1) * perPage;
 
-        const purchaseOrders = await Purchasing.find({ orderStatus: 'Open' }).sort({ purchaseOrderNumber: 1 }).skip(startFrom).limit(perPage);
+        const purchaseOrders = await Purchasing.find({ 'orderStatus.status': 'open' }).sort({ purchaseOrderNumber: 1 }).skip(startFrom).limit(perPage);
         
         res.render('purchasing', {
             showAll: showAll,
@@ -1233,35 +1267,46 @@ app.route('/purchasing')
         });
     });
 
-app.route('/purchasing/type=:typeId/po=:poId/add-line-item')
+app.route('/purchasing/po=:poId/add-line-item')
     .post(async (req, res) => {
         const purchaseOrder = req.params.poId;
-        const lineTotal = Number(req.body.quantity) * Number(req.body.unitValue); 
-
         const lineItems = {
             _id: crypto.randomUUID(),
-            type: req.params.typeId,
-            quantity: req.body.quantity,
-            unitValue: Number(req.body.unitValue).toFixed(2),
-            lineTotal: lineTotal.toFixed(2)
-        };
+            type: req.body.lineItemType,
+        }
+        
+        if (req.body.lineItemType === 'product') {
+            const lineTotal = Number(req.body.quantity) * Number(req.body.unitValue); 
+            
+            lineItems.quantity = req.body.quantity;
+            lineItems.unitValue = Number(req.body.unitValue).toFixed(2);
+            lineItems.lineTotal = lineTotal.toFixed(2);
 
-        if (req.body.lineItem === 'new') {
-            lineItems.itemId = req.body.itemId;
-            lineItems.itemDescription = req.body.itemDescription;
-
-            const newItem = new Inventory({
-                itemId: req.body.itemId,
-                itemDescription: req.body.itemDescription,
-                unitOfMeasure: req.body.uom,
-                reOrderPoint: req.body.reOrderPoint,
-                sellPrice: Number(req.body.sellPrice).toFixed(2),
-            }); 
-            newItem.save();
+            if (req.body.lineItem === 'new') {
+                lineItems.itemId = req.body.itemId;
+                lineItems.itemDescription = req.body.itemDescription;
+    
+                const newItem = new Inventory({
+                    itemId: req.body.itemId,
+                    itemDescription: req.body.itemDescription,
+                    unitOfMeasure: req.body.uom,
+                    reOrderPoint: req.body.reOrderPoint,
+                    sellPrice: Number(req.body.sellPrice).toFixed(2),
+                }); 
+                newItem.save();
+            } else {
+                const item = await findItemDetails(req.body.lineItem);
+                lineItems.itemId = item.itemId;
+                lineItems.itemDescription = item.itemDescription;
+            }
         } else {
-            const item = await findItemDetails(req.body.lineItem);
-            lineItems.itemId = item.itemId;
-            lineItems.itemDescription = item.itemDescription;
+            const lineTotal = Number(req.body.lineQty) * Number(req.body.lineSellPrice);
+
+            lineItems.itemId = req.body.lineId;
+            lineItems.itemDescription = req.body.lineDescription;
+            lineItems.quantity = req.body.lineQty;
+            lineItems.unitValue = Number(req.body.lineSellPrice).toFixed(2);
+            lineItems.lineTotal = lineTotal.toFixed(2);
         }
 
         Purchasing.findOneAndUpdate({ _id: purchaseOrder }, {
@@ -1274,7 +1319,28 @@ app.route('/purchasing/type=:typeId/po=:poId/add-line-item')
                 console.log(`Error: ${err}`) 
             } 
         });
-    })
+    });
+
+app.route('/purchasing/po-id=:poId/delete-line-id=:lineId')
+    .get((req, res) => {
+        const poId = req.params.poId;
+        const lineId = req.params.lineId;
+
+        Purchasing.findOneAndUpdate({ _id: poId }, {
+            $pull: {
+                lineItems: {
+                    _id: lineId
+                }
+            }
+        }, (err, success) => {
+            if (!err) { 
+                console.log(`${success}`); 
+                res.redirect(`/purchasing/view-po-id=${poId}`);
+            } else {
+                console.log(`Error: ${err}`);
+            } 
+        });
+    });
 
 app.route('/purchasing/edit-po/id=:id')
     .post(async (req, res) => {
@@ -1311,7 +1377,7 @@ app.route('/purchasing/edit-po/id=:id')
                 console.log(err);
             } else {
                 console.log(docs);
-                res.redirect('/purchasing');
+                res.redirect(`/purchasing`);
             }
         });
     });
@@ -1324,7 +1390,7 @@ app.route('/purchasing/new-order')
         let nextPurchaseOrder = '';
 
         let purchaseOrderQuery = await Purchasing.find({}).sort({ purchaseOrderNumber: 1 });
-        (purchaseOrderQuery.length === 0) ? '001' : nextPurchaseOrder = calculateNextOrder(Number(purchaseOrderQuery[purchaseOrderQuery.length -1].purchaseOrderNumber)); 
+        (purchaseOrderQuery.length == 0) ? '001' : nextPurchaseOrder = calculateNextOrder(Number(purchaseOrderQuery[purchaseOrderQuery.length -1].purchaseOrderNumber)); 
 
         const addressList = await AddressBook.find({}).sort({ company: 1 });
 
@@ -1364,7 +1430,7 @@ app.route('/purchasing/new-order')
             vendor: vendor,
             shipTo: shipTo,
             paidVia: req.body.paidVia,
-            orderStatus: 'Open',
+            orderStatus:  {status: 'open'},
             shipMethod: req.body.shipVia,
             currency: req.body.currency,
             notes: req.body.notes, 
@@ -1378,16 +1444,16 @@ app.route('/purchasing/orders=:id')
         const showAll = false;
 
         const perPage = 25;
-        const total = (req.params.id === 'All') ? await Purchasing.find({}) : await Purchasing.find({ orderStatus: req.params.id }) ;
+        const total = (req.params.id === 'All') ? await Purchasing.find({}) : await Purchasing.find({ 'orderStatus.status': req.params.id }) ;
         const pages = Math.ceil(total.length / perPage);
         const pageNumber = (req.query.page == null) ? 1 : req.query.page;
         const startFrom = (pageNumber - 1) * perPage;
         
-        const purchaseOrders = (req.params.id === 'All') ? await Purchasing.find({})
+        const purchaseOrders = (req.params.id == 'All') ? await Purchasing.find({})
         .sort({ purchaseOrderNumber: 1 })
         .skip(startFrom)
         .limit(perPage) 
-        : await Purchasing.find({ orderStatus: req.params.id })
+        : await Purchasing.find({ 'orderStatus.status': req.params.id })
         .sort({ purchaseOrderNumber: 1 })
         .skip(startFrom)
         .limit(perPage)
@@ -1424,6 +1490,27 @@ app.route('/purchasing/search-PO')
 
     });
 
+app.route('/purchasing/update-status')
+    .post((req, res) => {
+        const poId = req.body.poId;
+
+        Purchasing.findByIdAndUpdate(poId, {
+            orderStatus: {
+                status: req.body.status,
+                paymentDate: req.body.paymentDate,
+                paymentType: req.body.paymentType,
+                productReceived: req.body.productReceived,         
+            }            
+        }, (err, docs) => {
+            if (err) {
+                console.log(`Error: ${err}`);
+            } else {
+                console.log(docs);
+                res.redirect('/purchasing');
+            }
+        });
+    });
+
 app.route('/purchasing/view-po-id=:id')
     .get(async (req, res) => {
         const purchaseOrder = await Purchasing.findOne({ _id: req.params.id });
@@ -1431,10 +1518,24 @@ app.route('/purchasing/view-po-id=:id')
 
         const items = await Inventory.find({}).sort({ itemId: 1 });
         
+        const products = [];
+        const accessorials = [];
+
+        purchaseOrder.lineItems.forEach((item) => {
+            if (item.type === 'product') {
+                products.push(item);
+            } else {
+                accessorials.push(item);
+            }
+        });
+
+        
         res.render('view-purchase-order', {
             purchaseOrder: purchaseOrder,
             addressList: addressList,
-            items: items
+            items: items,
+            products: products,
+            accessorials: accessorials,
         });
     });
 

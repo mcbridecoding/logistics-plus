@@ -16,7 +16,11 @@
                 <div class="flex-container flex-row flex-start gap-50 purchase-order-row">
                     <div class="">                    
                         <label for="poNumber" class="form-label">PO#:</label>
-                        <input class="form-control input-md" type="text" id="poNumber" name="poNumber" value="<%= nextPurchaseOrder %>" readonly required>
+                        <% if (nextPurchaseOrder === '') { %>
+                            <input class="form-control input-md" type="text" id="poNumber" name="poNumber" value="<%= nextPurchaseOrder %>" required>
+                        <% } else { %>
+                            <input class="form-control input-md" type="text" id="poNumber" name="poNumber" value="<%= nextPurchaseOrder %>" readonly required>
+                        <% } %>
                     </div>
                     <div class="">                    
                         <label for="date" class="form-label">Date:</label>
@@ -95,7 +99,11 @@
                 </div> 
                 <div class="purchase-order-row">
                     <label for="notes" class="form-label">Notes:</label>
-                    <textarea class="form-control" name="notes" id="notes" rows="4"></textarea>
+                    <textarea class="form-control" name="notes" id="notes" rows="4" maxlength="350"></textarea>
+                    <div id="the-count">
+                        <span id="wordCount">0</span>
+                        <span> / 350</span>
+                    </div>
                 </div> 
                 <div class="purchasing-button-group">
                     <div class="flex-container flex-row flex-end">
@@ -113,3 +121,8 @@
 </div>
 
 <%- include('partials/footer') %>
+
+<script>
+
+
+</script>
