@@ -10,9 +10,15 @@
         </svg>
         Warehousing
     </div>
-    <div class="report-frame">
+    <div class="big-button-frame">
         <div class="flex-container flex-row flex-evenly flex-wrap">
-            <div href="#" class="big-button" onclick="openModal('add-item-modal')">
+            <div class="big-button" onclick="openModal('item--inquiry-modal')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                </svg>
+                Item Inquiry
+            </div>
+            <div class="big-button" onclick="openModal('add-item-modal')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-seam-fill" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M15.528 2.973a.75.75 0 0 1 .472.696v8.662a.75.75 0 0 1-.472.696l-7.25 2.9a.75.75 0 0 1-.557 0l-7.25-2.9A.75.75 0 0 1 0 12.331V3.669a.75.75 0 0 1 .471-.696L7.443.184l.01-.003.268-.108a.75.75 0 0 1 .558 0l.269.108.01.003 6.97 2.789ZM10.404 2 4.25 4.461 1.846 3.5 1 3.839v.4l6.5 2.6v7.922l.5.2.5-.2V6.84l6.5-2.6v-.4l-.846-.339L8 5.961 5.596 5l6.154-2.461L10.404 2Z"/>
                 </svg>
@@ -72,6 +78,57 @@
             </div>
         </div>
     </form> 
+</div>
+<div id="item--inquiry-modal" class="modal-frame">
+    <div class="modal-header">
+        <h3>Item Lookup</h3>
+        <div class="close-button" onclick="closeModal('item--inquiry-modal')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="v-scroll">
+            <table class="table table-secondary table-striped table-hover table-bordered">
+                <thead>
+                    <tr class="align-center">
+                        <th scope="col" class="table-column-small">#</th>
+                        <th scope="col" class="table-column-lg">Item Id</th>
+                        <th scope="col" >Item Description</th>
+                        <th scope="col">On Hand</th>
+                        <th scope="col">Order Point</th>
+                        <th scope="col">Sell Price</th>
+                        <th scope="col">UOM</th>
+                        <th scope="col" class=""></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% items.forEach((item, index) => { %>
+                    <tr class="proper-case">
+                        <td><%= index + 1 %></td>
+                        <td class="no-overflow"><%= item.itemId %></td>
+                        <td class="table-column-lg no-overflow"><%= item.itemDescription %></td>
+                        <td class="align-right"><%= item.onHand %></td>
+                        <td class="align-right"><%= item.reOrderPoint %></td>
+                        <td class="align-right">$<%= item.sellPrice %></td>
+                        <td class="table-column-lg no-overflow"><%= item.unitOfMeasure %></td>
+                        <td class="table-column-md">
+                            <a href="/inventory/view-item-id=<%= item._id %>" class="table-delete-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-button-group">
+        </div>
+    </div>
 </div>
 
 <%- include('partials/footer') %>

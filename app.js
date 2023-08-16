@@ -385,6 +385,20 @@ async function findItemDetails(id) {
     return item;
 }
 
+async function calculateInvoiceTotal(lineItems) {    
+    const subTotals = [];
+    lineItems.forEach((item) => {
+        subTotals.push(Number(item.lineTotal));
+    });
+
+    const subTotal = subTotals.reduce((a, b) => a + b, 0);
+    const pst = subTotal * (taxes.PST / 100);
+    const gst = subTotal * (taxes.GST / 100);
+    const total = subTotal + gst + pst;
+    
+    return total;
+}
+
 const taxes = {
     PST: process.env.PST,
     GST: process.env.GST
@@ -757,6 +771,12 @@ app.route('/inventory/item-id=:itemId/edit-vendor-id=:vendorId')
                 console.log(`Error: ${err}`);
             } 
         });
+    });
+
+app.route('/inventory/item-inquiry-id=:id')
+    .get((req, res) => {
+
+        res.render('inventory-inquiry', {});
     });
 
 app.route('/inventory/edit-item')
@@ -1251,8 +1271,8 @@ app.route('/purchasing')
     .get(async(req, res) => {
         const showAll = false;
 
-        const perPage = 25;
-        const total = await Purchasing.find({ orderStatus: { status: 'open' } });
+        const perPage = 15;
+        const total = await Purchasing.find({ 'orderStatus.status': 'open' });
         const pages = Math.ceil(total.length / perPage);
         const pageNumber = (req.query.page == null) ? 1 : req.query.page;
         const startFrom = (pageNumber - 1) * perPage;
@@ -1345,6 +1365,7 @@ app.route('/purchasing/po-id=:poId/delete-line-id=:lineId')
 app.route('/purchasing/edit-po/id=:id')
     .post(async (req, res) => {
         const editId = req.params.id;
+        let currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'CAD' });
         const soldToCompany = await findOwnerName(req.body.soldTo); 
         const vendorCompany = await findOwnerName(req.body.vendor);
         const shipToCompany = await findOwnerName(req.body.shipTo);
@@ -1364,6 +1385,12 @@ app.route('/purchasing/edit-po/id=:id')
             company: shipToCompany
         }
 
+        const lineTotals = await Purchasing.findOne({ _id: editId });
+
+        const lineTotal = await calculateInvoiceTotal(lineTotals.lineItems);
+
+        const invoiceTotal = currency.format(lineTotal).slice(2);
+
         Purchasing.findByIdAndUpdate(editId, {
             date: req.body.date,
             soldTo: soldTo,
@@ -1371,7 +1398,8 @@ app.route('/purchasing/edit-po/id=:id')
             shipTo: shipTo,
             shipMethod: req.body.shipVia,
             currency: req.body.currency,
-            notes: req.body.notes, 
+            notes: req.body.notes,
+            invoiceTotal: invoiceTotal,
         }, (err, docs) => {
             if (err) {
                 console.log(err);
@@ -1540,8 +1568,9 @@ app.route('/purchasing/view-po-id=:id')
     });
 
 app.route('/warehousing')
-    .get((req, res) => {
-        res.render('warehousing', {});
+    .get(async (req, res) => {
+        const items = await Inventory.find({}).sort({ itemId: 1 });
+        res.render('warehousing', { items: items });
     })
 
 let port = process.env.PORT;

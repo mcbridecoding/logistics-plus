@@ -123,6 +123,18 @@ body {
     text-align: right;
 }
 
+.big-button-frame {
+    align-items: center;
+    display: flex;
+    border: 1px solid #242424;
+    border-radius: 5px;
+    box-shadow: var(--boxShadow);
+    flex-direction: column;
+    justify-content: center;
+    margin: 25px 25px 25px 10px;
+    padding: 10px 0 0 0;
+}
+
 .big-button {
     align-items: center;
     border: 1px solid #242424;
@@ -134,13 +146,13 @@ body {
     display: flex;
     flex-direction: row;
     font-family: var(--button-text);
-    font-size: 45px;
-    height: 250px;
+    font-size: 40px;
+    height: 225px;
     justify-content: space-between;
-    margin: 25px;
-    padding: 15px 25px;
+    margin: 25px 0;
+    padding: 15px 35px;
     text-transform: uppercase;
-    width: 350px;
+    width: 23%;
 }
 
 .big-button:link {
@@ -157,8 +169,8 @@ body {
 }
 
 .big-button svg {
-    height: 55px;
-    width: 55px;
+    height: 50px;
+    width: 50px;
 }
 
 .bol-header {
@@ -431,6 +443,7 @@ body {
 
 .flex-container {
     display: flex;
+    width: 100%;
 }
 
 .flex-center {
@@ -820,6 +833,10 @@ body {
     width: 100%;
 }
 
+.modal-body table thead {
+    white-space: nowrap;
+}
+
 .modal-button-group {
     align-items: center;
     border-top: 1px solid #242424;
@@ -1095,8 +1112,9 @@ body {
 
 .purchasing-button {
     align-items: center;
-    background-color: var(--nav-button-color);
+    background-color: var(--nav-panel-color);
     border: 1px solid #ffff;
+    border-radius: 5px;
     color: #ffff;
     cursor: pointer;
     display: flex;
@@ -1108,16 +1126,6 @@ body {
     padding: 0 25px;
     text-decoration: none;
     width: 100%;    
-}
-
-.purchasing-button:first-child {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-}
-
-.purchasing-button:last-child {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
 }
 
 .purchasing-button svg {
@@ -1134,7 +1142,8 @@ body {
 }
 
 .purchasing-button:hover {
-    color: #ffff;
+    border-color: var(--nav-button-color);
+    color: var(--nav-button-color);
 }
 
 .purchasing-card {
@@ -1161,7 +1170,8 @@ body {
 .purchasing-menu h2 {
     text-align: center;
     border-bottom: 1px solid #242424;
-    padding-bottom: 15px;
+    padding: 0 0 15px 0;
+    margin: 10px 0 15px 0;
     width: 100%;
 }
 
@@ -1411,14 +1421,15 @@ body {
     align-items: center;
     border: 1px solid #242424;
     border-radius: 5px;
-    background-color: #ffff;
-    color: #242424;
+    background-color: var(--nav-panel-color);
+    color: #ffff;
     display: flex;
     flex-direction: row;
     font-family: var(--button-text);
     height: 30px;
     justify-content: space-evenly;
     text-decoration: none;
+    text-transform: uppercase;
     width: 150px;
 }
 
@@ -1430,12 +1441,15 @@ body {
     text-decoration: none;
 }
 
-.search-frame a {
+.search-button:hover {
+    border-color: var(--nav-button-color);
+    color: var(--nav-button-color);
+}
+
+/* .search-frame a {
     align-items: center;
     border: 1px solid #242424;
-    background-color: #ffff;
     border-radius: 5px;
-    color: #242424;
     text-decoration: none;
     display: flex;
     flex-direction: row;
@@ -1443,7 +1457,7 @@ body {
     height: 30px;
     justify-content: space-evenly;
     width: 150px;
-}
+} */
 
 .search-frame a:link {
     text-decoration: none;
@@ -1506,6 +1520,10 @@ body {
 
 .search-frame input {
     width: 250px;
+}
+
+.table thead {
+    cursor: pointer;
 }
 
 .table-column-small {
