@@ -16,12 +16,12 @@
             </svg>
             Back
         </a>
-        <!-- <a class="report-button" onclick="openModal('edit-modal')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+        <div class="report-button" onclick="openModal('item-inquiry-modal')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
             </svg>
-            Edit
-        </a> -->
+            Inquiry
+        </div>
         <div class="report-button" onclick="openModal('delete-item-modal')">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                 <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
@@ -303,5 +303,102 @@
     </form> 
 </div>
 <% }) %>
+<div id="item-inquiry-modal" class="modal-frame">
+    <div class="modal-header">
+        <h3>Item Lookup</h3>
+        <div class="close-button" onclick="closeModal('item-inquiry-modal')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="v-scroll">
+            <table class="table table-secondary table-striped table-hover table-bordered">
+                <thead>
+                    <tr class="align-center">
+                        <th scope="col" class="table-column-small">#</th>
+                        <th scope="col" class="table-column-lg">Item Id</th>
+                        <th scope="col" >Item Description</th>
+                        <th scope="col">On Hand</th>
+                        <th scope="col">Order Point</th>
+                        <th scope="col">Sell Price</th>
+                        <th scope="col">UOM</th>
+                        <th scope="col" class=""></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% inventoryList.forEach((item, index) => { %>
+                    <tr class="proper-case">
+                        <td><%= index + 1 %></td>
+                        <td class="no-overflow"><%= item.itemId %></td>
+                        <td class="table-column-lg no-overflow"><%= item.itemDescription %></td>
+                        <td class="align-right"><%= item.onHand %></td>
+                        <td class="align-right"><%= item.reOrderPoint %></td>
+                        <td class="align-right">$<%= item.sellPrice %></td>
+                        <td class="table-column-small no-overflow"><%= item.unitOfMeasure %></td>
+                        <td class="table-column-md">
+                            <a href="/inventory/view-item-id=<%= item._id %>" class="table-delete-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <div class="search-params">
+            <form action="/inventory/search-itemId" method="POST" autocomplete="off">
+                <div class="search-params-column">
+                    <h3>Product ID:</h3>
+                </div>
+                <div class="search-params-column">                        
+                    <div class="flex-container flex-row flex-between">
+                        <input type="text" class="form-control input-xlg" name="searchId">
+                        <button class="modal-button">Search</button>
+                    </div>
+                    <div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="search-params">
+            <form action="/inventory/search-itemDescription" method="POST" autocomplete="off">
+                <div class="search-params-column">
+                    <h3>Description:</h3>
+                </div>
+                <div class="search-params-column">                        
+                    <div class="flex-container flex-row flex-between">
+                        <input type="text" class="form-control input-xlg" name="searchId">
+                        <button class="modal-button">Search</button>
+                    </div>
+                    <div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="search-params">
+            <form action="/inventory/search-vendor" method="POST" autocomplete="off">
+                <div class="search-params-column">
+                    <h3>Vendor:</h3>
+                </div>
+                <div class="search-params-column">                        
+                    <div class="flex-container flex-row flex-between">
+                        <select name="searchId" id="" class="form-select input-xlg">
+                                <option value=""></option>
+                            <% vendors.forEach((vendor) => { %>
+                                <option value="<%= vendor.company %>"><%= vendor.company %> - <%= vendor.city %>, <%= vendor.state %> </option>
+                            <% }) %>
+                        </select>
+                        <button class="modal-button">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <%- include('partials/footer') %>

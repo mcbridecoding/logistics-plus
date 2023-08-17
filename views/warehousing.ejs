@@ -126,7 +126,53 @@
                 </tbody>
             </table>
         </div>
-        <div class="modal-button-group">
+        <div class="search-params">
+            <form action="/inventory/search-itemId" method="POST" autocomplete="off">
+                <div class="search-params-column">
+                    <h3>Product ID:</h3>
+                </div>
+                <div class="search-params-column">                        
+                    <div class="flex-container flex-row flex-between">
+                        <input type="text" class="form-control input-xlg" name="searchId">
+                        <button class="modal-button">Search</button>
+                    </div>
+                    <div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="search-params">
+            <form action="/inventory/search-itemDescription" method="POST" autocomplete="off">
+                <div class="search-params-column">
+                    <h3>Description:</h3>
+                </div>
+                <div class="search-params-column">                        
+                    <div class="flex-container flex-row flex-between">
+                        <input type="text" class="form-control input-xlg" name="searchId">
+                        <button class="modal-button">Search</button>
+                    </div>
+                    <div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="search-params">
+            <form action="/inventory/search-vendor" method="POST" autocomplete="off">
+                <div class="search-params-column">
+                    <h3>Vendor:</h3>
+                </div>
+                <div class="search-params-column">                        
+                    <div class="flex-container flex-row flex-between">
+                        <select name="searchId" id="" class="form-select input-xlg">
+                                <option value=""></option>
+                            <% vendors.forEach((vendor) => { %>
+                                <option value="<%= vendor.company %>"><%= vendor.company %> - <%= vendor.city %>, <%= vendor.state %> </option>
+                            <% }) %>
+                        </select>
+                        <button class="modal-button">Search</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -129,7 +129,7 @@
                     </svg>
                     New Purchase Order
                 </a>
-                <h2>Reports</h2>
+                <h2>Reports:</h2>
                 <a class="purchasing-button" href="/purchasing/orders=open">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
                         <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
@@ -186,11 +186,11 @@
                     </div>
                     <div class="">                    
                         <label for="paymentDate" class="form-label">Payment Date:</label>
-                        <input class="form-control input-sm" type="date" id="" name="paymentDate" value="<%= purchaseOrder.orderStatus.paymentDate %>" required>
+                        <input class="form-control input-sm" type="date" id="" name="paymentDate" value="<%= purchaseOrder.orderStatus.paymentDate %>">
                     </div> 
                     <div class="">                    
                         <label for="paymentType" class="form-label">Payment Type:</label>
-                        <input class="form-control input-sm" type="text" id="" name="paymentType" value="<%= purchaseOrder.orderStatus.paymentType %>" required autocomplete="on">
+                        <input class="form-control input-sm" type="text" id="" name="paymentType" value="<%= purchaseOrder.orderStatus.paymentType %>" autocomplete="on">
                     </div>
                     <div class="">
                         <label for="productReceived" class="form-label">Product Recieved:</label>

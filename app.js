@@ -773,10 +773,43 @@ app.route('/inventory/item-id=:itemId/edit-vendor-id=:vendorId')
         });
     });
 
-app.route('/inventory/item-inquiry-id=:id')
-    .get((req, res) => {
+app.route('/inventory/search-:id')
+    .post(async (req, res) => {
+        const searchFilter = {}
 
-        res.render('inventory-inquiry', {});
+        const vendors = await AddressBook.find({ vendor: true }).sort({ company: 1 });
+        const inventoryList = await Inventory.find({}).sort({ itemId: 1 });
+
+        if (req.params.id === 'vendor') {
+            searchFilter['vendor.company.company'] = req.body.searchId;
+        } else {
+            searchFilter[req.params.id] = {$regex: '.*' + req.body.searchId + '.*'};
+        }
+
+        const perPage = 50;
+        const total = await Inventory.find(searchFilter);
+        const pages = Math.ceil(total.length / perPage);
+        const pageNumber = (req.query.page == null) ? 1 : req.query.page;
+        const startFrom = (pageNumber - 1) * perPage;
+
+        const query = Inventory.find(searchFilter)
+            .sort({ itemId: 1 })
+            .skip(startFrom)
+            .limit(perPage);
+        
+        query.exec((err, items) => {
+            if (!err) {
+                res.render('inventory-inquiry', {
+                    items: items,
+                    vendors: vendors,
+                    inventoryList: inventoryList,
+                    pages: pages,
+                    pageNumber: pageNumber
+                });
+            } else {
+                console.log(err);
+            }
+        }); 
     });
 
 app.route('/inventory/edit-item')
@@ -804,10 +837,14 @@ app.route('/inventory/view-item-id=:id')
         const item = await Inventory.findOne({ _id: req.params.id });
         
         const vendorList = await AddressBook.find({ vendor: true }).sort({ company: 1 });
+        const inventoryList = await Inventory.find({}).sort({ itemId: 1 });
+        const vendors = await AddressBook.find({ vendor: true }).sort({ company: 1 });
         
         res.render('view-item', {
             item: item,
-            vendorList: vendorList
+            vendorList: vendorList,
+            inventoryList: inventoryList,
+            vendors: vendors
         });
     });
 
@@ -882,7 +919,7 @@ app.route('/search-address-book')
 
         const searchQuery = {}
 
-        searchQuery[searchFilter] = {$regex: '.*' + searchValue + '.*' };
+        searchQuery[searchFilter] = { $regex: '.*' + searchValue + '.*' };
 
         const showAll = true;
 
@@ -1570,7 +1607,11 @@ app.route('/purchasing/view-po-id=:id')
 app.route('/warehousing')
     .get(async (req, res) => {
         const items = await Inventory.find({}).sort({ itemId: 1 });
-        res.render('warehousing', { items: items });
+        const vendors = await AddressBook.find({ vendor: true }).sort({ company: 1 });
+        res.render('warehousing', { 
+            items: items,
+            vendors: vendors
+        });
     })
 
 let port = process.env.PORT;
