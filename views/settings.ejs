@@ -81,111 +81,213 @@
             </div>
         </div>
         <div class="report-frame">
-            <% if (defaultInformation === null) { %>
-                <div class="new-quote-form">
-                    <div class="flex-container flex-row flex-start flex-wrap gap-25">
-                        <form action="/settings/create-defaults" method="POST">
-                            <div class="default-header">
-                                <h3>Purchasing Defaults:</h3>
-                                <div onclick="unlockElement('defaultPurchasing')">Edit</div>
-                            </div>
-                            <div class="default-body">
-                                <div class="flex-container flex-column gap-10">
-                                    <div>
-                                        <label for="defaultPurchasingBillTo" class="form-label">Bill To:</label>
-                                        <select class="form-select input-xlg" name="billTo" id="defaultPurchasingBillTo" disabled>
-                                            <% addressList.forEach((address) => { %>  
-                                                <option value=""></option>
-                                                <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
-                                            <% }) %>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label for="defaultPurchasingVendor" class="form-label">Vendor:</label>
-                                        <select class="form-select input-xlg" name="vendor" id="defaultPurchasingVendor" disabled>
-                                            <% addressList.forEach((address) => { %>  
-                                                <option value=""></option>
-                                                <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
-                                            <% }) %>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label for="defaultPurchasingShipTo" class="form-label">Ship To:</label>
-                                        <select class="form-select input-xlg" name="shipTo" id="defaultPurchasingShipTo" disabled>
-                                            <% addressList.forEach((address) => { %>  
-                                                <option value=""></option>
-                                                <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
-                                            <% }) %>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="defaultPurchasingFooter" class="default-footer">
-                                <button class="options-button-small" name="defaultId" value="purchasing">Submit</button>
-                                <div class="options-button-small" onclick="lockElement('defaultPurchasing')">Cancel</div>
-                            </div>
-                        </form>  
-                    </div>
-                </div>
-            <% } else { %>
-                <div class="new-quote-form">
-                    <div class="flex-container flex-row flex-start flex-wrap gap-25">
-                        <form action="/settings/edit-defaults" method="POST">
+            <div class="new-quote-form">
+                <% if (defaultInformation === null) { %>
+                    <form action="/settings/create-defaults" method="POST">
+                        <div class="flex-container flex-row flex-start flex-wrap gap-50">
                             <div class="default-boxes">
                                 <div class="default-header">
                                     <h3>Purchasing Defaults:</h3>
-                                    <div onclick="unlockElement('defaultPurchasing')">Edit</div>
                                 </div>
                                 <div class="default-body">
                                     <div class="flex-container flex-column gap-10">
                                         <div>
                                             <label for="defaultPurchasingBillTo" class="form-label">Bill To:</label>
-                                            <select class="form-select input-xlg" name="billTo" id="defaultPurchasingBillTo" disabled>
-                                                <% addressList.forEach((address) => { %>
-                                                    <% if (address._id == defaultInformation.purchasing.billTo.id) { %>
-                                                        <option value="<%= address._id %>" selected><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
-                                                    <% } else {%>
-                                                        <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
-                                                    <% } %>
+                                            <select class="form-select input-xlg" name="purchasingBillTo" id="">
+                                                <option value=""></option>
+                                                <% addressList.forEach((address) => { %>  
+                                                    <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
                                                 <% }) %>
                                             </select>
                                         </div>
                                         <div>
                                             <label for="defaultPurchasingVendor" class="form-label">Vendor:</label>
-                                            <select class="form-select input-xlg" name="vendor" id="defaultPurchasingVendor" disabled>
-                                                    <option value=""></option>
-                                                <% addressList.forEach((address) => { %>
-                                                    <% if (address._id == defaultInformation.purchasing.vendor.id ) { %>
-                                                        <option value="<%= address._id %>" selected><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
-                                                    <% } else {%>
-                                                        <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
-                                                    <% } %>
+                                            <select class="form-select input-xlg" name="purchasingVendor" id="">
+                                                <option value=""></option>
+                                                <% addressList.forEach((address) => { %>  
+                                                    <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
                                                 <% }) %>
                                             </select>
                                         </div>
                                         <div>
                                             <label for="defaultPurchasingShipTo" class="form-label">Ship To:</label>
-                                            <select class="form-select input-xlg" name="shipTo" id="defaultPurchasingShipTo" disabled>
-                                                <% addressList.forEach((address) => { %>
-                                                    <% if (address._id == defaultInformation.purchasing.shipTo.id) { %>
-                                                        <option value="<%= address._id %>" selected><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
-                                                    <% } else {%>
-                                                        <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
-                                                    <% } %>
+                                            <select class="form-select input-xlg" name="purchasingShipTo" id="">
+                                                <option value=""></option>
+                                                <% addressList.forEach((address) => { %>  
+                                                    <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
                                                 <% }) %>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-                                <div id="defaultPurchasingFooter" class="default-footer">
-                                    <button class="options-button-small" name="defaultId" value="purchasing">Submit</button>
-                                    <div class="options-button-small" onclick="lockElement('defaultPurchasing')">Cancel</div>
+                            </div>
+                            <div class="default-boxes">
+                                <div class="default-header">
+                                    <h3>Invoicing Defaults:</h3>
+                                </div>
+                                <div class="default-body">
+                                    <div class="flex-container flex-column gap-10">
+                                        <div>
+                                            <label for="defaultInvoicingBillTo" class="form-label">Bill To:</label>
+                                            <select class="form-select input-xlg" name="invoicingBillTo" id="">
+                                                <option value=""></option>
+                                                <% addressList.forEach((address) => { %>  
+                                                    <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="defaultInvoicingShipTo" class="form-label">Ship To:</label>
+                                            <select class="form-select input-xlg" name="invoicingShipTo" id="">
+                                                <option value=""></option>
+                                                <% addressList.forEach((address) => { %>  
+                                                    <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            <% } %>
+                            <div id="new-default-footer" class="default-footer">
+                                <button class="options-button-small">Submit</button>
+                            </div>
+                        </div>
+                    </form>  
+                    <% } else { %>
+                        <form action="/settings/edit-defaults" method="POST">
+                            <div class="flex-container flex-row flex-start flex-wrap gap-25">
+                                <div class="default-boxes">
+                                    <div class="default-header">
+                                        <h3>Purchasing Defaults:</h3>
+                                        <div onclick="unlockElement('defaultPurchasing')">Edit</div>
+                                    </div>
+                                    <div class="default-body">
+                                        <div class="flex-container flex-column gap-10">
+                                            <div>
+                                                <label for="defaultPurchasingBillTo" class="form-label">Bill To:</label>
+                                                <select class="form-select input-xlg" name="purchasingBillTo" id="defaultPurchasingBillTo" disabled>
+                                                    <% if (defaultInformation.purchasing.billTo === '') { %>
+                                                        <option value="" selected></option>
+                                                        <% addressList.forEach((address) => { %>  
+                                                            <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
+                                                        <% }) %>
+                                                    <% } else { %>
+                                                        <option value=""></option>
+                                                        <% addressList.forEach((address) => { %>
+                                                            <% if (address._id == defaultInformation.purchasing.billTo) { %>
+                                                                <option value="<%= address._id %>" selected><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                                            <% } else {%>
+                                                                <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                                            <% } %>
+                                                        <% }) %>
+                                                    <% } %>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label for="defaultPurchasingVendor" class="form-label">Vendor:</label>
+                                                <select class="form-select input-xlg" name="purchasingVendor" id="defaultPurchasingVendor" disabled>
+                                                    <% if (defaultInformation.purchasing.vendor === '') { %>
+                                                        <option value="" selected></option>
+                                                        <% addressList.forEach((address) => { %>  
+                                                            <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
+                                                        <% }) %>
+                                                    <% } else { %>
+                                                        <option value=""></option>
+                                                        <% addressList.forEach((address) => { %>
+                                                            <% if (address._id == defaultInformation.purchasing.vendor) { %>
+                                                                <option value="<%= address._id %>" selected><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                                            <% } else {%>
+                                                                <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                                            <% } %>
+                                                        <% }) %>
+                                                    <% } %>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label for="defaultPurchasingShipTo" class="form-label">Ship To:</label>
+                                                <select class="form-select input-xlg" name="purchasingShipTo" id="defaultPurchasingShipTo" disabled>
+                                                    <% if (defaultInformation.purchasing.shipTo === '') { %>
+                                                        <option value="" selected></option>
+                                                        <% addressList.forEach((address) => { %>  
+                                                            <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
+                                                        <% }) %>
+                                                    <% } else { %>
+                                                        <option value=""></option>
+                                                        <% addressList.forEach((address) => { %>
+                                                            <% if (address._id == defaultInformation.purchasing.shipTo) { %>
+                                                                <option value="<%= address._id %>" selected><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                                            <% } else {%>
+                                                                <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                                            <% } %>
+                                                        <% }) %>
+                                                    <% } %>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="defaultPurchasingFooter" class="default-footer">
+                                        <button class="options-button-small" name="defaultId" value="purchasing">Submit</button>
+                                        <div class="options-button-small" onclick="lockElement('defaultPurchasing')">Cancel</div>
+                                    </div>
+                                </div>
+                                <div class="default-boxes">
+                                    <div class="default-header">
+                                        <h3>Invoicing Defaults:</h3>
+                                        <div onclick="unlockElement('defaultInvoicing')">Edit</div>
+                                    </div>
+                                    <div class="default-body">
+                                        <div class="flex-container flex-column gap-10">
+                                            <div>
+                                                <label for="defaultInvoicingBillTo" class="form-label">Bill To:</label>
+                                                <select class="form-select input-xlg" name="invoicingBillTo" id="defaultInvoicingBillTo" disabled>
+                                                    <% if (defaultInformation.invoicing.billTo === '') { %>
+                                                        <option value="" selected></option>
+                                                        <% addressList.forEach((address) => { %>  
+                                                            <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
+                                                        <% }) %>
+                                                    <% } else { %>
+                                                        <option value=""></option>
+                                                        <% addressList.forEach((address) => { %>
+                                                            <% if (address._id == defaultInformation.invoicing.billTo) { %>
+                                                                <option value="<%= address._id %>" selected><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                                            <% } else {%>
+                                                                <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                                            <% } %>
+                                                        <% }) %>
+                                                    <% } %>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label for="defaultInvoicingShipTo" class="form-label">Ship To:</label>
+                                                <select class="form-select input-xlg" name="invoicingShipTo" id="defaultInvoicingShipTo" disabled>
+                                                    <% if (defaultInformation.invoicing.shipTo === '') { %>
+                                                        <option value="" selected></option>
+                                                        <% addressList.forEach((address) => { %>  
+                                                            <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>  
+                                                        <% }) %>
+                                                    <% } else { %>
+                                                        <option value=""></option>
+                                                        <% addressList.forEach((address) => { %>
+                                                            <% if (address._id == defaultInformation.invoicing.shipTo) { %>
+                                                                <option value="<%= address._id %>" selected><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                                            <% } else {%>
+                                                                <option value="<%= address._id %>"><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
+                                                            <% } %>
+                                                        <% }) %>
+                                                    <% } %>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="defaultInvoicingFooter" class="default-footer">
+                                        <button class="options-button-small" name="defaultId" value="invoicing">Submit</button>
+                                        <div class="options-button-small" onclick="lockElement('defaultInvoicing')">Cancel</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form> 
+                    <% } %>
+            </div>
         </div>
     </div>
     <form action="/add-user" method="POST">

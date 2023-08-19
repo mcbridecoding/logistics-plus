@@ -208,6 +208,10 @@ function unlockElement(id) {
         document.getElementById(`${id}Vendor`).disabled = false;
         document.getElementById(`${id}ShipTo`).disabled = false;
     }
+    if (id === 'defaultInvoicing') {
+        document.getElementById(`${id}BillTo`).disabled = false;
+        document.getElementById(`${id}ShipTo`).disabled = false; 
+    }
     document.getElementById(`${id}Footer`).style.display = 'flex';  
 }
 
@@ -215,6 +219,10 @@ function lockElement(id) {
     if (id === 'defaultPurchasing') {
         document.getElementById(`${id}BillTo`).disabled = true;
         document.getElementById(`${id}Vendor`).disabled = true;
+        document.getElementById(`${id}ShipTo`).disabled = true;
+    }
+    if (id === 'defaultInvoicing') {
+        document.getElementById(`${id}BillTo`).disabled = true;
         document.getElementById(`${id}ShipTo`).disabled = true;
     }
     document.getElementById(`${id}Footer`).style.display = 'none';

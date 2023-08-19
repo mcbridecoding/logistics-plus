@@ -48,7 +48,8 @@ const addressBookSchema = new mongoose.Schema({
 });
 
 const defaultSettingsSchema = new mongoose.Schema({
-    purchasing: Object,   
+    purchasing: Object,
+    invoicing: Object   
 });
 
 const inventorySchema = new mongoose.Schema({
@@ -60,6 +61,21 @@ const inventorySchema = new mongoose.Schema({
     sellPrice: String,
     notes: String,
 });
+
+const invoiceSchema = new mongoose.Schema({
+    invoiceNumber: String,
+    date: String,
+    owner: Object,
+    soldTo: Object,
+    shipTo: Object,
+    customerReference: String,
+    orderStatus: Object,
+    shipMethod: String,
+    lineItems: Array,
+    currency: String,
+    invoiceTotal: String,
+    notes: String,
+})
 
 const orderSchema = new mongoose.Schema({
     quoteTaker: String,
@@ -130,6 +146,8 @@ const AddressBook = new mongoose.model('Address', addressBookSchema);
 const Default = new mongoose.model('Default', defaultSettingsSchema);
 
 const Inventory = new mongoose.model('Item', inventorySchema);
+
+const Invoice = new mongoose.model('Invoice', invoiceSchema)
 
 const Order = new mongoose.model('Order', orderSchema);
 
@@ -848,6 +866,218 @@ app.route('/inventory/view-item-id=:id')
         });
     });
 
+app.route('/invoicing')
+    .get(async (req, res) =>{
+        const showAll = false;
+
+        const perPage = 15;
+        const total = await Invoice.find({ 'orderStatus.status': 'open' });
+        const pages = Math.ceil(total.length / perPage);
+        const pageNumber = (req.query.page == null) ? 1 : req.query.page;
+        const startFrom = (pageNumber - 1) * perPage;
+
+        const invoices = await Invoice.find({ 'orderStatus.status': 'open' }).sort({ invoiceNumber: 1 }).skip(startFrom).limit(perPage);
+        
+        res.render('invoicing', {
+            showAll: showAll,
+            pages: pages,
+            pageNumber: pageNumber,
+            invoices: invoices
+        });
+    });
+
+app.route('/invoicing/edit-invoice/id=:id')
+    .post(async (req, res) => {
+        const editId = req.params.id;
+        let currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'CAD' });
+        const soldToCompany = await findOwnerName(req.body.soldTo); 
+        const shipToCompany = await findOwnerName(req.body.shipTo);
+
+        const soldTo = {
+            id: req.body.soldTo,
+            company: soldToCompany
+        }
+        
+        const shipTo = {
+            id: req.body.shipTo,
+            company: shipToCompany
+        }
+
+        const lineTotals = await Invoice.findOne({ _id: editId });
+
+        const lineTotal = await calculateInvoiceTotal(lineTotals.lineItems);
+
+        const invoiceTotal = currency.format(lineTotal).slice(2);
+
+        Invoice.findByIdAndUpdate(editId, {
+            date: req.body.date,
+            soldTo: soldTo,
+            shipTo: shipTo,
+            shipMethod: req.body.shipMethod,
+            currency: req.body.currency,
+            notes: req.body.notes,
+            invoiceTotal: invoiceTotal,
+        }, (err, docs) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(docs);
+                res.redirect(`/invoicing`);
+            }
+        });
+    });
+
+app.route('/invoicing/new-order')
+    .get(async (req, res) => {
+        const date = new Date();
+        const todayDate = `${date.getFullYear()}-${dateStringFormat(date.getUTCMonth() +1)}-${dateStringFormat(date.getUTCDate())}`
+
+        let nextInvoiceNumber = '';
+
+        let invoiceOrderQuery = await Invoice.find({}).sort({ invoiceNumber: 1 });
+        (invoiceOrderQuery.length == 0) ? '001' : nextInvoiceNumber = calculateNextOrder(Number(invoiceOrderQuery[invoiceOrderQuery.length -1].invoiceNumber)); 
+
+        const addressList = await AddressBook.find({}).sort({ company: 1 });
+
+        const defaultInformation = await Default.findOne({})
+
+        res.render('new-invoice', {
+            todayDate: todayDate,
+            nextInvoiceNumber: nextInvoiceNumber,
+            addressList: addressList,
+            defaultInformation: defaultInformation
+        });
+    })
+    .post(async(req, res) => {
+        const soldToCompany = await findOwnerName(req.body.soldTo); 
+        const shipToCompany = await findOwnerName(req.body.shipTo);
+
+        const soldTo = {
+            id: req.body.soldTo,
+            company: soldToCompany
+        }
+
+        const shipTo = {
+            id: req.body.shipTo,
+            company: shipToCompany
+        }
+        
+        const newInvoice = new Invoice({
+            invoiceNumber: req.body.invoiceNumber,
+            date: req.body.date,
+            soldTo: soldTo,
+            shipTo: shipTo,
+            orderStatus:  {status: 'open'},
+            shipMethod: req.body.shipMethod,
+            currency: req.body.currency,
+            notes: req.body.notes, 
+        });
+        newInvoice.save();
+        res.redirect(`/invoicing/view-invoice-id=${newInvoice._id}`);
+    });
+
+app.route('/invoicing/view-invoice-id=:id')
+    .get(async(req, res) => {
+        const invoice = await Invoice.findOne({ _id: req.params.id });
+        const addressList = await AddressBook.find({}).sort({ company: 1 });
+
+        const items = await Inventory.find({}).sort({ itemId: 1 });
+        
+        const products = [];
+        const accessorials = [];
+
+        invoice.lineItems.forEach((item) => {
+            if (item.type === 'product') {
+                products.push(item);
+            } else {
+                accessorials.push(item);
+            }
+        });
+
+        res.render('view-invoice', {
+            invoice: invoice,
+            addressList: addressList,
+            items: items,
+            products: products,
+            accessorials: accessorials,
+        });
+    });
+
+app.route('/invoicing/invoice=:invoiceId/add-line-item')
+    .post(async(req, res) => {
+        const invoice = req.params.invoiceId;
+        const lineItems = {
+            _id: crypto.randomUUID(),
+            type: req.body.lineItemType,
+        }
+        
+        if (req.body.lineItemType === 'product') {
+            const lineTotal = Number(req.body.quantity) * Number(req.body.unitValue); 
+            
+            lineItems.quantity = req.body.quantity;
+            lineItems.unitValue = Number(req.body.unitValue).toFixed(2);
+            lineItems.lineTotal = lineTotal.toFixed(2);
+
+            if (req.body.lineItem === 'new') {
+                lineItems.itemId = req.body.itemId;
+                lineItems.itemDescription = req.body.itemDescription;
+    
+                const newItem = new Inventory({
+                    itemId: req.body.itemId,
+                    itemDescription: req.body.itemDescription,
+                    unitOfMeasure: req.body.uom,
+                    reOrderPoint: req.body.reOrderPoint,
+                    sellPrice: Number(req.body.sellPrice).toFixed(2),
+                }); 
+                newItem.save();
+            } else {
+                const item = await findItemDetails(req.body.lineItem);
+                lineItems.itemId = item.itemId;
+                lineItems.itemDescription = item.itemDescription;
+            }
+        } else {
+            const lineTotal = Number(req.body.lineQty) * Number(req.body.lineSellPrice);
+
+            lineItems.itemId = req.body.lineId;
+            lineItems.itemDescription = req.body.lineDescription;
+            lineItems.quantity = req.body.lineQty;
+            lineItems.unitValue = Number(req.body.lineSellPrice).toFixed(2);
+            lineItems.lineTotal = lineTotal.toFixed(2);
+        }
+
+        Invoice.findOneAndUpdate({ _id: invoice }, {
+            $push : {lineItems: lineItems}
+        },(err, success) => { 
+            if (!err) { 
+                console.log(`${success}`);
+                res.redirect(`/invoicing/view-invoice-id=${invoice}`);
+            } else { 
+                console.log(`Error: ${err}`) 
+            } 
+        });
+    })
+
+app.route('/invoicing/invoice=:invoiceId/delete-line-id=:lineId')
+    .get((req, res) => {
+        const invoiceId = req.params.invoiceId;
+        const lineId = req.params.lineId;
+
+        Invoice.findOneAndUpdate({ _id: invoiceId }, {
+            $pull: {
+                lineItems: {
+                    _id: lineId
+                }
+            }
+        }, (err, success) => {
+            if (!err) { 
+                console.log(`${success}`); 
+                res.redirect(`/invoicing/view-invoice-id=${invoiceId}`);
+            } else {
+                console.log(`Error: ${err}`);
+            } 
+        });
+    });
+
 app.route('/login')
     .get((req, res) => {
         res.render('login');
@@ -958,7 +1188,7 @@ app.route('/settings')
         
         const addressList = await AddressBook.find({}).sort({company: 1})
         
-        const defaultInformation = await Default.findOne({})
+        const defaultInformation = await Default.findOne({});
 
         userQuery.exec((err, users) => {
             if (!err) {
@@ -979,25 +1209,17 @@ app.route('/settings/create-defaults')
     .post(async(req, res) => {
         const defaultId = req.body.defaultId;
 
-        const newValues = {}
-        
-        newValues[defaultId] = {
-                billTo: {
-                    id: req.body.billTo,
-                    company: await findOwnerName(req.body.billTo)
-                },
-                vendor: {
-                    id: req.body.vendor,
-                    company: await findOwnerName(req.body.vendor)
-
-                },
-                shipTo: {
-                    id: req.body.shipTo,
-                    company: await findOwnerName(req.body.shipTo)
-                }       
+        const newDefault = new Default({
+            purchasing: {
+                billTo: req.body.purchasingBillTo,
+                vendor: req.body.purchasingVendor,
+                shipTo: req.body.purchasingShipTo
+            },
+            invoicing: {
+                billTo: req.body.invoicingBillTo,
+                shipTo: req.body.invoicingShipTo      
             }
-
-        const newDefault = new Default(newValues)
+        })
         newDefault.save();
         res.redirect('/settings');
     });
@@ -1008,25 +1230,18 @@ app.route('/settings/edit-defaults')
         
         const defaultSetting = await Default.findOne({});
 
-        const updateValues = {}
 
-        updateValues[defaultId] = {
-                billTo: {
-                    id: req.body.billTo,
-                    company: await findOwnerName(req.body.billTo)
-                },
-                vendor: {
-                    id: req.body.vendor,
-                    company: await findOwnerName(req.body.vendor)
-
-                },
-                shipTo: {
-                    id: req.body.shipTo,
-                    company: await findOwnerName(req.body.shipTo)
-                }     
-            } 
-
-        Default.findByIdAndUpdate(defaultSetting._id, updateValues, (err, docs) => {
+        Default.findByIdAndUpdate(defaultSetting._id, {
+            purchasing: {
+                billTo: req.body.purchasingBillTo,
+                vendor: req.body.purchasingVendor,
+                shipTo: req.body.purchasingShipTo
+            },
+            invoicing: {
+                billTo: req.body.invoicingBillTo,
+                shipTo: req.body.invoicingShipTo      
+            }
+        }, (err, docs) => {
             if (err) {
                 console.log(err);
             } else {
@@ -1594,7 +1809,6 @@ app.route('/purchasing/view-po-id=:id')
             }
         });
 
-        
         res.render('view-purchase-order', {
             purchaseOrder: purchaseOrder,
             addressList: addressList,

@@ -344,6 +344,7 @@ body {
 }
 
 .default-boxes {
+    align-self: stretch;
     align-items: flex-start;
     border: 1px solid #242424;
     border-radius: 5px;
@@ -467,7 +468,7 @@ body {
 }
 
 .flex-start {
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;    
 }
 
@@ -864,6 +865,10 @@ body {
     padding: 15px 25px 15px 15px;
     justify-content: space-between;
     margin-bottom: 10px;    
+}
+
+#new-default-footer {
+    display: flex;
 }
 
 .new-quote-body {
