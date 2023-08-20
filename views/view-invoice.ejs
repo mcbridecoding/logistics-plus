@@ -20,14 +20,67 @@
                     <div class="">                    
                         <label for="date" class="form-label">Date:</label>
                         <input class="form-control input-sm" type="date" id="date" name="date" value="<%= invoice.date %>" required>
-                    </div>            
+                    </div>   
+                    <div class="">                    
+                        <label for="dueDate" class="form-label">Due Date:</label>
+                        <input class="form-control input-sm" type="date" id="dueDate" name="dueDate" value="<%= invoice.dueDate %>" required>
+                    </div> 
+                    <div class="">                    
+                        <label for="terms" class="form-label">Terms:</label>
+                        <select class="form-select input-sm" name="terms" id="terms">
+                            <% if (invoice.terms === ''|| invoice.terms === 'null') { %>
+                                <option value="" selected></option>
+                                <option value="15 Days">15 Days</option>
+                                <option value="30 Days">30 Days</option>
+                                <option value="45 Days">45 Days</option>
+                                <option value="60 Days">60 Days</option>
+                                <option value="Immediately">Immediately</option>
+                            <% } else if (invoice.terms === '15 Days') { %>
+                                <option value=""></option>
+                                <option value="15 Days" selected>15 Days</option>
+                                <option value="30 Days">30 Days</option>
+                                <option value="45 Days">45 Days</option>
+                                <option value="60 Days">60 Days</option>
+                                <option value="Immediately">Immediately</option>
+                            <% } else if (invoice.terms === '30 Days') { %>
+                                <option value=""></option>
+                                <option value="15 Days">15 Days</option>
+                                <option value="30 Days" selected>30 Days</option>
+                                <option value="45 Days">45 Days</option>
+                                <option value="60 Days">60 Days</option>
+                                <option value="Immediately">Immediately</option>
+                            <% } else if (invoice.terms === '45 Days') { %>
+                                <option value=""></option>
+                                <option value="15 Days">15 Days</option>
+                                <option value="30 Days">30 Days</option>
+                                <option value="45 Days" selected>45 Days</option>
+                                <option value="60 Days">60 Days</option>
+                                <option value="Immediately">Immediately</option>
+                            <% } else if (invoice.terms === '60 Days') { %>
+                                <option value=""></option>
+                                <option value="15 Days">15 Days</option>
+                                <option value="30 Days">30 Days</option>
+                                <option value="45 Days">45 Days</option>
+                                <option value="60 Days" selected>60 Days</option>
+                                <option value="Immediately">Immediately</option>
+                            <% } else { %>
+                                <option value=""></option>
+                                <option value="15 Days">15 Days</option>
+                                <option value="30 Days">30 Days</option>
+                                <option value="45 Days">45 Days</option>
+                                <option value="60 Days">60 Days</option>
+                                <option value="Immediately" selected>Immediately</option>
+                            <% } %>
+
+                        </select>
+                    </div>               
                     <div class="">                    
                         <label for="shipVia" class="form-label">Ship Via:</label>
                         <input class="form-control input-md" type="text" id="shipVia" name="shipVia" value="<%= invoice.shipMethod %>" required>
                     </div> 
                     <div class="">                    
                         <label for="currency" class="form-label">Currency:</label>
-                        <select class="form-select input-md" name="currency" id="currency">
+                        <select class="form-select input-sm" name="currency" id="currency">
                             <% if (invoice.currency === 'CAD') { %>
                                 <option value="CAD" selected>CAD</option>
                                 <option value="USD">USD</option>

@@ -105,6 +105,7 @@ body {
     justify-content: center;
     margin-left: 50px;
     padding-left: 25px;
+    max-width: 15%;
 }
 
 .align-left {
@@ -392,7 +393,7 @@ body {
     flex-direction: row;
     gap: 15px;
     justify-content: flex-end;
-    padding: 15px 0 0 0;
+    padding: 0 0 0 0;
     width: 100%;
 }
 
@@ -440,6 +441,7 @@ body {
 
 .flex-container {
     display: flex;
+    transition: 0.5s;
     width: 100%;
 }
 
@@ -516,7 +518,7 @@ body {
     border: 1px solid #242424;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    box-shadow: var(--boxShadow);
+    /* box-shadow: var(--boxShadow); */
     padding: 15px 25px 0px 25px;
     width: 100%;
 }
@@ -529,6 +531,10 @@ body {
     justify-content: flex-start; 
     padding: 10px 0 5px 2px;
     width: 100%;   
+}
+
+.form-label {
+    margin: 8px 0 2px 0;
 }
 
 .gap-10 {
@@ -554,28 +560,23 @@ body {
 }
 
 .input-xs {
-    height: 39px;
-    width: 125px;  
+    flex: 1;
 }
 
 .input-sm {
-    height: 39px;
-    width: 200px;
+    flex: 2;
 }
 
 .input-md {
-    height: 39px;
-    width: 275px;
+    flex: 3;
 }
 
 .input-lg {
-    height: 39px;
-    width: 300px;
+    flex: 4;
 }
 
-.input-xlg {
-    height: 39px;
-    width: 500px;
+.input-xl {
+    flex: 5;
 }
 
 .inventory-split-column {
@@ -811,7 +812,7 @@ body {
     display: none;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     left: 50%;
-    min-width: 35%;
+    min-width: 45%;
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -1037,6 +1038,52 @@ body {
 
 #order-report {
     display: none;
+}
+
+.owner-box {
+    align-items: flex-start;
+    align-self: stretch;
+    /* border: 1px solid #242424; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 15px;
+    width: 100%;
+}
+
+.owner-body {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.owner-form {
+    align-items: flex-start;
+    border: 1px solid #242424;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: flex-start;
+    margin: 15px 0 0 0;
+    min-width: 45%;
+    padding: 15px;
+}
+
+.owner-logo {
+    align-items: flex-start;
+    align-self: stretch;
+    border: 1px solid #242424;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: flex-start;
+    margin: 15px 0 0 0;
+    min-width: 45%;
+    padding: 15px;
 }
 
 .page-title {
@@ -1373,12 +1420,12 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    margin-top: 25px;
+    margin: 25px 0;
     width: 100%;
 }
 
 .report-table {
-    margin: 15px;
+    margin: 15px 0;
     padding: 15px 0;
     width: 100%;
 }
@@ -1395,7 +1442,7 @@ body {
 }
 
 .report-frame {
-    align-items: center;
+    align-items: stretch;
     display: flex;
     border: 1px solid #242424;
     border-radius: 5px;
@@ -1404,6 +1451,11 @@ body {
     justify-content: center;
     margin: 25px 25px 25px 10px;
     padding: 10px 25px 0 25px;
+    max-width: 100%;
+}
+
+.report-frame:last-child {
+    margin: 5px 25px 25px 10px;
 }
 
 .report-header {
@@ -1447,19 +1499,6 @@ body {
     color: var(--nav-button-color);
 }
 
-.search-frame a:link {
-    text-decoration: none;
-}
-
-.search-frame a:visited {
-    text-decoration: none;
-}
-
-.search-frame button svg {
-    height: 14px;
-    width: 14px;
-}
-
 .search-params {
     align-items: flex-start; 
     border-bottom: 1px solid #242424;
@@ -1501,7 +1540,7 @@ body {
 }
 
 .stretch-lg {
-    flex: 2;
+    flex-grow: 2;
 }
 
 .stretch-sm {
@@ -1541,13 +1580,23 @@ body {
     align-items: center;
     display: flex;
     flex-direction: row;
-    gap: 30px;
+    gap: 15px;
     justify-content: flex-start;
     margin: 5px 10px 15px 0;
+    width: 45%;
 }
 
-.search-frame input {
-    width: 250px;
+.search-frame a:link {
+    text-decoration: none;
+}
+
+.search-frame a:visited {
+    text-decoration: none;
+}
+
+.search-frame button svg {
+    height: 14px;
+    width: 14px;
 }
 
 .table thead {
@@ -1642,10 +1691,36 @@ body {
 }
 
 @media screen and (min-width: 320px) and (max-width: 1125px) {
+    .flex-row {
+        flex-wrap: wrap;
+    }
 
+    .flex-container:nth-child(3n) {
+        page-break-after: always;
+        break-after: always;
+    }
+
+    .input-xs, .input-sm, .input-md{
+        flex: 1;
+    }
+    
+    .input-lg, .input-xl {
+        flex: 2;
+    }
 
 }
 
 @media screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+    .flex-row {
+        flex-wrap: wrap;
+    }
 
+    .input-xs, .input-sm, .input-md{
+        flex: 1;
+    }
+    
+    .input-lg, .input-xl {
+        flex: 2;
+    }
+    
 }

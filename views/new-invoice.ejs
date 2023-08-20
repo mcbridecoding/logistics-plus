@@ -13,34 +13,49 @@
         <div class="purchase-order-body">
             <div class="new-quote-form">
                 <div class="flex-container flex-row flex-start gap-50 purchase-order-row">
-                    <div class="">                    
+                    <div class="input-md">                    
                         <label for="invoiceNumber" class="form-label">Invoice #:</label>
                         <% if (nextInvoiceNumber === '') { %>
-                            <input class="form-control input-md" type="text" id="invoiceNumber" name="invoiceNumber" value="<%= nextInvoiceNumber %>" required>
+                            <input class="form-control" type="text" id="invoiceNumber" name="invoiceNumber" value="<%= nextInvoiceNumber %>" required>
                         <% } else { %>
-                            <input class="form-control input-md" type="text" id="invoiceNumber" name="invoiceNumber" value="<%= nextInvoiceNumber %>" readonly required>
+                            <input class="form-control" type="text" id="invoiceNumber" name="invoiceNumber" value="<%= nextInvoiceNumber %>" readonly required>
                         <% } %>
                     </div>
-                    <div class="">                    
+                    <div class="input-sm">                    
                         <label for="date" class="form-label">Date:</label>
-                        <input class="form-control input-sm" type="date" id="date" name="date" value="<%= todayDate %>" required>
-                    </div>            
-                    <div class="">                    
+                        <input class="form-control" type="date" id="date" name="date" value="<%= todayDate %>" required>
+                    </div> 
+                    <div class="input-sm">                    
+                        <label for="dueDate" class="form-label">Due Date:</label>
+                        <input class="form-control" type="date" id="dueDate" name="dueDate" value="<%= dueDate %>" required>
+                    </div>     
+                    <div class="input-sm">                    
+                        <label for="terms" class="form-label">Terms:</label>
+                        <select class="form-select" name="terms" id="terms">
+                            <option value=""></option>
+                            <option value="15 Days">15 Days</option>
+                            <option value="30 Days">30 Days</option>
+                            <option value="45 Days">45 Days</option>
+                            <option value="60 Days">60 Days</option>
+                            <option value="Immediately">Immediately</option>
+                        </select>
+                    </div>        
+                    <div class="input-md">                    
                         <label for="shipVia" class="form-label">Ship Via:</label>
                         <input class="form-control input-md" type="text" id="shipMethod" name="shipMethod" value="" required>
                     </div> 
-                    <div class="">                    
+                    <div class="input-sm">                    
                         <label for="currency" class="form-label">Currency:</label>
-                        <select class="form-select input-md" name="currency" id="currency">
+                        <select class="form-select" name="currency" id="currency">
                             <option value="CAD">CAD</option>
                             <option value="USD">USD</option>
                         </select>
                     </div> 
                 </div>
                 <div class="flex-container flex-row flex-start gap-50">
-                    <div>
+                    <div class="input-xl">
                         <label for="soldTo" class="form-label">Sold To:</label>
-                        <select class="form-select input-xlg" name="soldTo" id="soldTo" required>
+                        <select class="form-select" name="soldTo" id="soldTo" required>
                             <% if (defaultInformation.invoicing.soldTo === '') { %>
                                 <option value="" selected></option>
                                 <% addressList.forEach((address) => { %>
@@ -58,9 +73,9 @@
                             <% } %>
                         </select>
                     </div>
-                    <div>
+                    <div class="input-xl">
                         <label for="shipTo" class="form-label">Ship To:</label>
-                        <select class="form-select input-xlg" name="shipTo" id="shipTo" required>
+                        <select class="form-select" name="shipTo" id="shipTo" required>
                             <% if (defaultInformation.invoicing.shipTo === '') { %>
                                 <option value="" selected></option>
                                 <% addressList.forEach((address) => { %>

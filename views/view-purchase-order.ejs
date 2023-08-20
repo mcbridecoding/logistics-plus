@@ -13,22 +13,22 @@
         </div>
         <div class="purchase-order-body">
             <div class="new-quote-form">
-                <div class="flex-container flex-row flex-start gap-50 purchase-order-row">
-                    <div class="">                    
+                <div class="flex-container flex-row flex-start gap-25 purchase-order-row">
+                    <div class="input-md">                    
                         <label for="poNumber" class="form-label">PO#:</label>
-                        <input class="form-control input-md" type="text" id="poNumber" name="poNumber" value="<%= purchaseOrder.purchaseOrderNumber %>" readonly required>
+                        <input class="form-control" type="text" id="poNumber" name="poNumber" value="<%= purchaseOrder.purchaseOrderNumber %>" readonly required>
                     </div>
-                    <div class="">                    
+                    <div class="input-sm">                    
                         <label for="date" class="form-label">Date:</label>
-                        <input class="form-control input-sm" type="date" id="date" name="date" value="<%= purchaseOrder.date %>" required>
+                        <input class="form-control" type="date" id="date" name="date" value="<%= purchaseOrder.date %>" required>
                     </div>            
-                    <div class="">                    
+                    <div class="input-md">                    
                         <label for="shipVia" class="form-label">Ship Via:</label>
-                        <input class="form-control input-md" type="text" id="shipVia" name="shipVia" value="<%= purchaseOrder.shipMethod %>" required>
+                        <input class="form-control" type="text" id="shipVia" name="shipVia" value="<%= purchaseOrder.shipMethod %>" required>
                     </div> 
-                    <div class="">                    
+                    <div class="input-md">                    
                         <label for="currency" class="form-label">Currency:</label>
-                        <select class="form-select input-md" name="currency" id="currency">
+                        <select class="form-select" name="currency" id="currency">
                             <% if (purchaseOrder.currency === 'CAD') { %>
                                 <option value="CAD" selected>CAD</option>
                                 <option value="USD">USD</option>
@@ -39,10 +39,10 @@
                         </select>
                     </div> 
                 </div>
-                <div class="flex-container flex-row flex-between">
-                    <div>
+                <div class="flex-container flex-row flex-start gap-25">
+                    <div class="input-xl">
                         <label for="soldTo" class="form-label">Bill To:</label>
-                        <select class="form-select input-xlg" name="soldTo" id="soldTo">
+                        <select class="form-select" name="soldTo" id="soldTo">
                             <% addressList.forEach((address) => { %>
                                 <% if (address._id == purchaseOrder.soldTo.id) { %>
                                     <option value="<%= address._id %>" selected><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
@@ -52,9 +52,9 @@
                             <% }) %>
                         </select>
                     </div>
-                    <div>
+                    <div class="input-xl">
                         <label for="vendor" class="form-label">Vendor:</label>
-                        <select class="form-select input-xlg" name="vendor" id="vendor">
+                        <select class="form-select" name="vendor" id="vendor">
                             <% addressList.forEach((address) => { %>
                                 <% if (address._id == purchaseOrder.vendor.id) { %>
                                     <option value="<%= address._id %>" selected><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
@@ -64,9 +64,9 @@
                             <% }) %>
                         </select>
                     </div>
-                    <div>
+                    <div class="input-xl">
                         <label for="shipTo" class="form-label">Ship To:</label>
-                        <select class="form-select input-xlg" name="shipTo" id="shipTo">
+                        <select class="form-select" name="shipTo" id="shipTo">
                             <% addressList.forEach((address) => { %>
                                 <% if (address._id == purchaseOrder.shipTo.id) { %>
                                     <option value="<%= address._id %>" selected><%= address.company %> - <%= address.addressOne %>. <%= address.city %>. <%= address.state %></option>
@@ -223,9 +223,9 @@
         </div>
         <div class="modal-body">
             <div class="flex-container flex-row">
-                <div>
+                <div class="input-sm">
                     <label for="lineItemType" class="form-label">Type:</label>
-                    <select class="form-select input-sm" name="lineItemType" id="lineItemType" onchange="openAccessorial(this.value)">
+                    <select class="form-select" name="lineItemType" id="lineItemType" onchange="openAccessorial(this.value)">
                         <option value="product">Product</option>
                         <option value="accessorial">Accessorial</option>
                     </select>
@@ -233,46 +233,46 @@
             </div>
             <div id="product">
                 <div class="flex-container flex-row flex-between gap-25">
-                    <div>
+                    <div class="input-xl">
                         <label for="lineItem" class="form-label">Lookup:</label>
-                        <select class="form-select input-xlg" name="lineItem" id="lineItem" onchange="addSku(this.value)">
+                        <select class="form-select" name="lineItem" id="lineItem" onchange="addSku(this.value)">
                             <option value="new">-- Create New --</option>
                             <% items.forEach((item) => { %>
                             <option value="<%= item._id %>"><%= item.itemId %> -- <%= item.itemDescription %></option>
                             <% }) %>
                         </select>
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="quantity" class="form-label">Qty:</label>
-                        <input class="form-control input-xs" type="text" id="quantity" name="quantity">  
+                        <input class="form-control" type="text" id="quantity" name="quantity">  
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="unitValue" class="form-label">Price:</label>
-                        <input class="form-control input-xs" type="text" id="unitValue" name="unitValue">  
+                        <input class="form-control" type="text" id="unitValue" name="unitValue">  
                     </div>
                 </div>
                 <div id="sku" class="flex-container flex-row flex-start gap-25">
-                    <div>
+                    <div class="input-lg">
                         <label for="itemId" class="form-label">Item Id:</label>
-                        <input class="form-control input-lg" type="text" id="itemId" name="itemId">  
+                        <input class="form-control" type="text" id="itemId" name="itemId">  
                     </div>
-                    <div>
+                    <div class="input-xl">
                         <label for="itemDescription" class="form-label">Item Description:</label>
-                        <input class="form-control input-xlg" type="text" id="itemDescription" name="itemDescription">  
+                        <input class="form-control" type="text" id="itemDescription" name="itemDescription">  
                     </div>
                 </div>
                 <div id="reorder" class="flex-container flex-row flex-start gap-25">
-                    <div>
+                    <div class="input-sm">
                         <label for="reOrderPoint" class="form-label">Re Order Point:</label>
-                        <input type="text" class="form-control input-sm" name="reOrderPoint" value="<%=  %>">
+                        <input type="text" class="form-control" name="reOrderPoint" value="<%=  %>">
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="sellPrice" class="form-label">Sell Price:</label>
-                        <input type="text" class="form-control input-sm" name="sellPrice" value="<%=  %>">
+                        <input type="text" class="form-control" name="sellPrice" value="<%=  %>">
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="uom" class="form-label">UOM:</label>
-                        <select class="form-select input-xs" name="uom" id="">
+                        <select class="form-select" name="uom" id="">
                             <option value="ea">ea</option>
                             <option value="cubic inch">Cubic Inch</option>
                         </select>  
@@ -281,21 +281,21 @@
             </div>
             <div id="accessorial">
                 <div id="sku" class="flex-container flex-row flex-start gap-25">
-                    <div>
+                    <div class="input-sm">
                         <label for="lineId" class="form-label">Line Id:</label>
-                        <input class="form-control input-sm" type="text" id="lineId" name="lineId">  
+                        <input class="form-control" type="text" id="lineId" name="lineId">  
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="lineDescription" class="form-label">Line Description:</label>
-                        <input class="form-control input-sm" type="text" id="lineDescription" name="lineDescription">  
+                        <input class="form-control" type="text" id="lineDescription" name="lineDescription">  
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="lineQty" class="form-label">Qty:</label>
-                        <input class="form-control input-sm" type="text" id="lineQty" name="lineQty">  
+                        <input class="form-control" type="text" id="lineQty" name="lineQty">  
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="lineSellPrice" class="form-label">Price:</label>
-                        <input class="form-control input-sm" type="text" id="lineSellPrice" name="lineSellPrice">  
+                        <input class="form-control" type="text" id="lineSellPrice" name="lineSellPrice">  
                     </div>
                 </div>
             </div>

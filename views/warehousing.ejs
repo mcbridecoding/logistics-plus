@@ -40,27 +40,27 @@
         </div>
         <div class="modal-body">
             <div class="flex-container flex-row flex-start gap-25">
-                <div>
+                <div class="input-lg">
                     <label for="itemId" class="form-label">Item Id:</label>
-                    <input class="form-control input-lg" type="text" id="itemId" name="itemId" required>  
+                    <input class="form-control" type="text" id="itemId" name="itemId" required>  
                 </div>
-                <div>
+                <div class="input-xl">
                     <label for="itemDescription" class="form-label">Item Description:</label>
-                    <input class="form-control input-xlg" type="text" id="itemDescription" name="itemDescription" required>  
+                    <input class="form-control" type="text" id="itemDescription" name="itemDescription" required>  
                 </div>
             </div>
             <div class="flex-container flex-row flex-start gap-25">
-                <div>
+                <div class="input-sm">
                     <label for="reOrderPoint" class="form-label">Re Order Point:</label>
-                    <input type="text" class="form-control input-sm" name="reOrderPoint" value="<%=  %>" required>
+                    <input type="text" class="form-control" name="reOrderPoint" value="<%=  %>" required>
                 </div>
-                <div>
+                <div class="input-sm">
                     <label for="sellPrice" class="form-label">Sell Price:</label>
-                    <input type="text" class="form-control input-sm" name="sellPrice" value="<%=  %>" required>
+                    <input type="text" class="form-control" name="sellPrice" value="<%=  %>" required>
                 </div>
-                <div>
+                <div class="input-xs">
                     <label for="uom" class="form-label">UOM:</label>
-                    <select class="form-select input-xs" name="uom" id="" required>
+                    <select class="form-select" name="uom" id="" required>
                         <option value="ea">ea</option>
                         <option value="cubic inch">Cubic Inch</option>
                     </select>  
@@ -132,8 +132,10 @@
                     <h3>Product ID:</h3>
                 </div>
                 <div class="search-params-column">                        
-                    <div class="flex-container flex-row flex-between">
-                        <input type="text" class="form-control input-xlg" name="searchId">
+                    <div class="flex-container flex-row flex-start gap-25">
+                        <div class="input-xl">
+                            <input type="text" class="form-control" name="searchId">
+                        </div>
                         <button class="modal-button">Search</button>
                     </div>
                     <div>
@@ -147,8 +149,10 @@
                     <h3>Description:</h3>
                 </div>
                 <div class="search-params-column">                        
-                    <div class="flex-container flex-row flex-between">
-                        <input type="text" class="form-control input-xlg" name="searchId">
+                    <div class="flex-container flex-row flex-start gap-25">
+                        <div class="input-xl">
+                            <input type="text" class="form-control" name="searchId">
+                        </div>
                         <button class="modal-button">Search</button>
                     </div>
                     <div>
@@ -162,13 +166,15 @@
                     <h3>Vendor:</h3>
                 </div>
                 <div class="search-params-column">                        
-                    <div class="flex-container flex-row flex-between">
-                        <select name="searchId" id="" class="form-select input-xlg">
-                                <option value=""></option>
-                            <% vendors.forEach((vendor) => { %>
-                                <option value="<%= vendor.company %>"><%= vendor.company %> - <%= vendor.city %>, <%= vendor.state %> </option>
-                            <% }) %>
-                        </select>
+                    <div class="flex-container flex-row flex-start gap-25">
+                        <div class="input-xl">
+                            <select name="searchId" id="" class="form-select">
+                                    <option value=""></option>
+                                <% vendors.forEach((vendor) => { %>
+                                    <option value="<%= vendor.company %>"><%= vendor.company %> - <%= vendor.city %>, <%= vendor.state %> </option>
+                                <% }) %>
+                            </select>
+                        </div>
                         <button class="modal-button">Search</button>
                     </div>
                 </div>

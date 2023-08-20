@@ -14,42 +14,50 @@
             <form action="/search-address-book" method="post" autocomplete="off">
                 <div class="search-frame">
                     <% if (showAll) { %>
-                        <select class="form-select input-sm" name="searchFilter" id="searchFilter"  aria-label="Default select example">
-                            <% if (searchFilter === 'city') { %>
-                                <option value="company">Company</option>
-                                <option value="city" selected>City</option>
-                                <option value="state">State</option>                            
-                            <% } else if (searchFilter === 'state') { %>
-                                <option value="company">Company</option>
-                                <option value="city">City</option>
-                                <option value="state" selected>State</option>
-                            <% } else { %>
-                                <option value="company" selected>Company</option>
-                                <option value="city">City</option>
-                                <option value="state">State</option>
-                            <% } %>
-                        </select>
-                        <input type="text" name="searchValue" id="searchValue" class="form-control input-md" value="<%= searchValue %>" placeholder="Search...">
+                        <div class="input-sm">
+                            <select class="form-select" name="searchFilter" id="searchFilter"  aria-label="Default select example">
+                                <% if (searchFilter === 'city') { %>
+                                    <option value="company">Company</option>
+                                    <option value="city" selected>City</option>
+                                    <option value="state">State</option>                            
+                                <% } else if (searchFilter === 'state') { %>
+                                    <option value="company">Company</option>
+                                    <option value="city">City</option>
+                                    <option value="state" selected>State</option>
+                                <% } else { %>
+                                    <option value="company" selected>Company</option>
+                                    <option value="city">City</option>
+                                    <option value="state">State</option>
+                                <% } %>
+                            </select>
+                        </div>
+                        <div class="input-md">
+                            <input type="text" name="searchValue" id="searchValue" class="form-control" value="<%= searchValue %>" placeholder="Search...">
+                        </div>
                         <button class="search-button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                             </svg>
                             Search
                         </button>
-                        <a class="" href="/address-book">
+                        <a class="search-button" href="/address-book">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                             </svg>
                             Show All
                         </a>
                     <% } else { %>
-                        <select class="form-select input-sm" name="searchFilter" id="searchFilter" aria-label="Default select example">
-                            <option selected>--- Select Filter ---</option>
-                            <option value="company">Company</option>
-                            <option value="city">City</option>
-                            <option value="state">State</option>
-                        </select>
-                        <input type="text" name="searchValue" id="searchValue" class="form-control input-md" placeholder="Search...">
+                        <div class="input-sm">
+                            <select class="form-select" name="searchFilter" id="searchFilter" aria-label="Default select example">
+                                <option selected>--- Select Filter ---</option>
+                                <option value="company">Company</option>
+                                <option value="city">City</option>
+                                <option value="state">State</option>
+                            </select>
+                        </div>
+                        <div class="input-md"> 
+                            <input type="text" name="searchValue" id="searchValue" class="form-control" placeholder="Search...">
+                        </div>
                         <button class="search-button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
@@ -140,65 +148,65 @@
         </div>
         <div class="modal-body">
             <div class="costing-body-split">
-                <div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-25">
-                        <div>
+                <div class="">
+                    <div class="flex-container flex-row flex-between gap-25">
+                        <div class="input-lg">
                             <label for="company" class="form-label">Company:</label>
-                            <input class="form-control input-lg" type="text" id="company" name="company">  
+                            <input class="form-control" type="text" id="company" name="company">  
                         </div>
-                        <div>
+                        <div class="input-lg">
                             <label for="attention" class="form-label">Attention:</label>
-                            <input class="form-control input-lg" type="text" id="attention" name="attention">  
+                            <input class="form-control" type="text" id="attention" name="attention">  
                         </div>
                     </div>
                     <div class="flex-container flex-row flex-wrap">
-                        <div>
+                        <div class="input-xl">
                             <label for="address-one" class="form-label">Address Line 1:</label>
-                            <input class="form-control input-xlg" type="text" id="address-one" name="addressOne">  
+                            <input class="form-control" type="text" id="address-one" name="addressOne">  
                         </div>
                     </div>
                     <div class="flex-container flex-row flex-wrap">
-                        <div>
+                        <div class="input-xl">
                             <label for="address-two" class="form-label">Address Line 2:</label>
-                            <input class="form-control input-xlg" type="text" id="address-two" name="addressTwo">  
+                            <input class="form-control" type="text" id="address-two" name="addressTwo">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-10">
+                        <div class="input-sm">
                             <label for="city" class="form-label">City:</label>
-                            <input class="form-control input-sm" type="text" id="city" name="city">  
+                            <input class="form-control" type="text" id="city" name="city">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="state" class="form-label">State:</label>
-                            <input class="form-control input-xs" type="text" id="state" name="state">  
+                            <input class="form-control" type="text" id="state" name="state">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="postal" class="form-label">Postal:</label>
-                            <input class="form-control input-xs" type="text" id="postal" name="postal">  
+                            <input class="form-control" type="text" id="postal" name="postal">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="country" class="form-label">Country:</label>
-                            <input class="form-control input-xs" type="text" id="country" name="country">  
+                            <input class="form-control" type="text" id="country" name="country">  
                         </div>
                     </div>
                     <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                        <div class="input-sm">
                             <label for="phone" class="form-label">Phone:</label>
-                            <input class="form-control input-sm" type="text" id="phone" name="phone">  
+                            <input class="form-control" type="text" id="phone" name="phone">  
                         </div>
-                        <div>
+                        <div class="input-sm">
                             <label for="fax" class="form-label">Fax:</label>
-                            <input class="form-control input-sm" type="text" id="fax" name="fax">  
+                            <input class="form-control" type="text" id="fax" name="fax">  
                         </div>
-                        <div>
+                        <div class="input-sm">
                             <label for="email" class="form-label">Email:</label>
-                            <input class="form-control input-sm" type="email" id="email" name="email">  
+                            <input class="form-control" type="email" id="email" name="email">  
                         </div>
                     </div>
                     <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                        <div class="input-lg">
                             <label for="salesRep" class="form-label">Sales Rep:</label>
-                            <input class="form-control input-lg" type="text" id="salesRep" name="salesRep">  
+                            <input class="form-control" type="text" id="salesRep" name="salesRep">  
                         </div>
                     </div>
                 </div>

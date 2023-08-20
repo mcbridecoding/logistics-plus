@@ -14,7 +14,7 @@
             <div class="purchasing-report">
                 <div class="purchasing-table">
                     <div class="report-header">
-                        <form action="/invoicing/searchInvoice" method="post" autocomplete="off">
+                        <form action="/invoicing/search-invoice" method="post" autocomplete="off">
                             <div class="flex-container flex-row flex-between">
                                 <div class="search-frame">
                                     <% if (showAll) { %>
@@ -57,7 +57,7 @@
                                     </div>
                                 </th>
                                 <th scope="col" class="table-column-small">Date</th>
-                                <th scope="col">Invoice #</th>
+                                <th scope="col" class="table-column-small">Invoice #</th>
                                 <th scope="col">Sold To</th>
                                 <th scope="col" class="table-column-small">Invoice Total</th>
                                 <th scope="col" class="table-column-small">Status</th>
@@ -129,19 +129,19 @@
                     New Invoice
                 </a>
                 <h2>Reports:</h2>
-                <a class="purchasing-button" href="/invoicing/orders=open">
+                <a class="purchasing-button" href="/invoicing/invoice=open">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
                         <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
                     </svg>
                     Open Orders
                 </a>
-                <a class="purchasing-button" href="/invoicing/orders=closed">
+                <a class="purchasing-button" href="/invoicing/invoice=closed">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
                         <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
                     </svg>
                     Closed Orders
                 </a>
-                <a class="purchasing-button" href="/invoicing/orders=All">
+                <a class="purchasing-button" href="/invoicing/invoice=All">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
                         <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
                     </svg>
@@ -184,24 +184,16 @@
                         </select>
                     </div>
                     <div class="">                    
-                        <label for="paymentDate" class="form-label">Payment Date:</label>
+                        <label for="paymentDate" class="form-label">Paid Date:</label>
                         <input class="form-control input-sm" type="date" id="" name="paymentDate" value="<%= invoice.orderStatus.paymentDate %>">
                     </div> 
                     <div class="">                    
-                        <label for="paymentType" class="form-label">Payment Type:</label>
+                        <label for="paymentType" class="form-label">Paid Via:</label>
                         <input class="form-control input-sm" type="text" id="" name="paymentType" value="<%= invoice.orderStatus.paymentType %>" autocomplete="on">
                     </div>
-                    <div class="">
-                        <label for="productReceived" class="form-label">Product Recieved:</label>
-                        <select class="form-select input-sm" name="productReceived" id="" required>
-                            <% if (invoice.orderStatus.productReceived) { %>
-                                <option value="true" selected>True</option>
-                                <option value="false">False</option>
-                            <% } else { %>
-                                <option value="true">True</option>
-                                <option value="false" selected>False</option>
-                            <% } %>
-                        </select>
+                    <div class="">                    
+                        <label for="invoiceNote" class="form-label">Note:</label>
+                        <input class="form-control input-lg" type="text" id="" name="invoiceNote" value="<%= invoice.orderStatus.invoiceNote %>">
                     </div>
                 </div>
                 <div class="modal-button-group">

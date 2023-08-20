@@ -48,6 +48,7 @@ const addressBookSchema = new mongoose.Schema({
 });
 
 const defaultSettingsSchema = new mongoose.Schema({
+    owner: Object,
     purchasing: Object,
     invoicing: Object   
 });
@@ -65,6 +66,8 @@ const inventorySchema = new mongoose.Schema({
 const invoiceSchema = new mongoose.Schema({
     invoiceNumber: String,
     date: String,
+    dueDate: String,
+    terms: String,
     owner: Object,
     soldTo: Object,
     shipTo: Object,
@@ -449,7 +452,7 @@ app.route('/add-user')
                 });
             }
             });
-        }); 
+    }); 
 
 app.route('/address-book')
     .get(async (req, res) => {
@@ -534,7 +537,7 @@ app.route('/address-book/add-address')
             vendor: vendor
         });
         newAddress.save();
-        res.redirect('/address-book');
+        res.redirect(`/customer-card/id=${newAddress._id}`);
     });
 
 app.route('/address-book/edit-address')
@@ -911,6 +914,8 @@ app.route('/invoicing/edit-invoice/id=:id')
 
         Invoice.findByIdAndUpdate(editId, {
             date: req.body.date,
+            dueDate: req.body.dueDate,
+            terms: req.body.terms,
             soldTo: soldTo,
             shipTo: shipTo,
             shipMethod: req.body.shipMethod,
@@ -931,6 +936,9 @@ app.route('/invoicing/new-order')
     .get(async (req, res) => {
         const date = new Date();
         const todayDate = `${date.getFullYear()}-${dateStringFormat(date.getUTCMonth() +1)}-${dateStringFormat(date.getUTCDate())}`
+        let dueDate = new Date();
+        dueDate.setDate(date.getDate() + 30);
+        dueDate = `${dueDate.getFullYear()}-${dateStringFormat(dueDate.getUTCMonth() +1)}-${dateStringFormat(dueDate.getUTCDate())}`
 
         let nextInvoiceNumber = '';
 
@@ -943,6 +951,7 @@ app.route('/invoicing/new-order')
 
         res.render('new-invoice', {
             todayDate: todayDate,
+            dueDate: dueDate,
             nextInvoiceNumber: nextInvoiceNumber,
             addressList: addressList,
             defaultInformation: defaultInformation
@@ -965,6 +974,8 @@ app.route('/invoicing/new-order')
         const newInvoice = new Invoice({
             invoiceNumber: req.body.invoiceNumber,
             date: req.body.date,
+            dueDate: req.body.dueDate,
+            terms: req.body.terms,
             soldTo: soldTo,
             shipTo: shipTo,
             orderStatus:  {status: 'open'},
@@ -974,6 +985,51 @@ app.route('/invoicing/new-order')
         });
         newInvoice.save();
         res.redirect(`/invoicing/view-invoice-id=${newInvoice._id}`);
+    });
+
+app.route('/invoicing/search-invoice')
+    .post(async (req, res) => {
+        const searchValue = req.body.searchValue;
+        
+        const showAll = true;
+
+        const perPage = 1;
+        const total = await Invoice.find({ invoiceNumber: searchValue });
+        const pages = Math.ceil(total.length / perPage);
+        const pageNumber = (req.query.page == null) ? 1 : req.query.page;
+        const startFrom = (pageNumber - 1) * perPage;
+
+        const invoices = await Invoice.find({ invoiceNumber: searchValue }).sort({ invoiceNumber: 1 }).skip(startFrom).limit(perPage);
+        
+        res.render('invoicing', {
+            showAll: showAll,
+            pages: pages,
+            pageNumber: pageNumber,
+            invoices: invoices,
+            searchValue: searchValue
+        });
+
+    });
+
+app.route('/invoicing/update-status')
+    .post((req, res) => {
+        const invoiceId = req.body.invoiceId;
+
+        Invoice.findByIdAndUpdate(invoiceId, {
+            orderStatus: {
+                status: req.body.status,
+                paymentDate: req.body.paymentDate,
+                paymentType: req.body.paymentType,
+                invoiceNote: req.body.invoiceNote,         
+            }            
+        }, (err, docs) => {
+            if (err) {
+                console.log(`Error: ${err}`);
+            } else {
+                console.log(docs);
+                res.redirect('/invoicing');
+            }
+        });
     });
 
 app.route('/invoicing/view-invoice-id=:id')
@@ -1001,6 +1057,33 @@ app.route('/invoicing/view-invoice-id=:id')
             products: products,
             accessorials: accessorials,
         });
+    });
+
+app.route('/invoicing/invoice=:id')
+    .get(async(req, res) => {
+        const showAll = false;
+
+        const perPage = 25;
+        const total = (req.params.id === 'All') ? await Invoice.find({}) : await Invoice.find({ 'orderStatus.status': req.params.id }) ;
+        const pages = Math.ceil(total.length / perPage);
+        const pageNumber = (req.query.page == null) ? 1 : req.query.page;
+        const startFrom = (pageNumber - 1) * perPage;
+        
+        const invoices = (req.params.id == 'All') ? await Invoice.find({})
+        .sort({ invoiceNumber: 1 })
+        .skip(startFrom)
+        .limit(perPage) 
+        : await Invoice.find({ 'orderStatus.status': req.params.id })
+        .sort({ invoiceNumber: 1 })
+        .skip(startFrom)
+        .limit(perPage)
+
+        res.render('invoicing', {
+            showAll: showAll,
+            pages: pages,
+            pageNumber: pageNumber,
+            invoices: invoices
+        })
     });
 
 app.route('/invoicing/invoice=:invoiceId/add-line-item')
@@ -1207,17 +1290,28 @@ app.route('/settings')
 
 app.route('/settings/create-defaults')
     .post(async(req, res) => {
-        const defaultId = req.body.defaultId;
-
         const newDefault = new Default({
+            owner: {
+                company: req.body.ownerCompany,
+                attention: req.body.ownerAttention,
+                addressOne: req.body.ownerAddressOne,
+                addressTwo: req.body.ownerAddressTwo,
+                city: req.body.ownerCity,
+                state: req.body.ownerState,
+                postal: req.body.ownerPostal,
+                country: req.body.ownerCountry,
+                phone: req.body.phone, 
+                fax: req.body.fax,
+                email: req.body.email
+            },
             purchasing: {
-                billTo: req.body.purchasingBillTo,
-                vendor: req.body.purchasingVendor,
-                shipTo: req.body.purchasingShipTo
+                billTo: '',
+                vendor: '',
+                shipTo: ''
             },
             invoicing: {
-                billTo: req.body.invoicingBillTo,
-                shipTo: req.body.invoicingShipTo      
+                billTo: '',
+                shipTo: ''     
             }
         })
         newDefault.save();
@@ -1225,13 +1319,24 @@ app.route('/settings/create-defaults')
     });
 
 app.route('/settings/edit-defaults')
-    .post(async(req, res) => {
-        const defaultId = req.body.defaultId;
-        
+    .post(async(req, res) => {       
         const defaultSetting = await Default.findOne({});
 
 
         Default.findByIdAndUpdate(defaultSetting._id, {
+            owner: {
+                company: req.body.ownerCompany,
+                attention: req.body.ownerAttention,
+                addressOne: req.body.ownerAddressOne,
+                addressTwo: req.body.ownerAddressTwo,
+                city: req.body.ownerCity,
+                state: req.body.ownerState,
+                postal: req.body.ownerPostal,
+                country: req.body.ownerCountry,
+                phone: req.body.ownerPhone, 
+                fax: req.body.ownerFax,
+                email: req.body.ownerEmail
+            },
             purchasing: {
                 billTo: req.body.purchasingBillTo,
                 vendor: req.body.purchasingVendor,
@@ -1494,8 +1599,8 @@ app.route('/orders/view-order-id=:id')
 
 app.route('/print-purchase-order-:id')
     .get(async (req, res) => {
-        const id = req.params.id;
-
+        const id = req.params.id; 
+        
         const purchaseOrder = await Purchasing.findOne({ _id: id });
 
         const soldTo = await AddressBook.findOne({ _id: purchaseOrder.soldTo.id });
@@ -1514,9 +1619,35 @@ app.route('/print-purchase-order-:id')
             soldTo,
             vendor,
             shipTo,
+            taxes,
+        ); 
+    });
+
+app.route('/print-invoice-:id')
+    .get(async (req, res) => {
+        const id = req.params.id;
+
+        const invoice = await Invoice.findOne({ _id: id });
+
+        const defaults = await Default.findOne({});
+        const owner = defaults.owner;
+        const soldTo = await AddressBook.findOne({ _id: invoice.soldTo.id });
+        const shipTo = await AddressBook.findOne({ _id: invoice.shipTo.id });
+        
+        const stream = res.writeHead(200, {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment;filename=Invoice#${invoice.invoiceNumber}.pdf`  
+        });
+
+        pdfService.buildInvoice(
+            (chunk) => stream.write(chunk),
+            () => stream.end(),
+            invoice,
+            owner,
+            soldTo,
+            shipTo,
             taxes
         ); 
-        console.log(purchaseOrder.notes.length)
     });
 
 app.route('/purchasing')

@@ -203,29 +203,51 @@ function calculateTotalCUFT() {
 }
 
 function unlockElement(id) {
-    if (id === 'defaultPurchasing') {
-        document.getElementById(`${id}BillTo`).disabled = false;
-        document.getElementById(`${id}Vendor`).disabled = false;
-        document.getElementById(`${id}ShipTo`).disabled = false;
-    }
-    if (id === 'defaultInvoicing') {
-        document.getElementById(`${id}BillTo`).disabled = false;
-        document.getElementById(`${id}ShipTo`).disabled = false; 
-    }
-    document.getElementById(`${id}Footer`).style.display = 'flex';  
+    document.getElementById(`defaultPurchasingBillTo`).disabled = false;
+    document.getElementById(`defaultPurchasingVendor`).disabled = false;
+    document.getElementById(`defaultPurchasingShipTo`).disabled = false;
+
+    document.getElementById(`defaultInvoicingBillTo`).disabled = false;
+    document.getElementById(`defaultInvoicingShipTo`).disabled = false; 
+
+    document.getElementById(`defaultOwnerCompany`).readOnly = false;
+    document.getElementById(`defaultOwnerAttention`).readOnly = false;
+    document.getElementById(`defaultOwnerAddressOne`).readOnly = false;
+    document.getElementById(`defaultOwnerAddressTwo`).readOnly = false;
+    document.getElementById(`defaultOwnerCity`).readOnly = false;
+    document.getElementById(`defaultOwnerState`).readOnly = false;
+    document.getElementById(`defaultOwnerPostal`).readOnly = false;
+    document.getElementById(`defaultOwnerCountry`).readOnly = false;
+    document.getElementById(`defaultOwnerPhone`).readOnly = false;
+    document.getElementById(`defaultOwnerFax`).readOnly = false;
+    document.getElementById(`defaultOwnerEmail`).readOnly = false;
+
+    document.getElementById('edit-button').style.display = 'none';
+    document.getElementById(`defaultFooter`).style.display = 'flex';  
 }
 
 function lockElement(id) {
-    if (id === 'defaultPurchasing') {
-        document.getElementById(`${id}BillTo`).disabled = true;
-        document.getElementById(`${id}Vendor`).disabled = true;
-        document.getElementById(`${id}ShipTo`).disabled = true;
-    }
-    if (id === 'defaultInvoicing') {
-        document.getElementById(`${id}BillTo`).disabled = true;
-        document.getElementById(`${id}ShipTo`).disabled = true;
-    }
-    document.getElementById(`${id}Footer`).style.display = 'none';
+    document.getElementById(`defaultPurchasingBillTo`).disabled = true;
+    document.getElementById(`defaultPurchasingVendor`).disabled = true;
+    document.getElementById(`defaultPurchasingShipTo`).disabled = true;
+
+    document.getElementById(`defaultInvoicingBillTo`).disabled = true;
+    document.getElementById(`defaultInvoicingShipTo`).disabled = true;
+    
+    document.getElementById(`defaultOwnerCompany`).readOnly = true;
+    document.getElementById(`defaultOwnerAttention`).readOnly = true;
+    document.getElementById(`defaultOwnerAddressOne`).readOnly = true;
+    document.getElementById(`defaultOwnerAddressTwo`).readOnly = true;
+    document.getElementById(`defaultOwnerCity`).readOnly = true;
+    document.getElementById(`defaultOwnerState`).readOnly = true;
+    document.getElementById(`defaultOwnerPostal`).readOnly = true;
+    document.getElementById(`defaultOwnerCountry`).readOnly = true;
+    document.getElementById(`defaultOwnerPhone`).readOnly = true;
+    document.getElementById(`defaultOwnerFax`).readOnly = true;
+    document.getElementById(`defaultOwnerEmail`).readOnly = true;
+
+    document.getElementById(`defaultFooter`).style.display = 'none';
+    document.getElementById('edit-button').style.display = 'flex';
 }
 
 function addSku(id) {

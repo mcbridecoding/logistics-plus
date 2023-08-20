@@ -13,35 +13,35 @@
         </div>
         <div class="purchase-order-body">
             <div class="new-quote-form">
-                <div class="flex-container flex-row flex-start gap-50 purchase-order-row">
-                    <div class="">                    
+                <div class="flex-container flex-row flex-start gap-25 purchase-order-row">
+                    <div class="input-md">                    
                         <label for="poNumber" class="form-label">PO#:</label>
                         <% if (nextPurchaseOrder === '') { %>
-                            <input class="form-control input-md" type="text" id="poNumber" name="poNumber" value="<%= nextPurchaseOrder %>" required>
+                            <input class="form-control" type="text" id="poNumber" name="poNumber" value="<%= nextPurchaseOrder %>" required>
                         <% } else { %>
-                            <input class="form-control input-md" type="text" id="poNumber" name="poNumber" value="<%= nextPurchaseOrder %>" readonly required>
+                            <input class="form-control" type="text" id="poNumber" name="poNumber" value="<%= nextPurchaseOrder %>" readonly required>
                         <% } %>
                     </div>
-                    <div class="">                    
+                    <div class="input-sm">                    
                         <label for="date" class="form-label">Date:</label>
-                        <input class="form-control input-sm" type="date" id="date" name="date" value="<%= todayDate %>" required>
+                        <input class="form-control" type="date" id="date" name="date" value="<%= todayDate %>" required>
                     </div>            
-                    <div class="">                    
+                    <div class="input-md">                    
                         <label for="shipVia" class="form-label">Ship Via:</label>
-                        <input class="form-control input-md" type="text" id="shipVia" name="shipVia" value="" required>
+                        <input class="form-control" type="text" id="shipVia" name="shipVia" value="" required>
                     </div> 
-                    <div class="">                    
+                    <div class="input-md">                    
                         <label for="currency" class="form-label">Currency:</label>
-                        <select class="form-select input-md" name="currency" id="currency">
+                        <select class="form-select" name="currency" id="currency">
                             <option value="CAD">CAD</option>
                             <option value="USD">USD</option>
                         </select>
                     </div> 
                 </div>
-                <div class="flex-container flex-row flex-between">
-                    <div>
+                <div class="flex-container flex-row flex-row gap-25">
+                    <div class="input-xl">
                         <label for="soldTo" class="form-label">Bill To:</label>
-                        <select class="form-select input-xlg" name="soldTo" id="soldTo" required>
+                        <select class="form-select" name="soldTo" id="soldTo" required>
                             <% if (defaultInformation.purchasing.billTo.id === '') { %>
                                 <option value="" selected></option>
                                 <% addressList.forEach((address) => { %>
@@ -59,9 +59,9 @@
                             <% } %>
                         </select>
                     </div>
-                    <div>
+                    <div class="input-xl">
                         <label for="vendor" class="form-label">Vendor:</label>
-                        <select class="form-select input-xlg" name="vendor" id="vendor" required>
+                        <select class="form-select" name="vendor" id="vendor" required>
                             <% if (defaultInformation.purchasing.vendor.id === '') { %>
                                 <option value="" selected></option>
                                 <% addressList.forEach((address) => { %>
@@ -79,9 +79,9 @@
                             <% } %>
                         </select>
                     </div>
-                    <div>
+                    <div class="input-xl">
                         <label for="shipTo" class="form-label">Ship To:</label>
-                        <select class="form-select input-xlg" name="shipTo" id="shipTo" required>
+                        <select class="form-select" name="shipTo" id="shipTo" required>
                             <% if (defaultInformation.purchasing.shipTo.id === '') { %>
                                 <option value="" selected></option>
                                 <% addressList.forEach((address) => { %>

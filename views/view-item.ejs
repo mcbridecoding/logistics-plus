@@ -356,8 +356,10 @@
                     <h3>Product ID:</h3>
                 </div>
                 <div class="search-params-column">                        
-                    <div class="flex-container flex-row flex-between">
-                        <input type="text" class="form-control input-xlg" name="searchId">
+                    <div class="flex-container flex-row flex-start gap-25">
+                        <div class="input-xl">
+                            <input type="text" class="form-control input" name="searchId">
+                        </div>
                         <button class="modal-button">Search</button>
                     </div>
                     <div>
@@ -371,8 +373,10 @@
                     <h3>Description:</h3>
                 </div>
                 <div class="search-params-column">                        
-                    <div class="flex-container flex-row flex-between">
-                        <input type="text" class="form-control input-xlg" name="searchId">
+                    <div class="flex-container flex-row flex-start gap-25">
+                        <div class="input-xl">
+                            <input type="text" class="form-control" name="searchId">
+                        </div>
                         <button class="modal-button">Search</button>
                     </div>
                     <div>
@@ -386,13 +390,15 @@
                     <h3>Vendor:</h3>
                 </div>
                 <div class="search-params-column">                        
-                    <div class="flex-container flex-row flex-between">
-                        <select name="searchId" id="" class="form-select input-xlg">
-                                <option value=""></option>
-                            <% vendors.forEach((vendor) => { %>
-                                <option value="<%= vendor.company %>"><%= vendor.company %> - <%= vendor.city %>, <%= vendor.state %> </option>
-                            <% }) %>
-                        </select>
+                    <div class="flex-container flex-row flex-start gap-25">
+                        <div class="input-xl">
+                            <select name="searchId" id="" class="form-select">
+                                    <option value=""></option>
+                                <% vendors.forEach((vendor) => { %>
+                                    <option value="<%= vendor.company %>"><%= vendor.company %> - <%= vendor.city %>, <%= vendor.state %> </option>
+                                <% }) %>
+                            </select>
+                        </div>
                         <button class="modal-button">Search</button>
                     </div>
                 </div>
