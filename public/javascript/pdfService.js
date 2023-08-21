@@ -52,11 +52,11 @@ function buildInvoice(dataCallback, endCallback, invoice, owner, soldTo, shipTo,
     doc.moveTo(45, 257).lineTo((docWidth - 45), 257).stroke();
     doc.moveTo(45, (docHeight - 25)).lineTo((docWidth - 45), (docHeight - 25));
 
-    doc.moveTo(45, (docHeight - 100)).lineTo((docWidth - 45), (docHeight - 100)).stroke();
-    doc.moveTo(45, (docHeight - 105)).lineTo((docWidth - 45), (docHeight - 105)).stroke();
-    doc.moveTo(45, (docHeight - 82)).lineTo((docWidth / 2) + 50, (docHeight - 82)).stroke();
-    doc.moveTo(((docWidth / 2) + 50), (docHeight - 100)).lineTo(((docWidth / 2) + 50), (docHeight - 25)).stroke();
-    doc.moveTo(((docWidth / 2) + 55), (docHeight - 100)).lineTo(((docWidth / 2) + 55), (docHeight - 25)).stroke();
+    doc.moveTo(45, (docHeight - 120)).lineTo((docWidth - 45), (docHeight - 120)).stroke();
+    doc.moveTo(45, (docHeight - 115)).lineTo((docWidth - 45), (docHeight - 115)).stroke();
+    doc.moveTo(45, (docHeight - 98)).lineTo((docWidth / 2) + 50, (docHeight - 98)).stroke();
+    doc.moveTo(((docWidth / 2) + 50), (docHeight - 115)).lineTo(((docWidth / 2) + 50), (docHeight - 25)).stroke();
+    doc.moveTo(((docWidth / 2) + 55), (docHeight - 115)).lineTo(((docWidth / 2) + 55), (docHeight - 25)).stroke();
     doc.moveTo(((docWidth / 2) + 55), (docHeight - 45)).lineTo((docWidth - 45), (docHeight - 45)).stroke();
 
     doc.fontSize(10);
@@ -110,6 +110,14 @@ function buildInvoice(dataCallback, endCallback, invoice, owner, soldTo, shipTo,
 
     doc.table(table, { width: (docWidth - 50), x: 50, y: 273 });
 
+    doc.font(`Helvetica-Bold`);
+    doc.fontSize(12);
+    if (invoice.terms === 'Immediately') {
+        doc.text(`** Please pay the invoice upon receipt **`, 45, (docHeight - 145), { align: 'center' })
+    } else {
+        doc.text(`** Please pay the invice within ${invoice.terms} **`, 45, (docHeight - 145), { align: 'center' });
+    }
+
     const subTotals = [];
 
     invoice.lineItems.forEach((line) => {
@@ -118,27 +126,41 @@ function buildInvoice(dataCallback, endCallback, invoice, owner, soldTo, shipTo,
 
     let currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'CAD' });
 
-    const subTotal = subTotals.reduce((a, b) => a + b, 0);
+    let subTotal = subTotals.reduce((a, b) => a + b, 0);
+    const disc = subTotal * (Number(invoice.discount) / 100);
+    subTotal = subTotal - disc;
     const gst = (Number(subTotal) * (Number(taxes.GST) / 100));
     const pst = (Number(subTotal) * (Number(taxes.PST) / 100));
     const total = Number(subTotal) + Number(gst) + Number(pst);
 
     doc.fontSize(10);
     doc.font(`Helvetica-Bold`);
-    doc.text(`Notes:`, 48, (docHeight - 95));
+    doc.text(`Notes:`, 48, (docHeight - 110));
     doc.fontSize(8);
-    doc.text(`${invoice.notes}`, 48, (docHeight - 80), {align: 'left', width: (docWidth / 2)});
+    doc.text(`${invoice.notes}`, 48, (docHeight - 92), {align: 'left', width: (docWidth / 2)});
 
     doc.fontSize(9);
     doc.font(`Helvetica`);
-    doc.text(`Sub Total:`, ((docWidth / 2) + 60), (docHeight - 95));
-    doc.text(`PST @ ${taxes.PST}%:`, ((docWidth / 2) + 60), (docHeight - 80));
-    doc.text(`GST @ ${taxes.GST}%:`, ((docWidth / 2) + 60), (docHeight - 65));
+    doc.text(`Sub Total:`, ((docWidth / 2) + 60), (docHeight - 110));
+    if (invoice.discount === null) {
+        doc.text(`PST @ ${taxes.PST}%:`, ((docWidth / 2) + 60), (docHeight - 95));
+        doc.text(`GST @ ${taxes.GST}%:`, ((docWidth / 2) + 60), (docHeight - 80));
+    } else {
+        doc.text(`Discount (${invoice.discount} %):`, ((docWidth / 2) + 60), (docHeight - 95));
+        doc.text(`PST @ ${taxes.PST}%:`, ((docWidth / 2) + 60), (docHeight - 80));
+        doc.text(`GST @ ${taxes.GST}%:`, ((docWidth / 2) + 60), (docHeight - 65));
+    }
     doc.text(`Total (${invoice.currency}):`, ((docWidth / 2) + 60), (docHeight - 40));
 
-    doc.text(`${currency.format(subTotal).slice(2)}`, ((docWidth / 2) + 180), (docHeight - 95), {align: 'right'});
-    doc.text(`${currency.format(pst).slice(2)}`, ((docWidth / 2) + 180), (docHeight - 80), {align: 'right'});
-    doc.text(`${currency.format(gst).slice(2)}`, ((docWidth / 2) + 180), (docHeight - 65), {align: 'right'});
+    doc.text(`${currency.format((subTotal + disc)).slice(2)}`, ((docWidth / 2) + 180), (docHeight - 110), {align: 'right'});
+    if (invoice.discount === null) {
+        doc.text(`${currency.format(pst).slice(2)}`, ((docWidth / 2) + 180), (docHeight - 95), {align: 'right'});
+        doc.text(`${currency.format(gst).slice(2)}`, ((docWidth / 2) + 180), (docHeight - 80), {align: 'right'});
+    } else {
+        doc.text(`- ${currency.format(disc).slice(2)}`, ((docWidth / 2) + 180), (docHeight - 95), {align: 'right'});
+        doc.text(`${currency.format(pst).slice(2)}`, ((docWidth / 2) + 180), (docHeight - 80), {align: 'right'});
+        doc.text(`${currency.format(gst).slice(2)}`, ((docWidth / 2) + 180), (docHeight - 65), {align: 'right'});
+    }
     doc.text(`${currency.format(total).slice(2)}`, ((docWidth / 2) + 180), (docHeight - 40), {align: 'right'});
 
     doc.end();

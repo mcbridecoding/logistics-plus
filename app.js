@@ -77,6 +77,7 @@ const invoiceSchema = new mongoose.Schema({
     lineItems: Array,
     currency: String,
     invoiceTotal: String,
+    discount: Number,
     notes: String,
 })
 
@@ -406,13 +407,15 @@ async function findItemDetails(id) {
     return item;
 }
 
-async function calculateInvoiceTotal(lineItems) {    
+async function calculateInvoiceTotal(lineItems, discount) {    
     const subTotals = [];
     lineItems.forEach((item) => {
         subTotals.push(Number(item.lineTotal));
     });
-
-    const subTotal = subTotals.reduce((a, b) => a + b, 0);
+    
+    let subTotal = subTotals.reduce((a, b) => a + b, 0);
+    const disc = subTotal * (Number(discount) / 100);
+    subTotal = subTotal - disc;
     const pst = subTotal * (taxes.PST / 100);
     const gst = subTotal * (taxes.GST / 100);
     const total = subTotal + gst + pst;
@@ -908,7 +911,7 @@ app.route('/invoicing/edit-invoice/id=:id')
 
         const lineTotals = await Invoice.findOne({ _id: editId });
 
-        const lineTotal = await calculateInvoiceTotal(lineTotals.lineItems);
+        const lineTotal = await calculateInvoiceTotal(lineTotals.lineItems, lineTotals.discount);
 
         const invoiceTotal = currency.format(lineTotal).slice(2);
 
@@ -921,6 +924,7 @@ app.route('/invoicing/edit-invoice/id=:id')
             shipMethod: req.body.shipMethod,
             currency: req.body.currency,
             notes: req.body.notes,
+            discount: req.body.discount,
             invoiceTotal: invoiceTotal,
         }, (err, docs) => {
             if (err) {
@@ -981,6 +985,7 @@ app.route('/invoicing/new-order')
             orderStatus:  {status: 'open'},
             shipMethod: req.body.shipMethod,
             currency: req.body.currency,
+            discount: req.body.discount,
             notes: req.body.notes, 
         });
         newInvoice.save();
@@ -1770,7 +1775,7 @@ app.route('/purchasing/edit-po/id=:id')
 
         const lineTotals = await Purchasing.findOne({ _id: editId });
 
-        const lineTotal = await calculateInvoiceTotal(lineTotals.lineItems);
+        const lineTotal = await calculateInvoiceTotal(lineTotals.lineItems, 0);
 
         const invoiceTotal = currency.format(lineTotal).slice(2);
 

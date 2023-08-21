@@ -36,13 +36,19 @@ function closeModal(id) {
 
 function blurrBackground() {
     document.getElementById('main').style.filter = 'blur(5px)';
+    document.getElementById('main').style.pointerEvents = 'none';
     document.getElementById('nav-panel').style.filter = 'blur(5px)';
+    document.getElementById('nav-panel').style.pointerEvents = 'none';
+
     document.getElementById('logout-button').style.display = 'none';
 }
 
 function cancelBlurrBackground() {
     document.getElementById('main').style.filter = 'blur(0px)';
+    document.getElementById('main').style.pointerEvents = 'auto';
     document.getElementById('nav-panel').style.filter = 'blur(0px)';
+    document.getElementById('nav-panel').style.pointerEvents = 'auto';
+
     document.getElementById('logout-button').style.display = 'block';
 }
 
@@ -287,5 +293,20 @@ function openAccessorial(id) {
     } else {
         document.getElementById('accessorial').style.display = 'none';
         document.getElementById('product').style.display = 'block'; 
+    }
+}
+
+function accountSubMenu(id) {
+    let value = document.getElementById(`${id}-button`);
+    let menu = document.getElementById(`${id}-menu`);
+    
+    if (value.dataset.value === 'closed') {
+        menu.style.display = 'flex';
+        document.getElementById(`${id}-arrow`).style.transform = 'rotate(-90deg)';
+        value.dataset.value = 'open';
+    } else {
+        document.getElementById(`${id}-menu`).style.display = 'none';
+        document.getElementById(`${id}-arrow`).style.transform = 'rotate(0deg)';
+        value.dataset.value = 'closed';
     }
 }

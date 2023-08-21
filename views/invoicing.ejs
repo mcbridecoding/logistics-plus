@@ -50,17 +50,17 @@
                     <table class="table table-secondary table-striped table-hover table-bordered">
                         <thead>
                             <tr class="align-center">
-                                <th scope="col" class="table-options">#</th>
-                                <th scope="col" class="table-options-checkbox">
+                                <th scope="col" class="tbl-fixed-50">#</th>
+                                <th scope="col" class="tbl-fixed-25">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                     </div>
                                 </th>
-                                <th scope="col" class="table-column-small">Date</th>
-                                <th scope="col" class="table-column-small">Invoice #</th>
-                                <th scope="col">Sold To</th>
-                                <th scope="col" class="table-column-small">Invoice Total</th>
-                                <th scope="col" class="table-column-small">Status</th>
+                                <th scope="col" class="tbl-sm">Date</th>
+                                <th scope="col" class="tbl-sm">Invoice #</th>
+                                <th scope="col" class="tbl-lg">Sold To</th>
+                                <th scope="col" class="tbl-md">Invoice Total</th>
+                                <th scope="col" class="tbl-sm">Status</th>
                                 <th scope="col" colspan="2" class="table-options">Options</th>
                             </tr>
                         </thead>
@@ -83,14 +83,14 @@
                                 <% } %>
                                 <td class="align-center proper-case"><%= invoice.orderStatus.status %></td>
                                 <td class="table-options align-middle">                        
-                                    <a class="table-delete-sm" href="/invoicing/view-invoice-id=<%= invoice._id %>">              
+                                    <a class="" href="/invoicing/view-invoice-id=<%= invoice._id %>">              
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                                     </svg>
                                     </a>
                                 </td>
                                 <td class="table-options">
-                                    <div class="table-delete-sm" onclick="openModal('<%= invoice._id %>')">
+                                    <div class="" onclick="openModal('<%= invoice._id %>')">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                                             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                                         </svg>

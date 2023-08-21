@@ -2,11 +2,7 @@
     --header-text: 'Space Grotesk', sans-serif;
     --body-text: 'Jost', sans-serif;
     --button-text: 'Dosis', sans-serif;
-    --input-sm: 200px;
-    --input-md: 275px;
-    --input-lg: 350px;
     --boxShadow: 6px 6px #333333b2;
-    --boxShadowInset: 6px 6px #333333b2 inset;
     --nav-button-color: #EA906C;
     --nav-panel-color: #2B2A4C;
 }
@@ -923,6 +919,12 @@ body {
     height: 32px;
 }
 
+.nav-button .svg-small {
+    height: 25px;
+    width: 25px;
+    transition: 0.8s;
+}
+
 .nav-button:link {
     color: #ffff;
     text-decoration: none;
@@ -1599,71 +1601,90 @@ body {
     width: 14px;
 }
 
+.sub-menu {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.sub-menu .nav-button {
+    background-color: var(--nav-panel-color);
+    border-radius: 0px;
+    animation: fade-in 2s forwards;
+}
+
+.sub-menu .nav-button:hover {
+    border-color: var(--nav-button-color);
+    color: var(--nav-button-color);
+}
+
 .table thead {
     cursor: pointer;
 }
 
-.table-column-small {
-    max-width: 125px;
-    width: 125px;    
+.tbl-fixed-25 {
+    min-width: 25px;
+    max-width: 25px;
 }
 
-.table-column-md {
-    max-width: 150px;
-    width: 150px;    
+.tbl-fixed-50 {
+    min-width: 50px;
+    max-width: 50px;
 }
 
-.table-column-lg {
-    max-width: 650px;
-    width: 650px;    
+.tbl-fixed-100 {
+    min-width: 100px;
+    max-width: 100px;
 }
 
-.table-delete {
-    align-items: center;
-    display: flex;
-    border: 0px;
-    color: #242424;
-    justify-content: center;
-
+.tbl-sm {
+    min-width: 100px;
+    max-width: 100%;
 }
 
-.table-delete svg {
-    height: 34px;
-    width: 34px;
+.tbl-md {
+    min-width: 150px;
+    max-width: 100%;
 }
 
-.table-delete-sm svg {
-    height: 20px;
-    width: 20px;
+.tbl-lg {
+    min-width: 200px;
+    max-width: 100%;
 }
 
-.table-delete-sm:link {
-    color: #242424;
-    text-decoration: none;
-}
-
-.table-delete-sm:visited {
-    color: #242424;
-    text-decoration: none;
-}
-
-.table-delete:link {
-    text-decoration: none;
-}
-
-.table-delete:visited {
-    text-decoration: none;
+.tbl-xl {
+    min-width: 225px;
+    max-width: 100%;
 }
 
 .table-options {
+    min-width: 50px;
+    max-width: 50px;
     cursor: pointer;
-    max-width: 100px;
-    text-align: center;
-    width: 64px;
 }
 
-.table-options-checkbox {
-    max-width: 25px;
+.table-options a {
+    color: #242424;
+    text-decoration: none;
+}
+
+.table-options a:link {
+    text-decoration: none;
+}
+
+.table-options a:visited {
+    text-decoration: none;
+}
+
+.table-options svg {
+    height: 26px;
+    width: 26px;
+}
+
+.table-options-sm svg {
+    height: 20px;
+    width: 20px;
 }
 
 #thirdPartyInformationPanel {
@@ -1690,6 +1711,24 @@ body {
     overflow-y: scroll;
 }
 
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    100% {
+        opacity: 1;
+    }
+    0% {
+        opacity: 0;
+    }
+}
+
 @media screen and (min-width: 320px) and (max-width: 1125px) {
     .flex-row {
         flex-wrap: wrap;
@@ -1708,6 +1747,42 @@ body {
         flex: 2;
     }
 
+    .tbl-sm {
+        min-width: 75px;
+        max-width: 100%;
+    }
+    
+    .tbl-md {
+        min-width: 100px;
+        max-width: 100%;
+    }
+    
+    .tbl-lg {
+        min-width: 150px;
+        max-width: 100%;
+    }
+    
+    .tbl-xl {
+        min-width: 200px;
+        max-width: 100%;
+    }
+    
+    .table-options svg {
+        min-height: 20px;
+        min-width: 20px;
+    }
+
+    .table {
+        min-width: 900px;
+        max-width: 100%;
+    }
+
+    .purchasing-table {
+        min-width: 900px;
+        max-width: 100%;
+        overflow-x: scroll;
+    }
+
 }
 
 @media screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
@@ -1721,6 +1796,57 @@ body {
     
     .input-lg, .input-xl {
         flex: 2;
+    }
+    .flex-row {
+        flex-wrap: wrap;
+    }
+
+    .flex-container:nth-child(3n) {
+        page-break-after: always;
+        break-after: always;
+    }
+
+    .input-xs, .input-sm, .input-md{
+        flex: 1;
+    }
+    
+    .input-lg, .input-xl {
+        flex: 2;
+    }
+
+    .tbl-sm {
+        min-width: 75px;
+        max-width: 100%;
+    }
+    
+    .tbl-md {
+        min-width: 100px;
+        max-width: 100%;
+    }
+    
+    .tbl-lg {
+        min-width: 150px;
+        max-width: 100%;
+    }
+    
+    .tbl-xl {
+        min-width: 200px;
+        max-width: 100%;
+    }
+    
+    .table-options svg {
+        min-height: 20px;
+        min-width: 20px;
+    }
+
+    .table {
+        min-width: 900px;
+        max-width: 100%;
+    }
+
+    .purchasing-table {
+        min-width: 900px;
+        overflow-x: scroll;
     }
     
 }

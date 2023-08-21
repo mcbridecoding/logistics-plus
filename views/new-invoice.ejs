@@ -12,7 +12,7 @@
         </div>
         <div class="purchase-order-body">
             <div class="new-quote-form">
-                <div class="flex-container flex-row flex-start gap-50 purchase-order-row">
+                <div class="flex-container flex-row flex-start gap-25 purchase-order-row">
                     <div class="input-md">                    
                         <label for="invoiceNumber" class="form-label">Invoice #:</label>
                         <% if (nextInvoiceNumber === '') { %>
@@ -51,6 +51,10 @@
                             <option value="USD">USD</option>
                         </select>
                     </div> 
+                    <div class="input-xs">
+                        <label for="discount" class="form-label">Discount (%):</label>
+                        <input class="form-control" type="text" id="discount" name="discount" value="">
+                    </div>
                 </div>
                 <div class="flex-container flex-row flex-start gap-50">
                     <div class="input-xl">

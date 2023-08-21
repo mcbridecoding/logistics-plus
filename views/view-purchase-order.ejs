@@ -101,13 +101,13 @@
                                 <th scope="col" colspan="7">Line Items</th>
                             </tr>
                             <tr class="align-center">
-                                <th scope="col" class="">#</th>
-                                <th scope="col">Item Id</th>
-                                <th scope="col">Description</th>
-                                <th scope="col" class="table-column-small">Qty</th>
-                                <th scope="col" class="table-column-small">Price</th>
-                                <th scope="col" class="table-column-small">Line Total</th>
-                                <th scope="col" class=""></th>
+                                <th scope="col" class="tbl-fixed-50">#</th>
+                                <th scope="col" class="tbl-md">Item Id</th>
+                                <th scope="col" class="tbl-lg">Description</th>
+                                <th scope="col" class="tbl-sm">Qty</th>
+                                <th scope="col" class="tbl-sm">Price</th>
+                                <th scope="col" class="tbl-sm">Line Total</th>
+                                <th scope="col" class="tbl-fixed-50"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,8 +124,8 @@
                                         <td class="align-right"><%= lineItem.quantity %></td>
                                         <td class="align-right">$ <%= lineItem.unitValue %></td>
                                         <td class="align-right">$ <%= lineItem.lineTotal %></td>
-                                        <td class="align-center table-options">
-                                            <div class="table-delete-sm" onclick="openModal('<%= lineItem._id %>')">
+                                        <td class="align-center align-middle table-options">
+                                            <div class="table-options-sm" onclick="openModal('<%= lineItem._id %>')">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                                     <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
                                                 </svg>
@@ -142,13 +142,13 @@
                                 <th scope="col" colspan="7">Accessorial Charges</th>
                             </tr>
                             <tr class="align-center">
-                                <th scope="col" class="">#</th>
-                                <th scope="col">Item Id</th>
-                                <th scope="col">Description</th>
-                                <th scope="col" class="table-column-small">Qty</th>
-                                <th scope="col" class="table-column-small">Price</th>
-                                <th scope="col" class="table-column-small">Line Total</th>
-                                <th scope="col" class=""></tr>
+                                <th scope="col" class="tbl-fixed-50">#</th>
+                                <th scope="col" class="tbl-md">Item Id</th>
+                                <th scope="col" class="tbl-lg">Description</th>
+                                <th scope="col" class="tbl-sm">Qty</th>
+                                <th scope="col" class="tbl-sm">Price</th>
+                                <th scope="col" class="tbl-sm">Line Total</th>
+                                <th scope="col" class="tbl-fixed-50"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -159,14 +159,14 @@
                             <% } else { %>
                                 <% accessorials.forEach((lineItem, index) => { %>
                                     <tr>
-                                        <td class="align-center"><%= index + 1 %></td>
-                                        <td><%= lineItem.itemId %></td>
-                                        <td><%= lineItem.itemDescription %></td>
-                                        <td class="align-right"><%= lineItem.quantity %></td>
-                                        <td class="align-right">$ <%= lineItem.unitValue %></td>
-                                        <td class="align-right">$ <%= lineItem.lineTotal %></td>
-                                        <td class="align-center table-options">
-                                            <div class="table-delete-sm" onclick="openModal('<%= lineItem._id %>')">
+                                        <td class="align-center tbl-fixed-50"><%= index + 1 %></td>
+                                        <td class="tbl-md"><%= lineItem.itemId %></td>
+                                        <td class="tbl-lg"><%= lineItem.itemDescription %></td>
+                                        <td class="align-right tbl-sm"><%= lineItem.quantity %></td>
+                                        <td class="align-right tbl-sm">$ <%= lineItem.unitValue %></td>
+                                        <td class="align-right tbl-sm">$ <%= lineItem.lineTotal %></td>
+                                        <td class="align-center align-middle table-options">
+                                            <div class="table-options-sm" onclick="openModal('<%= lineItem._id %>')">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                                     <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
                                                 </svg>
