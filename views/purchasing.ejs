@@ -43,14 +43,7 @@
                                     <% } %>
                                 </div>
                                 <div class="search-frame-right">
-                                    <button form="print-form" class="search-button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
-                                            <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
-                                            <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
-                                        </svg>
-                                        Print
-                                    </button>
-                                    <div class="search-button" onclick="openModal('delete-modal')">
+                                    <div id="delete-button" class="search-button" onclick="openModal('delete-modal')">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                             <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
                                         </svg>
@@ -74,11 +67,10 @@
                                 <th scope="col" class="tbl-lg">Vendor</th>
                                 <th scope="col" class="tbl-md">Invoice Total</th>
                                 <th scope="col" class="tbl-sm">Status</th>
-                                <th scope="col" colspan="2" class="">Options</th>
+                                <th scope="col" colspan="3" class="">Options</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <form id="print-form" action="/print-purchase-orders" method="post">
                             <form id="delete-form" action="/purchasing/delete-po" method="post">
                             <% purchaseOrders.forEach((purchaseOrder, index) => { %>
                             <tr class="align-center">
@@ -99,9 +91,17 @@
                                 <td class="align-center proper-case"><%= purchaseOrder.orderStatus.status %></td>
                                 <td class="table-options align-middle">                        
                                     <a class="" href="/purchasing/view-po-id=<%= purchaseOrder._id %>">              
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                    </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                        </svg>
+                                    </a>
+                                </td>
+                                <td class="table-options">
+                                    <a href="/print-purchase-order-<%= purchaseOrder._id %>">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+                                            <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                                            <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+                                        </svg>
                                     </a>
                                 </td>
                                 <td class="table-options">
@@ -113,7 +113,6 @@
                                 </td>
                             </tr>
                             <% }) %>
-                            </form>
                             </form>
                         </tbody>
                     </table>
@@ -188,9 +187,9 @@
             </div>
             <div class="modal-body">
                 <div class="flex-container flex-row gap-25">
-                    <div>
+                    <div class="input-sm">
                         <label for="status" class="form-label">Status:</label>
-                        <select class="form-select input-sm" name="status" id="" required>
+                        <select class="form-select" name="status" id="" required>
                             <% if (purchaseOrder.orderStatus.status === 'open') { %>
                                 <option value="closed">Closed</option>
                                 <option value="open" selected>Open</option>
@@ -200,17 +199,17 @@
                             <% } %>
                         </select>
                     </div>
-                    <div class="">                    
+                    <div class="input-sm">                    
                         <label for="paymentDate" class="form-label">Payment Date:</label>
-                        <input class="form-control input-sm" type="date" id="" name="paymentDate" value="<%= purchaseOrder.orderStatus.paymentDate %>">
+                        <input class="form-control" type="date" id="" name="paymentDate" value="<%= purchaseOrder.orderStatus.paymentDate %>">
                     </div> 
-                    <div class="">                    
+                    <div class="input-sm">                    
                         <label for="paymentType" class="form-label">Payment Type:</label>
-                        <input class="form-control input-sm" type="text" id="" name="paymentType" value="<%= purchaseOrder.orderStatus.paymentType %>" autocomplete="on">
+                        <input class="form-control" type="text" id="" name="paymentType" value="<%= purchaseOrder.orderStatus.paymentType %>" autocomplete="on">
                     </div>
-                    <div class="">
+                    <div class="input-sm">
                         <label for="productReceived" class="form-label">Product Recieved:</label>
-                        <select class="form-select input-sm" name="productReceived" id="" required>
+                        <select class="form-select" name="productReceived" id="" required>
                             <% if (purchaseOrder.orderStatus.productReceived) { %>
                                 <option value="true" selected>True</option>
                                 <option value="false">False</option>

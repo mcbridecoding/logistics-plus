@@ -15,6 +15,8 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended:true }));
 app.use(express.static('public'));
 
+mongoose.set('strictQuery', true);
+
 app.use(session({
     secret: 'Property of McBride Coding.',
     resave: false,
@@ -414,21 +416,14 @@ async function printPurchaseOrder(purchaseOrder, soldTo, vendor, shipTo, taxes, 
     ); 
 }
 
-async function printPurchaseOrders(purchaseOrders, soldTo, vendor, shipTo, taxes, res) {
-    const stream = res.writeHead(200, {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment;filename=PO#${purchaseOrder.purchaseOrderNumber}.pdf`  
-    });
+async function printPurchaseOrders(pos, res) {
+    pos.forEach(async (purchaseOrder) => {
+        let soldTo = await AddressBook.findOne({ _id: purchaseOrder.soldTo.id });
+        let vendor = await AddressBook.findOne({ _id: purchaseOrder.vendor.id });
+        let shipTo = await AddressBook.findOne({ _id: purchaseOrder.shipTo.id });
 
-    pdfService.buildPurchaseOrders(
-        (chunk) => stream.write(chunk),
-        () => stream.end(),
-        purchaseOrders,
-        soldTo,
-        vendor,
-        shipTo,
-        taxes,
-    ); 
+        printPurchaseOrder(purchaseOrder, soldTo, vendor, shipTo, taxes, res);
+    });
 }
 
 async function printInvoice(invoice, owner, soldTo, shipTo, taxes, res) {
@@ -1112,13 +1107,17 @@ app.route('/invoicing/view-invoice-id=:id')
         const products = [];
         const accessorials = [];
 
-        invoice.lineItems.forEach((item) => {
-            if (item.type === 'product') {
-                products.push(item);
-            } else {
-                accessorials.push(item);
-            }
-        });
+        if (invoice.lineItems === null) {
+
+        } else {
+            invoice.lineItems.forEach((item) => {
+                if (item.type === 'product') {
+                    products.push(item);
+                } else {
+                    accessorials.push(item);
+                }
+            });
+        }
 
         res.render('view-invoice', {
             invoice: invoice,
@@ -1678,13 +1677,6 @@ app.route('/print-purchase-order-:id')
         const shipTo = await AddressBook.findOne({ _id: purchaseOrder.shipTo.id });
         
         printPurchaseOrder(purchaseOrder, soldTo, vendor, shipTo, taxes, res);
-    });
-
-app.route('/print-purchase-orders')
-    .post(async (req, res) => {
-        const purchaseOrderIds = req.body.poId;
-        const purchaseOrders = await Purchasing.find({ _id: purchaseOrderIds });
-        
     });
 
 app.route('/print-invoice-:id')

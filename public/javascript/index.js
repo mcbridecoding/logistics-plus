@@ -1,12 +1,35 @@
 const checkBoxAll = document.querySelector('#checkAll');
 const checkboxOptions = document.querySelectorAll('.checkbox-option');
+const deleteButton = document.querySelector('#delete-button');
 
 if (checkBoxAll) {
     checkBoxAll.addEventListener('change', () => {
         Array.from(checkboxOptions).map((checkbox) => {
             checkbox.checked = checkBoxAll.checked;
-        });  
+        });
+        toggleDeleteButton();  
     });
+}
+
+if (checkboxOptions) {
+    Array.from(checkboxOptions).map((checkbox) => {
+        checkbox.addEventListener('change', () => {
+           toggleDeleteButton();
+        });
+    });
+}
+
+function toggleDeleteButton() {
+    let options = [];
+    for (let i=0; i < checkboxOptions.length; i++) {
+        options.push(checkboxOptions[i].checked);
+    }
+
+    if (options.includes(true)) {
+        deleteButton.style.display = 'flex';
+    } else {
+        deleteButton.style.display = 'none';
+    }
 }
 
 const myText = document.querySelector('#notes');

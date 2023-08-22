@@ -351,6 +351,11 @@ body {
     padding: 15px;
 }
 
+#delete-button {
+    animation: fade-in 1s forwards;
+    display: none;
+}
+
 .details-column {
     align-items: flex-start;
     display: flex;
@@ -621,11 +626,11 @@ body {
 }
 
 .location-body div {
-    animation: fade-in 2s forwards;
+    animation: fade-in 1s forwards;
 }
 
 .location-details {
-    animation: fade-in 2s forwards;
+    animation: fade-in 1s forwards;
     border: 1px solid #242424;
     border-radius: 5px;
     margin: 5px 0 15px 0;
@@ -1069,7 +1074,7 @@ body {
 }
 
 #order-report div {
-    animation: fade-in 2s forwards;    
+    animation: fade-in 1s forwards;    
 }
 
 .owner-box {
@@ -1662,7 +1667,7 @@ body {
 .sub-menu .nav-button {
     background-color: var(--nav-panel-color);
     border-radius: 0px;
-    animation: fade-in 2s forwards;
+    animation: fade-in 1s forwards;
 }
 
 .sub-menu .nav-button:hover {
