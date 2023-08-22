@@ -138,142 +138,233 @@
         <div class="report-table">
             <div class="folders">
                 <div class="folders-header">
-                    <div class="folder-options">Orders</div>                
-                    <div class="folder-options">Details</div>                
-                </div> 
+                    <div class="folder-options" onclick="openFolder('order-report', 'customer-details')">Orders</div>                
+                    <div class="folder-options" onclick="openFolder('customer-details', 'order-report')">Details</div>                
+                </div>
                 <div class="folders-body">
-                    <div id="customer-details">
-                        <% if (contact.customer || contact.shipper || contact.consignee) { %>
-                            <div class="location-details">
-                                <h2>Address Information:</h2>                         
-                                <div class="flex-container flex-row flex-wrap flex-start gap-50">
-                                    <div>                    
-                                        <label for="operationHours" class="form-label">Hours:</label>
-                                        <input class="form-control input-lg" type="text" id="operationHours" name="operationHours" value="">
-                                    </div>  
-                                    <div>
-                                        <label for="dock" class="form-label">Dock:</label>
-                                        <select class="form-select input-sm" name="dock" id="dock">
-                                            <option value="true" selected>Yes</option>
-                                            <option value="false">No</option>
-                                        </select>
-                                    </div> 
-                                    <div>
-                                        <label for="forklift" class="form-label">Forklift:</label>
-                                        <select class="form-select input-sm" name="forklift" id="forklift">
-                                            <option value="true" selected>Yes</option>
-                                            <option value="false">No</option>
-                                        </select>
-                                    </div> 
-                                    <div>
-                                        <label for="palletjack" class="form-label">Pallet Jack:</label>
-                                        <select class="form-select input-sm" name="palletjack" id="palletjack">
-                                            <option value="true" selected>Yes</option>
-                                            <option value="false">No</option>
-                                        </select>
-                                    </div> 
-                                </div>  
-                                <div>
-                                    <label for="locationNotes" class="form-label">Notes:</label>
-                                    <textarea class="form-control" name="locationNotes" id="locationNotes" rows="10"></textarea>
+                    <form action="" method="POST"> 
+                        <div id="customer-details">
+                            <% if (contact.customer || contact.shipper || contact.consignee) { %>
+                                <div class="location-details">
+                                    <div class="location-header">
+                                        <h2>Address Information:</h2> 
+                                        <div id="address-button" data-value="closed" onclick="toggleSubMenu('address')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="address-arrow" width="16" height="16" fill="currentColor" class="bi bi-caret-left-square svg-small" viewBox="0 0 16 16">
+                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                                <path d="M10.205 12.456A.5.5 0 0 0 10.5 12V4a.5.5 0 0 0-.832-.374l-4.5 4a.5.5 0 0 0 0 .748l4.5 4a.5.5 0 0 0 .537.082z"/>
+                                            </svg>       
+                                        </div>
+                                    </div>
+                                    <div id="address-panel" class="location-body">
+                                        <div class="flex-container flex-row flex-start gap-25">
+                                            <div class="input-lg">                    
+                                                <label for="operationHours" class="form-label">Hours:</label>
+                                                <input class="form-control" type="text" id="operationHours" name="operationHours" value="">
+                                            </div>  
+                                            <div class="input-md">
+                                                <label for="dock" class="form-label">Dock:</label>
+                                                <select class="form-select" name="dock" id="dock">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div> 
+                                            <div class="input-md">
+                                                <label for="forklift" class="form-label">Forklift:</label>
+                                                <select class="form-select" name="forklift" id="forklift">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div> 
+                                            <div class="input-md">
+                                                <label for="palletjack" class="form-label">Pallet Jack:</label>
+                                                <select class="form-select" name="palletjack" id="palletjack">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div> 
+                                            <div class="input-md">
+                                                <label for="fcfs" class="form-label">FCFS ?:</label>
+                                                <select class="form-select" name="fcfs" id="fcfs">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div> 
+                                        </div>
+                                        <div class="flex-container flex-row flex-start gap-25">
+                                            <div class="input-md">                    
+                                                <label for="restrictions" class="form-label">Restrictions:</label>
+                                                <input class="form-control" type="text" id="restrictions" name="restrictions" value="">
+                                            </div> 
+                                            <div class="input-md">
+                                                <label for="nbBroker" class="form-label">NB Broker:</label>
+                                                <input class="form-control" type="text" id="nbBroker" name="nbBroker" value="">
+                                            </div> 
+                                            <div class="input-md">
+                                                <label for="sbBroker" class="form-label">SB Broker:</label>
+                                                <input class="form-control" type="text" id="sbBroker" name="sbBroker" value="">
+                                            </div> 
+                                        </div>  
+                                        <div>
+                                            <label for="locationNotes" class="form-label">Notes:</label>
+                                            <textarea class="form-control" name="locationNotes" id="locationNotes" rows="10"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        <% } %> 
-                        <% if (contact.carrier) { %>
-                            <div class="location-details">
-                                <h2>Carrier Details:</h2>
-                            </div>
-                        <% } %>                      
-                    </div>
-                    <div id="order-report">
-                        <div class="report-header">
-                            <form action="/search-address-book" method="post" autocomplete="off">
-                                <div class="search-frame">
-                                    <% if (showAll) { %>
-                                        <input type="text" name="searchValue" id="searchValue" class="form-control input-md" value="" placeholder="Search ...">
-                                        <button class="search-button">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                            </svg>
-                                            Search
-                                        </button>
-                                        <a class="" href="//customer-card/id=<%= contact._id %>">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                            </svg>
-                                            Show All
-                                        </a>
-                                    <% } else { %>
-                                        <input type="text" name="searchValue" id="searchValue" class="form-control input-md" placeholder="Search ...">
-                                        <button class="search-button">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                            </svg>
-                                            Search
-                                        </button>
-                                    <% } %>
+                            <% } %> 
+                            <% if (contact.carrier) { %>
+                                <div class="location-details">
+                                    <div class="location-header">
+                                        <h2>Carrier Information:</h2>
+                                        <div id="carrier-button" data-value="closed" onclick="toggleSubMenu('carrier')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="carrier-arrow" width="16" height="16" fill="currentColor" class="bi bi-caret-left-square svg-small" viewBox="0 0 16 16">
+                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                                <path d="M10.205 12.456A.5.5 0 0 0 10.5 12V4a.5.5 0 0 0-.832-.374l-4.5 4a.5.5 0 0 0 0 .748l4.5 4a.5.5 0 0 0 .537.082z"/>
+                                            </svg>   
+                                        </div>
+                                    </div>
+                                    <div id="carrier-panel" class="location-body">
+                                        <div class="flex-container flex-row flex-start gap-25">
+                                            <div class="input-md">
+                                                <label for="sbBroker" class="form-label">SB Broker:</label>
+                                                <input class="form-control" type="text" id="sbBroker" name="sbBroker" value="">
+                                            </div> 
+                                        </div>
+                                    </div>
                                 </div>
-                            </form>
+                            <% } %>  
+                            <% if (contact.broker) { %>
+                                <div class="location-details">
+                                    <div class="location-header">
+                                        <h2>Broker Information:</h2>
+                                        <div id="broker-button" data-value="closed" onclick="toggleSubMenu('broker')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="broker-arrow" width="16" height="16" fill="currentColor" class="bi bi-caret-left-square svg-small" viewBox="0 0 16 16">
+                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                                <path d="M10.205 12.456A.5.5 0 0 0 10.5 12V4a.5.5 0 0 0-.832-.374l-4.5 4a.5.5 0 0 0 0 .748l4.5 4a.5.5 0 0 0 .537.082z"/>
+                                            </svg>   
+                                        </div>
+                                    </div>
+                                    <div id="broker-panel" class="location-body">
+                                        <div class="flex-container flex-row flex-start gap-25">
+                                            <div class="input-md">
+                                                <label for="sbBroker" class="form-label">SB Broker:</label>
+                                                <input class="form-control" type="text" id="sbBroker" name="sbBroker" value="">
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+                            <% if (contact.vendor) { %>
+                                <div class="location-details">
+                                    <div class="location-header">
+                                        <h2>Vendor Information:</h2>
+                                        <div id="vendor-button" data-value="closed" onclick="toggleSubMenu('vendor')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="vendor-arrow" width="16" height="16" fill="currentColor" class="bi bi-caret-left-square svg-small" viewBox="0 0 16 16">
+                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                                <path d="M10.205 12.456A.5.5 0 0 0 10.5 12V4a.5.5 0 0 0-.832-.374l-4.5 4a.5.5 0 0 0 0 .748l4.5 4a.5.5 0 0 0 .537.082z"/>
+                                            </svg>   
+                                        </div>
+                                    </div>
+                                    <div id="vendor-panel" class="location-body">
+                                        <div class="input-md">
+                                            <label for="sbBroker" class="form-label">SB Broker:</label>
+                                            <input class="form-control" type="text" id="sbBroker" name="sbBroker" value="">
+                                        </div> 
+                                    </div>
+                                </div>
+                            <% } %>
                         </div>
-                        <table class="table table-light table-striped table-hover table-bordered align-center">
-                            <thead>
-                                <tr>
-                                    <th class="table-options" scope="col">#</th>
-                                    <td scope="col">Date</td>
-                                    <td scope="col">Job #</td>
-                                    <td scope="col">Quote #</td>
-                                    <td scope="col">Customer</td>
-                                    <td scope="col">Shipper</td>
-                                    <td scope="col">Receiver</td>
-                                    <td class="table-options" scope="col"></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (orders.length === 0) { %>
-                                    <tr class="">
-                                        <td colspan="8">** No Data to Report **</td>
-                                    </tr>
-                                <% } else { %>
-                                    <% orders.forEach((order, index) => { %>
-                                    <tr class="">
-                                        <td><%= index + 1 %></td>
-                                        <td><%= order.quoteDate.date %></td>
-                                        <td><%= order.bolNumber %></td>
-                                        <td><%= order.quoteNumber %></td>
-                                        <td><%= order.client.company %></td>
-                                        <td><%= order.shipper.company %></td>
-                                        <td><%= order.consignee.company %></td>
-                                        <td class="table-options align-middle">
-                                            <a class="table-delete-sm" href="/orders/view-order-id=<%= order._id %>">              
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                                </svg>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <% }) %>
+                        <div id="order-report" class="folders-body">
+                            <div class="flex-container flex-column flex-start gap-10">
+                                <div class="report-header">
+                                    <form action="" method="post" autocomplete="off">
+                                        <div class="search-frame">
+                                            <% if (showAll) { %>
+                                                <input type="text" name="searchValue" id="searchValue" class="form-control input-md" value="" placeholder="Search ...">
+                                                <button class="search-button">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                                    </svg>
+                                                    Search
+                                                </button>
+                                                <a class="" href="//customer-card/id=<%= contact._id %>">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                                    </svg>
+                                                    Show All
+                                                </a>
+                                            <% } else { %>
+                                                <input type="text" name="searchValue" id="searchValue" class="form-control input-md" placeholder="Search ...">
+                                                <button class="search-button">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                                    </svg>
+                                                    Search
+                                                </button>
+                                            <% } %>
+                                        </div>
+                                    </form>
+                                </div>
+                                <table class="table table-light table-striped table-hover table-bordered align-center">
+                                    <thead>
+                                        <tr>
+                                            <th class="table-options" scope="col">#</th>
+                                            <td scope="col">Date</td>
+                                            <td scope="col">Job #</td>
+                                            <td scope="col">Quote #</td>
+                                            <td scope="col">Customer</td>
+                                            <td scope="col">Shipper</td>
+                                            <td scope="col">Receiver</td>
+                                            <td class="table-options" scope="col"></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (orders.length === 0) { %>
+                                            <tr class="">
+                                                <td colspan="8">** No Data to Report **</td>
+                                            </tr>
+                                        <% } else { %>
+                                            <% orders.forEach((order, index) => { %>
+                                            <tr class="">
+                                                <td><%= index + 1 %></td>
+                                                <td><%= order.quoteDate.date %></td>
+                                                <td><%= order.bolNumber %></td>
+                                                <td><%= order.quoteNumber %></td>
+                                                <td><%= order.client.company %></td>
+                                                <td><%= order.shipper.company %></td>
+                                                <td><%= order.consignee.company %></td>
+                                                <td class="table-options align-middle">
+                                                    <a class="table-delete-sm" href="/orders/view-order-id=<%= order._id %>">              
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                                        </svg>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                                <% if (pages != 1) { %>
+                                    <div class="pagination-panel">
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination">
+                                                <% if (pageNumber != 1) { %>
+                                                    <li class="page-item"><a class="page-link" href="?page=<%= Number(pageNumber) - 1%>">Previous</a></li>
+                                                <% } %>
+                                                <% for (var a = 1; a <= pages; a++) { %>
+                                                    <li class="page-item"><a class="page-link" href="?page=<%= a; %>"><%= a; %></a></li>
+                                                <% } %>
+                                                <% if (pageNumber != pages) { %>
+                                                    <li class="page-item"><a class="page-link" href="?page=<%= Number(pageNumber) + 1%>">Next</a></li>
+                                                <% } %>
+                                            </ul>
+                                        </nav>
+                                    </div>
                                 <% } %>
-                            </tbody>
-                        </table>
-                        <% if (pages != 1) { %>
-                            <div class="pagination-panel">
-                                <nav aria-label="Page navigation example">
-                                    <ul class="pagination">
-                                        <% if (pageNumber != 1) { %>
-                                            <li class="page-item"><a class="page-link" href="?page=<%= Number(pageNumber) - 1%>">Previous</a></li>
-                                        <% } %>
-                                        <% for (var a = 1; a <= pages; a++) { %>
-                                            <li class="page-item"><a class="page-link" href="?page=<%= a; %>"><%= a; %></a></li>
-                                        <% } %>
-                                        <% if (pageNumber != pages) { %>
-                                            <li class="page-item"><a class="page-link" href="?page=<%= Number(pageNumber) + 1%>">Next</a></li>
-                                        <% } %>
-                                    </ul>
-                                </nav>
                             </div>
-                        <% } %>
-                    </div>
-                </div>   
+                        </div>
+                    </form> 
+                </div>  
             </div>
         </div>
     </div>

@@ -336,7 +336,7 @@ body {
 }
 
 #customer-details {
-    display: flex;
+    display: none;
     flex-direction: column;    
 }
 
@@ -514,8 +514,7 @@ body {
     border: 1px solid #242424;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    /* box-shadow: var(--boxShadow); */
-    padding: 15px 25px 0px 25px;
+    padding: 15px 25px 15px 25px;
     width: 100%;
 }
 
@@ -616,7 +615,17 @@ body {
     padding: 20px;
 }
 
+.location-body {
+    display: none;
+    flex-direction: column;
+}
+
+.location-body div {
+    animation: fade-in 2s forwards;
+}
+
 .location-details {
+    animation: fade-in 2s forwards;
     border: 1px solid #242424;
     border-radius: 5px;
     margin: 5px 0 15px 0;
@@ -624,10 +633,21 @@ body {
     width: 100%;
 }
 
-.location-details h2 {
+.location-header{
+    align-items: flex-start;
     border-bottom: 1px solid #242424;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     margin: 5px 0;
-    padding: 0 0 10px 0;
+    padding: 0 15px 0 0;
+}
+
+.location-header svg {
+    height: 35px;
+    width: 35px;
+    transition: 0.8s;
+    cursor: pointer;
 }
 
 .login-button {
@@ -660,10 +680,8 @@ body {
 }
 
 .logout-button {
+    align-self: flex-start;
     margin: 25px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
 }
 
 .logout-button svg {
@@ -807,12 +825,15 @@ body {
     box-shadow: var(--boxShadow);
     display: none;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    filter: blur(0px);
     left: 50%;
     min-width: 45%;
+    pointer-events: all;
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
     transition: 2s;
+    z-index: 999;
 }
 
 .modal-body {
@@ -849,7 +870,7 @@ body {
     gap: 100px;
     height: 100%;
     justify-content: space-between;
-    max-width: 60%;
+    max-width: 95%;
     word-spacing: 5px;
     letter-spacing: 2px;
 }
@@ -947,11 +968,17 @@ body {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
+    flex: 1;
     gap: 15px;
     justify-content: flex-start;
-    margin: 15px; 
-    padding: 15px;
+    margin: 15px 15px 0 15px; 
+    padding: 15px 15px 0 15px;
     width: 100%;
+}
+
+.logout-button {
+    margin-top: auto;
+    align-self: flex-start;
 }
 
 .nav-panel {
@@ -959,12 +986,11 @@ body {
     background-color: var(--nav-panel-color);
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     left: 0;
+    min-height: 100%;
     position: fixed;
     top: 0;
     width: 250px;
-    height: 100vw;
 }
 
 .no-overflow {
@@ -1039,7 +1065,11 @@ body {
 }
 
 #order-report {
-    display: none;
+    display: flex;
+}
+
+#order-report div {
+    animation: fade-in 2s forwards;    
 }
 
 .owner-box {
@@ -1049,7 +1079,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 15px;
+    padding: 5px 0;
     width: 100%;
 }
 
@@ -1063,28 +1093,25 @@ body {
 
 .owner-form {
     align-items: flex-start;
-    border: 1px solid #242424;
-    border-radius: 5px;
     display: flex;
     flex-direction: column;
     gap: 5px;
     justify-content: flex-start;
-    margin: 15px 0 0 0;
-    min-width: 45%;
+    margin: 15px 0 15px 0;
+    width: 50%;
     padding: 15px;
 }
 
 .owner-logo {
     align-items: flex-start;
     align-self: stretch;
-    border: 1px solid #242424;
-    border-radius: 5px;
+    border-right: 1px solid #242424;
     display: flex;
     flex-direction: column;
     gap: 5px;
     justify-content: flex-start;
     margin: 15px 0 0 0;
-    min-width: 45%;
+    width: 50%;
     padding: 15px;
 }
 
@@ -1478,6 +1505,7 @@ body {
     border-radius: 5px;
     background-color: var(--nav-panel-color);
     color: #ffff;
+    cursor: pointer;
     display: flex;
     flex-direction: row;
     font-family: var(--button-text);
@@ -1597,6 +1625,29 @@ body {
 }
 
 .search-frame button svg {
+    height: 14px;
+    width: 14px;
+}
+
+.search-frame-right {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    justify-content: flex-end;
+    margin: 5px 10px 15px 0;
+    width: 45%;
+}
+
+.search-frame-right a:link {
+    text-decoration: none;
+}
+
+.search-frame-right a:visited {
+    text-decoration: none;
+}
+
+.search-frame-right button svg {
     height: 14px;
     width: 14px;
 }

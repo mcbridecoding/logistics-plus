@@ -41,8 +41,13 @@
                                         </button>
                                     <% } %>
                                 </div>
-                                <div class="search-frame">
-
+                                <div class="search-frame-right">
+                                    <div class="search-button" onclick="openModal('delete-modal')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                                        </svg>
+                                        Delete
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -53,7 +58,7 @@
                                 <th scope="col" class="tbl-fixed-50">#</th>
                                 <th scope="col" class="tbl-fixed-25">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                        <input class="form-check-input" type="checkbox" value="" id="checkAll">
                                     </div>
                                 </th>
                                 <th scope="col" class="tbl-sm">Date</th>
@@ -65,12 +70,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <form id="delete-form" action="/invoicing/delete-invoice" method="post">
                             <% invoices.forEach((invoice, index) => { %>
                             <tr class="align-center">
                                 <td><%= index + 1 %></td>
                                 <td class="table-options-checkbox align-center">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                        <input class="form-check-input checkbox-option" type="checkbox" name="invoiceId" value="<%= invoice._id %>" id="flexCheckDefault">
                                     </div>
                                 </td>
                                 <td><%= invoice.date %></td>
@@ -98,6 +104,7 @@
                                 </td>
                             </tr>
                             <% }) %>
+                            </form>
                         </tbody>
                     </table>
                     <% if (pages >= 2) { %>
@@ -204,5 +211,24 @@
         </div>
     </div>
 <% }) %>
-
+<div id="delete-modal" class="modal-frame">
+    <div class="modal-header">
+        <h3>Delete Selected?</h3>
+        <div class="close-button" onclick="closeModal('delete-modal')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="modal-body-text">
+            <h3>Are you sure you would like to delete the Selected Invoice(s)?</h2>
+        </div>
+        <div class="modal-button-group">
+            <button type="submit" form="delete-form" class="modal-button">Yes</a>
+            <button class="modal-button" onclick="closeModal('delete-modal')">Cancel</button>
+        </div>
+    </div>
+</div>
 <%- include('partials/footer') %>

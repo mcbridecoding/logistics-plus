@@ -397,6 +397,57 @@ function calculateNextOrder(previousNumber) {
     } else return String(nextOrder); 
 }
 
+async function printPurchaseOrder(purchaseOrder, soldTo, vendor, shipTo, taxes, res) {
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment;filename=PO#${purchaseOrder.purchaseOrderNumber}.pdf`  
+    });
+
+    pdfService.buildPurchaseOrder(
+        (chunk) => stream.write(chunk),
+        () => stream.end(),
+        purchaseOrder,
+        soldTo,
+        vendor,
+        shipTo,
+        taxes,
+    ); 
+}
+
+async function printPurchaseOrders(purchaseOrders, soldTo, vendor, shipTo, taxes, res) {
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment;filename=PO#${purchaseOrder.purchaseOrderNumber}.pdf`  
+    });
+
+    pdfService.buildPurchaseOrders(
+        (chunk) => stream.write(chunk),
+        () => stream.end(),
+        purchaseOrders,
+        soldTo,
+        vendor,
+        shipTo,
+        taxes,
+    ); 
+}
+
+async function printInvoice(invoice, owner, soldTo, shipTo, taxes, res) {
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment;filename=Invoice#${invoice.invoiceNumber}.pdf`  
+    });
+
+    pdfService.buildInvoice(
+        (chunk) => stream.write(chunk),
+        () => stream.end(),
+        invoice,
+        owner,
+        soldTo,
+        shipTo,
+        taxes
+    ); 
+}
+
 async function findOwnerName(id) {
     const owner = await AddressBook.findOne({ _id: id });
     return owner.company;
@@ -889,6 +940,20 @@ app.route('/invoicing')
             pages: pages,
             pageNumber: pageNumber,
             invoices: invoices
+        });
+    });
+
+app.route('/invoicing/delete-invoice')
+    .post((req, res) => {
+        const deleteIds = req.body.invoiceId;
+
+        Invoice.deleteMany({ _id: deleteIds }, (err) => {
+            if (!err) {
+                console.log(`Successfully deleted item(s)`);
+                res.redirect('/invoicing');
+            } else {
+                console.log(`Error: ${err}`);
+            }
         });
     });
 
@@ -1612,20 +1677,14 @@ app.route('/print-purchase-order-:id')
         const vendor = await AddressBook.findOne({ _id: purchaseOrder.vendor.id });
         const shipTo = await AddressBook.findOne({ _id: purchaseOrder.shipTo.id });
         
-        const stream = res.writeHead(200, {
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment;filename=PO#${purchaseOrder.purchaseOrderNumber}.pdf`  
-        });
+        printPurchaseOrder(purchaseOrder, soldTo, vendor, shipTo, taxes, res);
+    });
 
-        pdfService.buildPurchaseOrder(
-            (chunk) => stream.write(chunk),
-            () => stream.end(),
-            purchaseOrder,
-            soldTo,
-            vendor,
-            shipTo,
-            taxes,
-        ); 
+app.route('/print-purchase-orders')
+    .post(async (req, res) => {
+        const purchaseOrderIds = req.body.poId;
+        const purchaseOrders = await Purchasing.find({ _id: purchaseOrderIds });
+        
     });
 
 app.route('/print-invoice-:id')
@@ -1638,21 +1697,8 @@ app.route('/print-invoice-:id')
         const owner = defaults.owner;
         const soldTo = await AddressBook.findOne({ _id: invoice.soldTo.id });
         const shipTo = await AddressBook.findOne({ _id: invoice.shipTo.id });
-        
-        const stream = res.writeHead(200, {
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment;filename=Invoice#${invoice.invoiceNumber}.pdf`  
-        });
 
-        pdfService.buildInvoice(
-            (chunk) => stream.write(chunk),
-            () => stream.end(),
-            invoice,
-            owner,
-            soldTo,
-            shipTo,
-            taxes
-        ); 
+        printInvoice(invoice, owner, soldTo, shipTo, taxes, res);
     });
 
 app.route('/purchasing')
@@ -1672,6 +1718,20 @@ app.route('/purchasing')
             pages: pages,
             pageNumber: pageNumber,
             purchaseOrders: purchaseOrders
+        });
+    });
+
+app.route('/purchasing/delete-po')
+    .post((req, res) => {
+        const deleteIds = req.body.poId;
+
+        Purchasing.deleteMany({ _id: deleteIds }, (err) => {
+            if (!err) {
+                console.log(`Successfully deleted item(s)`);
+                res.redirect('/purchasing');
+            } else {
+                console.log(`Error: ${err}`);
+            }
         });
     });
 
@@ -1937,13 +1997,18 @@ app.route('/purchasing/view-po-id=:id')
         const products = [];
         const accessorials = [];
 
-        purchaseOrder.lineItems.forEach((item) => {
-            if (item.type === 'product') {
-                products.push(item);
-            } else {
-                accessorials.push(item);
-            }
-        });
+        if (purchaseOrder.lineItems === null) {
+
+        } else {
+            purchaseOrder.lineItems.forEach((item) => {
+                if (item.type === 'product') {
+                    products.push(item);
+                } else {
+                    accessorials.push(item);
+                }
+            });
+        }
+
 
         res.render('view-purchase-order', {
             purchaseOrder: purchaseOrder,
