@@ -89,7 +89,7 @@ function cancelBlurrBackground() {
 function openShipmentHeader() {
     document.getElementById('quote-header').style.display = 'flex';
     document.getElementById('shipment-header-button').style.backgroundColor = '#2B2A4C';
-    document.getElementById('shipment-header-button').style.color = '#ffff';
+    document.getElementById('shipment-header-button').style.color = '#EA906C';
     document.getElementById('shipment-header-button').style.fontWeight = 'bold';
     
     closeShipmentDetails();
@@ -100,15 +100,15 @@ function openShipmentHeader() {
 
 function closeShipmentHeader() {
     document.getElementById('quote-header').style.display = 'none';
-    document.getElementById('shipment-header-button').style.backgroundColor = '#EEE2DE';
-    document.getElementById('shipment-header-button').style.color = '#242424';
+    document.getElementById('shipment-header-button').style.backgroundColor = '#242424';
+    document.getElementById('shipment-header-button').style.color = '#ffff';
     document.getElementById('shipment-header-button').style.fontWeight = '100';
 }
 
 function openShipmentDetails() {
     document.getElementById('shipment-details').style.display = 'flex';
     document.getElementById('shipment-detail-button').style.backgroundColor = '#2B2A4C';
-    document.getElementById('shipment-detail-button').style.color = '#ffff';
+    document.getElementById('shipment-detail-button').style.color = '#EA906C';
     document.getElementById('shipment-detail-button').style.fontWeight = 'bold';
     
     closeShipmentHeader();
@@ -119,15 +119,15 @@ function openShipmentDetails() {
 
 function closeShipmentDetails() {
     document.getElementById('shipment-details').style.display = 'none';
-    document.getElementById('shipment-detail-button').style.backgroundColor = '#EEE2DE';
-    document.getElementById('shipment-detail-button').style.color = '#242424';
+    document.getElementById('shipment-detail-button').style.backgroundColor = '#242424';
+    document.getElementById('shipment-detail-button').style.color = '#ffff';
     document.getElementById('shipment-detail-button').style.fontWeight = '100';
 }
 
 function openShipmentChecklist() {
     document.getElementById('shipment-control-checklist').style.display = 'flex';
     document.getElementById('shipment-checklist-button').style.backgroundColor = '#2B2A4C';
-    document.getElementById('shipment-checklist-button').style.color = '#ffff';
+    document.getElementById('shipment-checklist-button').style.color = '#EA906C';
     document.getElementById('shipment-checklist-button').style.fontWeight = 'bold';
     
     closeShipmentHeader();
@@ -138,15 +138,15 @@ function openShipmentChecklist() {
 
 function closeShipmentChecklist() {
     document.getElementById('shipment-control-checklist').style.display = 'none';
-    document.getElementById('shipment-checklist-button').style.backgroundColor = '#EEE2DE';
-    document.getElementById('shipment-checklist-button').style.color = '#242424';
+    document.getElementById('shipment-checklist-button').style.backgroundColor = '#242424';
+    document.getElementById('shipment-checklist-button').style.color = '#ffff';
     document.getElementById('shipment-checklist-button').style.fontWeight = '100';
 }
 
 function openShippingCost() {
     document.getElementById('shipment-costing').style.display = 'flex';
     document.getElementById('shipment-costing-button').style.backgroundColor = '#2B2A4C';
-    document.getElementById('shipment-costing-button').style.color = '#ffff';
+    document.getElementById('shipment-costing-button').style.color = '#EA906C';
     document.getElementById('shipment-costing-button').style.fontWeight = 'bold';
     
     closeShipmentHeader();
@@ -157,15 +157,15 @@ function openShippingCost() {
 
 function closeShippingCost() {
     document.getElementById('shipment-costing').style.display = 'none';
-    document.getElementById('shipment-costing-button').style.backgroundColor = '#EEE2DE';
-    document.getElementById('shipment-costing-button').style.color = '#242424';
+    document.getElementById('shipment-costing-button').style.backgroundColor = '#242424';
+    document.getElementById('shipment-costing-button').style.color = '#ffff';
     document.getElementById('shipment-costing-button').style.fontWeight = '100';
 }
 
 function openShipmentBOL() {
     document.getElementById('shipment-bol').style.display = 'flex';
     document.getElementById('shipment-bol-button').style.backgroundColor = '#2B2A4C';
-    document.getElementById('shipment-bol-button').style.color = '#ffff';
+    document.getElementById('shipment-bol-button').style.color = '#EA906C';
     document.getElementById('shipment-bol-button').style.fontWeight = 'bold';
 
     closeShipmentHeader();
@@ -176,8 +176,8 @@ function openShipmentBOL() {
 
 function closeShipmentBOL() {
     document.getElementById('shipment-bol').style.display = 'none';
-    document.getElementById('shipment-bol-button').style.backgroundColor = '#EEE2DE';
-    document.getElementById('shipment-bol-button').style.color = '#242424';
+    document.getElementById('shipment-bol-button').style.backgroundColor = '#242424';
+    document.getElementById('shipment-bol-button').style.color = '#ffff';
     document.getElementById('shipment-bol-button').style.fontWeight = '100';
 }
 

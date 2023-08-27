@@ -1,7 +1,7 @@
 <%- include('partials/header') %>
 
 <%- include('partials/nav-panel') %>
-<form action="" method="POST">
+<form action="/orders/edit-order-id=<%= order._id %>" method="POST">
 <div class="main" id="main">
     <div class="page-title">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2" viewBox="0 0 16 16">
@@ -20,6 +20,13 @@
                 <div id="shipment-costing-button" class="quote-selection" onclick="openShippingCost()">Pricing</div>
             </div>
             <div class="quote-buttons">
+                <a href="/logistics/print-logistics-callsheet-id=<%= order._id %>" class="quote-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+                        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                        <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+                    </svg>
+                    Print
+                </a>
                 <button type="submit" class="quote-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
                         <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
@@ -29,14 +36,32 @@
             </div>
         </div>
         <div id="quote-header" class="new-quote-form">
-            <div class="flex-container flex-row flex-start flex-wrap gap-50">
-                <div class="">                    
+            <div class="flex-container flex-row flex-start gap-25">
+                <div class="input-lg">                    
                     <label for="quoteTaker" class="form-label">Name:</label>
-                    <input class="form-control input-lg" type="text" id="quoteTaker" name="quoteTaker" value="<%= order.quoteTaker %>" required>
+                    <input class="form-control" type="text" id="quoteTaker" name="quoteTaker" value="<%= order.quoteTaker %>" required>
                 </div>
-                <div>
+                <div class="input-sm">
+                    <label for="importExport" class="form-label">Import / Export:</label>
+                    <select name="importExport" id="importExport" class="form-select" required>
+                        <% if (order.importExport === 'import') { %>
+                            <option value=""></option>
+                            <option value="import" selected>Import</option>
+                            <option value="export">Export</option>
+                        <% } else if (order.importExport === 'export') { %>
+                            <option value=""></option>
+                            <option value="import">Import</option>
+                            <option value="export" selected>Export</option>
+                        <% } else { %>
+                            <option value=""></option>
+                            <option value="import">Import</option>
+                            <option value="export">Export</option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="input-sm">
                     <label for="freightSize" class="form-label">FTL / LTL:</label>
-                    <select class="form-select input-sm" name="freightSize" id="freightSize">
+                    <select class="form-select" name="freightSize" id="freightSize">
                         <% if (order.freightSize === 'LTL') { %>
                             <option value=""></option>
                             <option value="LTL" selected>LTL</option>
@@ -52,9 +77,9 @@
                         <% } %>
                     </select>
                 </div>
-                <div>
+                <div class="input-sm">
                     <label for="shipmentType" class="form-label">Type:</label>
-                    <select class="form-select input-sm" name="shipmentType" id="shipmentType">
+                    <select class="form-select" name="shipmentType" id="shipmentType">
                         <% if (order.shipmentType === 'Domestic') { %>
                             <option value=""></option>
                             <option value="Domestic" selected>Domestic</option>
@@ -88,19 +113,19 @@
                         <% } %>
                     </select>
                 </div>
-                <div>
+                <div class="input-sm">
                     <label for="quoteDate" class="form-label">Date:</label>
-                    <input class="form-control input-sm" type="date" id="quoteDate" name="quoteDate" value="<%= order.quoteDate.date %>"> 
+                    <input class="form-control" type="date" id="quoteDate" name="quoteDate" value="<%= order.quoteDate.date %>"> 
                 </div>
-                <div>
+                <div class="input-sm">
                     <label for="quoteTime" class="form-label">Time:</label>
-                    <input class="form-control input-sm" type="time" id="quoteTime" name="quoteTime" value="<%= order.quoteDate.Time %>"> 
+                    <input class="form-control" type="time" id="quoteTime" name="quoteTime" value="<%= order.quoteDate.time %>"> 
                 </div>
             </div>
-            <div class="flex-container flex-row flex-wrap gap-50">
-                <div>
+            <div class="flex-container flex-row gap-50">
+                <div class="input-lg">
                     <label for="client" class="form-label">Client / Bill To:</label>
-                    <select class="form-select input-lg" name="client" id="client" onchange="showAddClientModal(this.value, 'add-client')" required>
+                    <select class="form-select" name="client" id="client" onchange="showAddClientModal(this.value, 'add-client')" required>
                         <option></option>
                         <option value="new">-- Create New --</option>
                         <% addressList.forEach((address) => { %>
@@ -112,20 +137,20 @@
                         <% }) %>
                     </select>
                 </div>
-                <div id="add-client-button" class="flex-container flex-column flex-end" onclick="openModal('add-client-modal')">
+                <div id="add-client-button" class="self-align-end" onclick="openModal('add-client-modal')">
                     <div class="add-address-button">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
                         <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
                       </svg>
                     </div>
                 </div>
-                <div>
+                <div class="input-sm">
                     <label for="quoteNumber" class="form-label">Quote #:</label>
-                    <input class="form-control input-sm" type="text" id="quoteNumber" name="quoteNumber" value="<%= order.quoteNumber %>" required>  
+                    <input class="form-control" type="text" id="quoteNumber" name="quoteNumber" value="<%= order.quoteNumber %>" required>  
                 </div>
-                <div>
+                <div class="input-sm">
                     <label for="paymentTerms" class="form-label">Terms:</label>
-                    <select class="form-select input-sm" name="paymentTerms" id="paymentTerms" onchange="showThirdpartyInput(this.value)" required>
+                    <select class="form-select" name="paymentTerms" id="paymentTerms" onchange="showThirdpartyInput(this.value)" required>
                         <% if (order.paymentTerms === 'PPD') { %>
                             <option value=""></option>
                             <option value="PPD" selected>Prepaid</option>
@@ -149,21 +174,21 @@
                         <% } %>                      
                     </select>
                 </div>
-                <div id="thirdPartyInformationPanel">
+                <div id="thirdPartyInformationPanel" class="input-sm">
                     <label for="thirdPartyInformation" id="" class="form-label">Third Party Bill To:</label>
-                    <input class="form-control input-sm" type="text" id="thirdPartyInformation" name="thirdPartyInformation" value="<%= order.thirdPartyInformation %>">  
+                    <input class="form-control" type="text" id="thirdPartyInformation" name="thirdPartyInformation" value="<%= order.thirdPartyInformation %>">  
                 </div>
-                <div>
+                <div class="input-sm">
                     <label for="serviceLevel" class="form-label">Service Level:</label>
-                    <input class="form-control input-sm" type="text" id="serviceLevel" name="serviceLevel" value="<%= order.serviceLevel %>">
+                    <input class="form-control" type="text" id="serviceLevel" name="serviceLevel" value="<%= order.serviceLevel %>">
                 </div>
             </div>
             <div class="address-information">
                 <div class="address-form">
-                    <div class="flex-container flex-row flex-wrap gap-50">
-                        <div>
+                    <div class="flex-container flex-row gap-50">
+                        <div class="input-xl">
                             <label for="shipper" class="form-label">Shipper:</label>
-                            <select class="form-select input-xlg" name="shipper" id="shipper" onchange="showAddClientModal(this.value, 'add-shipper')">
+                            <select class="form-select" name="shipper" id="shipper" onchange="showAddClientModal(this.value, 'add-shipper')">
                                 <option></option>
                                 <option value="new">-- Create New --</option>
                                 <% addressList.forEach((address) => { %>
@@ -175,32 +200,32 @@
                                 <% }) %>
                             </select>
                         </div>
-                        <div id="add-shipper-button" class="flex-container flex-column flex-end" onclick="openModal('add-shipper-modal')">
+                        <div id="add-shipper-button" class="self-align-end" onclick="openModal('add-shipper-modal')">
                             <div class="add-address-button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                              </svg>
+                                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                </svg>
                             </div>
                         </div>
                     </div>
-                    <div id="" class="flex-container flex-row flex-wrap gap-25 shipper-box">
-                        <div>
+                    <div id="" class="flex-container flex-row gap-25 shipper-box">
+                        <div class="input-sm">
                             <label for="genericShipperCity" class="form-label">City:</label>
-                            <input class="form-control input-sm" type="text" id="genericShipperCity" name="genericShipperCity" value="<%= order.genericShipper.city %>">  
+                            <input class="form-control" type="text" id="genericShipperCity" name="genericShipperCity" value="<%= order.genericShipper.city %>">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="genericShipperState" class="form-label">State:</label>
-                            <input class="form-control input-xs" type="text" id="genericShipperState" name="genericShipperState" value="<%= order.genericShipper.state %>">  
+                            <input class="form-control" type="text" id="genericShipperState" name="genericShipperState" value="<%= order.genericShipper.state %>">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="genericShipperCountry" class="form-label">Country:</label>
-                            <input class="form-control input-xs" type="text" id="genericShipperCountry" name="genericShipperCountry" value="<%= order.genericShipper.country %>">  
+                            <input class="form-control" type="text" id="genericShipperCountry" name="genericShipperCountry" value="<%= order.genericShipper.country %>">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap gap-50">
-                        <div>
+                    <div class="flex-container flex-row gap-50">
+                        <div class="input-xl">
                             <label for="consignee" class="form-label">Consignee:</label>
-                            <select class="form-select input-xlg" name="consignee" id="consignee" onchange="showAddClientModal(this.value, 'add-consignee')">
+                            <select class="form-select" name="consignee" id="consignee" onchange="showAddClientModal(this.value, 'add-consignee')">
                                 <option value=""></option>
                                 <option value="new">-- Create New --</option>
                                 <% addressList.forEach((address) => { %>
@@ -212,7 +237,7 @@
                                 <% }) %>
                             </select>
                         </div>
-                        <div id="add-consignee-button" class="flex-container flex-column flex-end" onclick="openModal('add-consignee-modal')">
+                        <div id="add-consignee-button" class="self-align-end" onclick="openModal('add-consignee-modal')">
                             <div class="add-address-button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
                                 <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
@@ -220,24 +245,24 @@
                             </div>
                         </div>
                     </div>
-                    <div id="" class="flex-container flex-row flex-wrap gap-25">
-                        <div>
+                    <div id="" class="flex-container flex-row gap-25">
+                        <div class="input-sm">
                             <label for="genericConsigneeCity" class="form-label">City:</label>
-                            <input class="form-control input-sm" type="text" id="genericConsigneeCity" name="genericConsigneeCity" value="<%= order.genericConsignee.city %>">  
+                            <input class="form-control" type="text" id="genericConsigneeCity" name="genericConsigneeCity" value="<%= order.genericConsignee.city %>">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="genericConsigneeState" class="form-label">State:</label>
-                            <input class="form-control input-xs" type="text" id="genericConsigneeState" name="genericConsigneeState" value="<%= order.genericConsignee.state %>">  
+                            <input class="form-control" type="text" id="genericConsigneeState" name="genericConsigneeState" value="<%= order.genericConsignee.state %>">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="genericConsigneeCounty" class="form-label">Country:</label>
-                            <input class="form-control input-xs" type="text" id="genericConsigneeCounty" name="genericConsigneeCounty" value="<%= order.genericConsignee.country %>">  
+                            <input class="form-control" type="text" id="genericConsigneeCountry" name="genericConsigneeCountry" value="<%= order.genericConsignee.country %>">  
                         </div>
                     </div>
                 </div>
                 <div class="address-form">
-                    <h4>Equipment Required:</h4>
                     <div class="equipment-checklist">
+                        <h4>Equipment Required:</h4>
                         <div class="flex-container flex-row flex-between">
                             <div class="flex-container flex-column flex-start">
                                 <div class="form-check">
@@ -319,36 +344,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap gap-25">
-                        <div>
+                    <div class="flex-container flex-row gap-25">
+                        <div class="input-md">
                             <label for="sbBroker" class="form-label">SB Broker:</label>
-                            <input class="form-control input-md" type="text" id="sbBroker" name="sbBroker" value="<%= order.broker.sb %>">
+                            <input class="form-control" type="text" id="sbBroker" name="sbBroker" value="<%= order.broker.sb %>">
                         </div>
-                    </div>
-                    <div class="flex-container flex-row flex-wrap gap-25">
-                        <div>
+                        <div class="input-md">
                             <label for="nbBroker" class="form-label">NB Broker:</label>
-                            <input class="form-control input-md" type="text" id="nbBroker" name="nbBroker" value="<%= order.broker.nb %>">
+                            <input class="form-control" type="text" id="nbBroker" name="nbBroker" value="<%= order.broker.nb %>">
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flex-container flex-row flex-start flex-wrap gap-50">
-                <div>
+            <div class="flex-container flex-row flex-start gap-50">
+                <div class="input-lg">
                     <label for="deliveryEta" class="form-label">ETA:</label>
-                    <input class="form-control input-lg" type="date" id="deliveryEta" name="deliveryEta" value="<%= order.deliveryEta %>">
+                    <input class="form-control" type="date" id="deliveryEta" name="deliveryEta" value="<%= order.deliveryEta %>" maxlength="30">
                 </div>
-                <div>
+                <div class="input-lg">
                     <label for="freightReadyDate" class="form-label">Ready Date / Time:</label>
-                    <input class="form-control input-lg" type="text" id="freightReadyDate" name="freightReadyDate" value="<%= order.freightReady %>">
+                    <input class="form-control" type="text" id="freightReadyDate" name="freightReadyDate" value="<%= order.freightReady %>" maxlength="30">
                 </div>
-                <div>
+                <div class="input-lg">
                     <label for="pickupAppointmentDate" class="form-label">Pick-up Appointment:</label>
-                    <input class="form-control input-lg" type="text" id="pickupAppointment" name="pickupAppointment" value="<%= order.pickupAppointment %>">
+                    <input class="form-control" type="text" id="pickupAppointment" name="pickupAppointment" value="<%= order.pickupAppointment %>" maxlength="30">
                 </div>
-                <div>
+                <div class="input-lg">
                     <label for="deliveryAppointmentDate" class="form-label">Delivery Appointment:</label>
-                    <input class="form-control input-lg" type="text" id="deliveryAppointment" name="deliveryAppointment" value="<%= order.deliveryAppointment %>">
+                    <input class="form-control" type="text" id="deliveryAppointment" name="deliveryAppointment" value="<%= order.deliveryAppointment %>" maxlength="30">
                 </div>  
             </div>
         </div>
@@ -439,66 +462,63 @@
                             <input class="form-control input-xs" type="text" placeholder="#" id="c10" name="c10" onchange="calculateCUFT(10)" value="<%= order.shipmentDims.row10.c %>">
                             <input class="form-control input-xs" type="text" placeholder="CF" id="cf10" name="cf10" readonly value="<%= order.shipmentDims.row10.cf %>">
                         </div>
-                        <div class="flex-container flex-row flex-between gap-25">
-                            <div class="flex-container flex-row flex-start gap-10">
-                                <div>
-                                    <label for="totalWeight" class="form-label">Total Weight:</label>
-                                    <input class="form-control input-sm" type="text" id="totalWeight" name="totalWeight" value="<%= order.totalWeight.weight %>">
-                                </div>
-                                <div>
-                                    <label for="weightMeasurement" class="form-label">Measurement:</label>
-                                    <select class="form-select input-xs" name="weightMeasurement" id="weightMeasurement">
-                                        <% if (order.totalWeight.measurement === 'lbs') { %>
-                                            <option value="lbs" selected>lbs.</option>
-                                            <option value="kgs">kgs.</option>
-                                        <% } else { %>
-                                            <option value="lbs">lbs.</option>
-                                            <option value="kgs" selected>kgs.</option>   
-                                        <% } %>
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <label for="totalCUFT" class="form-label">Total CUFT:</label>
-                                <input class="form-control input-sm" type="text" id="totalCUFT" name="totalCUFT" value="<%= order.shipmentDims.totalCUFT %>" readonly>
-                            </div>
-                        </div>
                     </div>
-                    <div class="flex-container flex-between flex-wrap gap-50">
-                        <div>
-                            <label for="dryTemp" class="form-label">Dry / Temp Controlled:</label>
-                            <select class="form-select input-lg" name="dryTemp" id="dryTemp">
-                                <% if (order.dryTemp === 'Dry') { %>
-                                    <option value="Dry" selected>Dry</option>
-                                    <option value="Temp">Temp Controlled</option>
-                                <% } else { %>
-                                    <option value="Dry">Dry</option>
-                                    <option value="Temp" selected>Temp Controlled</option>
-                                <% } %>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="temp" class="form-label">Temp:</label>
-                            <input class="form-control input-lg" type="text" id="temperature" name="temperature" value="<%= order.temperature %>">
+                    <div>
+                        <div class="flex-container flex-row flex-start gap-10">
+                            <div class="input-md">
+                                <label for="totalPieces" class="form-label">Total Pieces:</label>
+                                <input class="form-control" type="text" id="totalPieces" name="totalPieces" value="<%= order.totalPieces %>">
+                            </div>
+                            <div class="input-md">
+                                <label for="totalWeight" class="form-label">Total Weight:</label>
+                                <input class="form-control" type="text" id="totalWeight" name="totalWeight" value="<%= order.totalWeight.weight %>">
+                            </div>
+                            <div class="input-sm self-align-end">
+                                <select class="form-select" name="weightMeasurement" id="weightMeasurement">
+                                    <% if (order.totalWeight.measurement === 'lbs') { %>
+                                        <option value="lbs" selected>lbs.</option>
+                                        <option value="kgs">kgs.</option>
+                                    <% } else { %>
+                                        <option value="lbs">lbs.</option>
+                                        <option value="kgs" selected>kgs.</option>   
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="input-sm">
+                                <label for="totalCUFT" class="form-label">Total CUFT:</label>
+                                <input class="form-control" type="text" id="totalCUFT" name="totalCUFT" value="<%= order.shipmentDims.totalCuft %>" readonly>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="details-column">
-                    <div class="dimension-table">
-                        <div class="flex-container flex-row flex-wrap gap-10">
-                            <div>
+                    <div class="reference-columns">
+                        <div class="flex-container flex-start gap-25">
+                            <div class="input-lg">
                                 <label for="commodity" class="form-label">Commodity:</label>
                                 <input class="form-control input-lg" type="text" id="commodity" name="commodity" value="<%= order.commodity %>">
                             </div>
-                            <div>
-                                <label for="totalPieces" class="form-label">Total Pieces:</label>
-                                <input class="form-control input-xs" type="text" id="totalPieces" name="totalPieces" value="<%= order.totalPieces %>">
+                            <div class="input-md">
+                                <label for="dryTemp" class="form-label">Dry / Temp Controlled:</label>
+                                <select class="form-select input-lg" name="dryTemp" id="dryTemp">
+                                    <% if (order.dryTemp === 'Dry') { %>
+                                        <option value="Dry" selected>Dry</option>
+                                        <option value="Temp">Temp Controlled</option>
+                                    <% } else { %>
+                                        <option value="Dry">Dry</option>
+                                        <option value="Temp" selected>Temp Controlled</option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="input-sm">
+                                <label for="temp" class="form-label">Temp:</label>
+                                <input class="form-control input-lg" type="text" id="temperature" name="temperature" value="<%= order.temperature %>">
                             </div>
                         </div>
-                        <div class="flex-container flex-row flex-wrap gap-10">
-                            <div>
+                        <div class="flex-container flex-row gap-25">
+                            <div class="input-sm">
                                 <label for="stackable" class="form-label">Stackable?:</label>
-                                <select class="form-select input-xs" name="stackable" id="stackable">
+                                <select class="form-select" name="stackable" id="stackable">
                                     <% if (order.stackable === 'Non-Stackable') { %>
                                         <option value="Non-Stackable" selected>Non-Stackable</option>
                                         <option value="Stackable">Stackable</option>
@@ -508,9 +528,9 @@
                                     <% } %>
                                 </select>
                             </div>
-                            <div>
+                            <div class="input-sm">
                                 <label for="tarp" class="form-label">Tarp?:</label>
-                                <select class="form-select input-xs" name="tarp" id="tarp">
+                                <select class="form-select" name="tarp" id="tarp">
                                     <% if (order.tarp) { %>
                                         <option value="false">No</option>
                                         <option value="true" selected>Yes</option>
@@ -520,9 +540,9 @@
                                     <% } %>
                                 </select>
                             </div>
-                            <div>
+                            <div class="input-sm">
                                 <label for="tailgate" class="form-label">Power Tailgate?:</label>
-                                <select class="form-select input-xs" name="tailgate" id="tailgate">
+                                <select class="form-select" name="tailgate" id="tailgate">
                                     <% if (order.tailgate) { %>
                                         <option value="false">No</option>
                                         <option value="true" selected>Yes</option>
@@ -532,9 +552,9 @@
                                     <% } %>
                                 </select>
                             </div>
-                            <div>
+                            <div class="input-sm">
                                 <label for="team-required" class="form-label">Team Required?:</label>
-                                <select class="form-select input-xs" name="teamRequired" id="team-required">
+                                <select class="form-select" name="teamRequired" id="team-required">
                                     <% if (order.teamRequired) { %>
                                         <option value="false">No</option>
                                         <option value="true" selected>Yes</option>
@@ -546,53 +566,51 @@
                             </div>
                         </div>
                     </div>
-                    <div class="dimension-table">
-                        <div class="flex-container flex-row flex-wrap gap-10">
-                            <div class="flex-container flex-between gap-50">
-                                <h4>PO & Reference Numbers:</h4>    
-                            </div>
-                            <div>
+                    <div class="reference-columns">
+                        <h4>PO & Reference Numbers:</h4>    
+                        <div class="flex-container flex-row gap-25">
+                            <div class="input-xs">
                                 <label for="poNumber" class="form-label">PO #:</label>
-                                <input class="form-control input-xs" type="text" id="poNumber" name="poNumber" value="<%= order.referenceNumbers.poNumber%>">
+                                <input class="form-control" type="text" id="poNumber" name="poNumber" value="<%= order.referenceNumbers.poNumber%>">
                             </div>
-                            <div>
+                            <div class="input-xs">
                                 <label for="soNumber" class="form-label">SO #:</label>
-                                <input class="form-control input-xs" type="text" id="soNumber" name="soNumber" value="<%= order.referenceNumbers.soNumber %>">
+                                <input class="form-control" type="text" id="soNumber" name="soNumber" value="<%= order.referenceNumbers.soNumber %>">
                             </div>
-                            <div>
+                            <div class="input-xs">
                                 <label for="refNumber" class="form-label">Ref #:</label>
-                                <input class="form-control input-xs" type="text" id="refNumber" name="refNumber" value="<%= order.referenceNumbers.refNumber %>">
+                                <input class="form-control" type="text" id="refNumber" name="refNumber" value="<%= order.referenceNumbers.refNumber %>">
                             </div>
-                            <div>
+                            <div class="input-xs">
                                 <label for="invNumber" class="form-label">Inv #:</label>
-                                <input class="form-control input-xs" type="text" id="invNumber" name="invNumber" value="<%= order.referenceNumbers.invNumber %>">
+                                <input class="form-control" type="text" id="invNumber" name="invNumber" value="<%= order.referenceNumbers.invNumber %>">
                             </div>
                         </div>
                     </div>
-                    <div class="dimension-table">
-                        <div class="flex-container flex-between gap-50">
-                            <h4>Dangerous Goods:</h4>    
-                        </div>
-                        <div class="flex-container flex-row flex-wrap gap-10">
-                            <div>
+                    <div class="reference-columns">
+                        <h4>Dangerous Goods:</h4>    
+                        <div class="flex-container flex-row gap-25">
+                            <div class="input-sm">
                                 <label for="un" class="form-label">UN#:</label>
-                                <input class="form-control input-sm" type="text" id="un" name="un" value="<%= order.dangerousGoods.un %>">
+                                <input class="form-control" type="text" id="un" name="un" value="<%= order.dangerousGoods.un %>">
                             </div>
-                            <div>
+                            <div class="input-sm">
                                 <label for="class" class="form-label">Class:</label>
-                                <input class="form-control input-sm" type="text" id="class" name="class" value="<%= order.dangerousGoods.class %>">
+                                <input class="form-control" type="text" id="class" name="class" value="<%= order.dangerousGoods.class %>">
                             </div>
-                            <div>
+                            <div class="input-sm">
                                 <label for="pg" class="form-label">PG:</label>
-                                <input class="form-control input-xs" type="text" id="pg" name="pg" value="<%= order.dangerousGoods.pg %>">
+                                <input class="form-control" type="text" id="pg" name="pg" value="<%= order.dangerousGoods.pg %>">
                             </div>
-                            <div>
+                        </div>
+                        <div class="flex-container flex-row gap-25">
+                            <div class="input-lg">
                                 <label for="dgDescription" class="form-label">Description:</label>
-                                <input class="form-control input-xl" type="text" id="dgDescription" name="dgDescription" value="<%= order.dangerousGoods.dgDescription %>">
+                                <input class="form-control" type="text" id="dgDescription" name="dgDescription" value="<%= order.dangerousGoods.dgDescription %>">
                             </div>
-                            <div>
+                            <div class="input-lg">
                                 <label for="emergencyContact" class="form-label">Emergency Contact:</label>
-                                <input class="form-control input-xl" type="text" id="emergencyContact" name="emergencyContact" value="<%= order.dangerousGoods.emergencyContact %>">
+                                <input class="form-control" type="text" id="emergencyContact" name="emergencyContact" value="<%= order.dangerousGoods.emergencyContact %>">
                             </div>
                         </div>
                     </div>
@@ -603,7 +621,7 @@
             <div class="quote-body-split">
                 <div class="address-form">
                     <h2>Carrier:</h2>
-                    <div class="flex-container flex-row flex-wrap gap-50">
+                    <div class="flex-container flex-row gap-50">
                         <div>
                             <label for="carrierCompany" class="form-label">Carrier Used:</label>
                             <input class="form-control input-lg" type="text" id="carrierCompany" name="carrierCompany">
@@ -613,7 +631,7 @@
                             <input class="form-control input-sm" type="text" id="carrierQuoteNumber" name="carrierQuoteNumber">
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap gap-50">
+                    <div class="flex-container flex-row gap-50">
                         <div>
                             <label for="carrierContact" class="form-label">Carrier Contact:</label>
                             <input class="form-control input-lg" type="text" id="carrierContact" name="carrierContact">
@@ -627,7 +645,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap gap-50">
+                    <div class="flex-container flex-row gap-50">
                         <div>
                             <label for="truck" class="form-label">Truck:</label>
                             <input class="form-control input-lg" type="text" id="truck" name="truck">
@@ -637,7 +655,7 @@
                             <input class="form-control input-lg" type="text" id="trailer" name="trailer">
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap gap-50">
+                    <div class="flex-container flex-row gap-50">
                         <div>
                             <label for="carrierDispatchedDate" class="form-label">Carrier Dispatched Date:</label>
                             <input class="form-control input-lg" type="date" id="carrierDispatchedDate" name="carrierDispatchedDate">
@@ -647,7 +665,7 @@
                             <input class="form-control input-lg" type="time" id="carrierDispatchedTime" name="carrierDispatchedTime">
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap gap-50">
+                    <div class="flex-container flex-row gap-50">
                         <div>
                             <label for="carrierPickupDate" class="form-label">Carrier Pick-up Date:</label>
                             <input class="form-control input-lg" type="date" id="carrierPickupDate" name="carrierPickupDate">
@@ -657,19 +675,19 @@
                             <input class="form-control input-lg" type="time" id="carrierPickupTime" name="carrierPickupTime">
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap gap-50">
+                    <div class="flex-container flex-row gap-50">
                         <div>
                             <label for="papsPars" class="form-label">PAPS / PARS:</label>
                             <input class="form-control input-lg" type="text" id="papsPars" name="papsPars">
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap gap-50">
+                    <div class="flex-container flex-row gap-50">
                         <div>
                             <label for="borderCrossing" class="form-label">Border Crossing:</label>
                             <input class="form-control input-lg" type="text" id="borderCrossing" name="borderCrossing">
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap gap-50">
+                    <div class="flex-container flex-row gap-50">
                         <div>
                             <label for="transactionNumber" class="form-label">Transaction Number:</label>
                             <input class="form-control input-lg" type="text" id="transactionNumber" name="transactionNumber">
@@ -677,7 +695,7 @@
                     </div>
                 </div>
                 <div class="address-form">
-                    <div class="flex-container flex-row flex-start flex-wrap gap-50">
+                    <div class="flex-container flex-row flex-start gap-50">
                         <div>
                             <label for="loadConfirmationDateSent" class="form-label">Load Confirmation Sent:</label>
                             <input class="form-control input-sm" type="date" id="loadConfirmationDateSent" name="loadConfirmationDateSent">
@@ -687,7 +705,7 @@
                             <input class="form-control input-sm" type="time" id="loadConfirmationTimeSent" name="loadConfirmationTimeSent">
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-start flex-wrap gap-50">
+                    <div class="flex-container flex-row flex-start gap-50">
                         <div>
                             <label for="bolDateSent" class="form-label">BOL Sent:</label>
                             <input class="form-control input-sm" type="date" id="bolDateSent" name="bolDateSent">
@@ -697,7 +715,7 @@
                             <input class="form-control input-sm" type="time" id="bolTimeSent" name="bolTimeSent">
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-start flex-wrap gap-50">
+                    <div class="flex-container flex-row flex-start gap-50">
                         <div>
                             <label for="commercialInvoiceDateSent" class="form-label">Customs Sent:</label>
                             <input class="form-control input-sm" type="date" id="commercialInvoiceDateSent" name="commercialInvoiceDateSent">
@@ -707,7 +725,7 @@
                             <input class="form-control input-sm" type="time" id="commercialInvoiceTimeSent" name="commercialInvoiceTimeSent">
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-50">
+                    <div class="flex-container flex-row flex-between gap-50">
                         <div>
                             <label for="tracingNotes" class="form-label">Tracing Notes:</label>
                             <textarea class="form-control input-xlg" id="tracingNotes" name="tracingNotes" rows="8"></textarea>
@@ -915,7 +933,7 @@
                 </div>
             </div>
             <div class="costing-footer">
-                <div class="flex-container flex-row flex-wrap gap-50">
+                <div class="flex-container flex-row gap-50">
                     <div>
                         <label for="" class="form-label">Rate Propsal Sent:</label>
                         <select class="form-select input-md" name="" id="">
@@ -933,7 +951,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-wrap gap-50">
+                <div class="flex-container flex-row gap-50">
                     <div>
                         <label for="" class="form-label">Rate Propsal Signed:</label>
                         <select class="form-select input-md" name="" id="">
@@ -976,64 +994,64 @@
     <div class="modal-body">
         <div class="costing-body-split">
             <div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-25">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-25">
+                    <div class="input-lg">
                         <label for="newClientCompany" class="form-label">Company:</label>
-                        <input class="form-control input-lg" type="text" id="newClientCompany" name="newClientCompany">  
+                        <input class="form-control" type="text" id="newClientCompany" name="newClientCompany">  
                     </div>
-                    <div>
+                    <div class="input-lg">
                         <label for="newClientAttention" class="form-label">Attention:</label>
-                        <input class="form-control input-lg" type="text" id="newClientAttention" name="newClientAttention">  
+                        <input class="form-control" type="text" id="newClientAttention" name="newClientAttention">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-wrap">
-                    <div>
+                <div class="flex-container flex-row">
+                    <div class="input-xl">
                         <label for="newClientAddressOne" class="form-label">Address Line 1:</label>
-                        <input class="form-control input-xlg" type="text" id="newClientAddressOne" name="newClientAddressOne">  
+                        <input class="form-control" type="text" id="newClientAddressOne" name="newClientAddressOne">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-wrap">
-                    <div>
+                <div class="flex-container flex-row">
+                    <div class="input-xl">
                         <label for="newClientAddressTwo" class="form-label">Address Line 2:</label>
-                        <input class="form-control input-xlg" type="text" id="newClientAddressTwo" name="newClientAddressTwo">  
+                        <input class="form-control" type="text" id="newClientAddressTwo" name="newClientAddressTwo">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-10">
+                    <div class="input-sm">
                         <label for="newClientCity" class="form-label">City:</label>
-                        <input class="form-control input-sm" type="text" id="newClientCity" name="newClientCity">  
+                        <input class="form-control" type="text" id="newClientCity" name="newClientCity">  
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="newClientState" class="form-label">State:</label>
-                        <input class="form-control input-xs" type="text" id="newClientState" name="newClientState">  
+                        <input class="form-control" type="text" id="newClientState" name="newClientState">  
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="newClientPostal" class="form-label">Postal:</label>
-                        <input class="form-control input-xs" type="text" id="newClientPostal" name="newClientPostal">  
+                        <input class="form-control" type="text" id="newClientPostal" name="newClientPostal">  
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="newClientCountry" class="form-label">Country:</label>
-                        <input class="form-control input-xs" type="text" id="newClientCountry" name="newClientCountry">  
+                        <input class="form-control" type="text" id="newClientCountry" name="newClientCountry">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-10">
+                    <div class="input-sm">
                         <label for="newClientPhone" class="form-label">Phone:</label>
-                        <input class="form-control input-sm" type="text" id="newClientPhone" name="newClientPhone">  
+                        <input class="form-control" type="text" id="newClientPhone" name="newClientPhone">  
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="newClientFax" class="form-label">Fax:</label>
-                        <input class="form-control input-sm" type="text" id="newClientFax" name="newClientFax">  
+                        <input class="form-control" type="text" id="newClientFax" name="newClientFax">  
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="newClientEmail" class="form-label">Email:</label>
-                        <input class="form-control input-sm" type="email" id="newClientEmail" name="newClientEmail">  
+                        <input class="form-control" type="email" id="newClientEmail" name="newClientEmail">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-10">
+                    <div class="input-lg">
                         <label for="newClientSalesRep" class="form-label">Sales Rep:</label>
-                        <input class="form-control input-lg" type="text" id="newClientSalesRep" name="newClientSalesRep">  
+                        <input class="form-control" type="text" id="newClientSalesRep" name="newClientSalesRep">  
                     </div>
                 </div>
             </div>
@@ -1068,6 +1086,12 @@
                     Broker
                     </label>
                 </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="newClientVendor" name="newClientVendor">
+                    <label class="form-check-label" for="vendor">
+                    Vendor
+                    </label>
+                </div>
             </div>
         </div>
         <div class="modal-button-group">
@@ -1088,66 +1112,66 @@
     <div class="modal-body">
         <div class="costing-body-split">
             <div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-25">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-25">
+                    <div class="input-lg">
                         <label for="newShipperCompany" class="form-label">Company:</label>
-                        <input class="form-control input-lg" type="text" id="newShipperCompany" name="newShipperCompany">  
+                        <input class="form-control" type="text" id="newShipperCompany" name="newShipperCompany">  
                     </div>
-                    <div>
+                    <div class="input-lg">
                         <label for="newShipperAttention" class="form-label">Attention:</label>
-                        <input class="form-control input-lg" type="text" id="newShipperAttention" name="newShipperAttention">  
+                        <input class="form-control" type="text" id="newShipperAttention" name="newShipperAttention">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-wrap">
-                    <div>
+                <div class="flex-container flex-row">
+                    <div class="input-xl">
                         <label for="newShipperAddressOne" class="form-label">Address Line 1:</label>
-                        <input class="form-control input-xlg" type="text" id="newShipperAddressOne" name="newShipperAddressOne">  
+                        <input class="form-control" type="text" id="newShipperAddressOne" name="newShipperAddressOne">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-wrap">
-                    <div>
+                <div class="flex-container flex-row">
+                    <div class="input-xl">
                         <label for="newShipperAddressTwo" class="form-label">Address Line 2:</label>
-                        <input class="form-control input-xlg" type="text" id="newShipperAddressTwo" name="newShipperAddressTwo">  
+                        <input class="form-control" type="text" id="newShipperAddressTwo" name="newShipperAddressTwo">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-10">
+                    <div class="input-sm">
                         <label for="newShipperCity" class="form-label">City:</label>
-                        <input class="form-control input-sm" type="text" id="newShipperCity" name="newShipperCity">  
+                        <input class="form-control" type="text" id="newShipperCity" name="newShipperCity">  
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="newShipperState" class="form-label">State:</label>
-                        <input class="form-control input-xs" type="text" id="newShipperState" name="newShipperState">  
+                        <input class="form-control" type="text" id="newShipperState" name="newShipperState">  
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="newShipperPostal" class="form-label">Postal:</label>
-                        <input class="form-control input-xs" type="text" id="newShipperPostal" name="newShipperPostal">  
+                        <input class="form-control" type="text" id="newShipperPostal" name="newShipperPostal">  
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="newShipperCountry" class="form-label">Country:</label>
-                        <input class="form-control input-xs" type="text" id="newShipperCountry" name="newShipperCountry">  
+                        <input class="form-control" type="text" id="newShipperCountry" name="newShipperCountry">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-10">
+                    <div class="input-sm">
                         <label for="newShipperPhone" class="form-label">Phone:</label>
-                        <input class="form-control input-sm" type="text" id="newShipperPhone" name="newShipperPhone">  
+                        <input class="form-control" type="text" id="newShipperPhone" name="newShipperPhone">  
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="newShipperFax" class="form-label">Fax:</label>
-                        <input class="form-control input-sm" type="text" id="newShipperFax" name="newShipperFax">  
+                        <input class="form-control" type="text" id="newShipperFax" name="newShipperFax">  
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="newShipperEmail" class="form-label">Email:</label>
-                        <input class="form-control input-sm" type="email" id="newShipperEmail" name="newShipperEmail">  
+                        <input class="form-control" type="email" id="newShipperEmail" name="newShipperEmail">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-10">
+                    <div class="input-lg">
                         <label for="newShipperSalesRep" class="form-label">Sales Rep:</label>
-                        <input class="form-control input-lg" type="text" id="newShipperSalesRep" name="newShipperSalesRep">  
+                        <input class="form-control" type="text" id="newShipperSalesRep" name="newShipperSalesRep">  
                     </div>
-                    <div class="form-check">
+                    <div class="form-check self-align-end">
                         <input class="form-check-input" type="checkbox" id="shipperSameAsClient" name="shipperSameAsClient">
                         <label class="form-check-label" for="shipperSameAsClient">Same As Client?</label>
                     </div>
@@ -1184,6 +1208,12 @@
                     Broker
                     </label>
                 </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="newShipperVendor" name="newShipperVendor">
+                    <label class="form-check-label" for="vendor">
+                    Vendor
+                    </label>
+                </div>
             </div>
         </div>
         <div class="modal-button-group">
@@ -1204,66 +1234,66 @@
     <div class="modal-body">
         <div class="costing-body-split">
             <div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-25">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-25">
+                    <div class="input-lg">
                         <label for="newConsigneeCompany" class="form-label">Company:</label>
-                        <input class="form-control input-lg" type="text" id="newConsigneeCompany" name="newConsigneeCompany">  
+                        <input class="form-control" type="text" id="newConsigneeCompany" name="newConsigneeCompany">  
                     </div>
-                    <div>
+                    <div class="input-lg">
                         <label for="newConsigneeAttention" class="form-label">Attention:</label>
-                        <input class="form-control input-lg" type="text" id="newConsigneeAttention" name="newConsigneeAttention">  
+                        <input class="form-control" type="text" id="newConsigneeAttention" name="newConsigneeAttention">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-wrap">
-                    <div>
+                <div class="flex-container flex-row">
+                    <div class="input-xl">
                         <label for="newConsigneeAddressOne" class="form-label">Address Line 1:</label>
-                        <input class="form-control input-xlg" type="text" id="newConsigneeAddressOne" name="newConsigneeAddressOne">  
+                        <input class="form-control" type="text" id="newConsigneeAddressOne" name="newConsigneeAddressOne">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-wrap">
-                    <div>
+                <div class="flex-container flex-row">
+                    <div class="input-xl">
                         <label for="newConsigneeAddressTwo" class="form-label">Address Line 2:</label>
-                        <input class="form-control input-xlg" type="text" id="newConsigneeAddressTwo" name="newConsigneeAddressTwo">  
+                        <input class="form-control" type="text" id="newConsigneeAddressTwo" name="newConsigneeAddressTwo">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-10">
+                    <div class="input-sm">
                         <label for="newConsigneeCity" class="form-label">City:</label>
-                        <input class="form-control input-sm" type="text" id="newConsigneeCity" name="newConsigneeCity">  
+                        <input class="form-control" type="text" id="newConsigneeCity" name="newConsigneeCity">  
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="newConsigneeState" class="form-label">State:</label>
-                        <input class="form-control input-xs" type="text" id="newConsigneeState" name="newConsigneeState">  
+                        <input class="form-control" type="text" id="newConsigneeState" name="newConsigneeState">  
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="newConsigneePostal" class="form-label">Postal:</label>
-                        <input class="form-control input-xs" type="text" id="newConsigneePostal" name="newConsigneePostal">  
+                        <input class="form-control" type="text" id="newConsigneePostal" name="newConsigneePostal">  
                     </div>
-                    <div>
+                    <div class="input-xs">
                         <label for="newConsigneeCountry" class="form-label">Country:</label>
-                        <input class="form-control input-xs" type="text" id="newConsigneeCountry" name="newConsigneeCountry">  
+                        <input class="form-control" type="text" id="newConsigneeCountry" name="newConsigneeCountry">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-10">
+                    <div class="input-sm">
                         <label for="newConsigneePhone" class="form-label">Phone:</label>
-                        <input class="form-control input-sm" type="text" id="newConsigneePhone" name="newConsigneePhone">  
+                        <input class="form-control" type="text" id="newConsigneePhone" name="newConsigneePhone">  
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="newConsigneeFax" class="form-label">Fax:</label>
-                        <input class="form-control input-sm" type="text" id="newConsigneeFax" name="newConsigneeFax">  
+                        <input class="form-control" type="text" id="newConsigneeFax" name="newConsigneeFax">  
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="newConsigneeEmail" class="form-label">Email:</label>
-                        <input class="form-control input-sm" type="email" id="newConsigneeEmail" name="newConsigneeEmail">  
+                        <input class="form-control" type="email" id="newConsigneeEmail" name="newConsigneeEmail">  
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                    <div>
+                <div class="flex-container flex-row flex-between gap-10">
+                    <div class="input-lg">
                         <label for="newConsigneeSalesRep" class="form-label">Sales Rep:</label>
-                        <input class="form-control input-lg" type="text" id="newConsigneeSalesRep" name="newConsigneeSalesRep">  
+                        <input class="form-control" type="text" id="newConsigneeSalesRep" name="newConsigneeSalesRep">  
                     </div>
-                    <div class="form-check">
+                    <div class="form-check self-align-end">
                         <input class="form-check-input" type="checkbox" id="consigneeSameAsClient" name="consigneeSameAsClient">
                         <label class="form-check-label" for="consigneeSameAsClient">Same As Client?</label>
                     </div>
@@ -1298,6 +1328,12 @@
                     <input class="form-check-input" type="checkbox" id="newConsigneeBroker" name="newConsigneeBroker">
                     <label class="form-check-label" for="broker">
                     Broker
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="newConsigneeVendor" name="newConsigneeVendor">
+                    <label class="form-check-label" for="vendor">
+                    Vendor
                     </label>
                 </div>
             </div>

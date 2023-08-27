@@ -27,22 +27,30 @@
                 </div>
             </div>
             <div id="quote-header" class="new-quote-form">
-                <div class="flex-container flex-row flex-start flex-wrap gap-50">
-                    <div class="">                    
+                <div class="flex-container flex-row flex-start gap-25">
+                    <div class="input-lg">                    
                         <label for="quoteTaker" class="form-label">Name:</label>
-                        <input class="form-control input-lg" type="text" id="quoteTaker" name="quoteTaker" required>
+                        <input class="form-control" type="text" id="quoteTaker" name="quoteTaker" required>
                     </div>
-                    <div>
+                    <div class="input-sm">
+                        <label for="importExport" class="form-label">Import / Export:</label>
+                        <select name="importExport" id="importExport" class="form-select" required>
+                            <option value=""></option>
+                            <option value="import">Import</option>
+                            <option value="export">Export</option>
+                        </select>
+                    </div>
+                    <div class="input-sm">
                         <label for="freightSize" class="form-label">FTL / LTL:</label>
-                        <select class="form-select input-sm" name="freightSize" id="freightSize">
+                        <select class="form-select" name="freightSize" id="freightSize">
                             <option value=""></option>
                             <option value="LTL">LTL</option>
                             <option value="FTL">FTL</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="shipmentType" class="form-label">Type:</label>
-                        <select class="form-select input-sm" name="shipmentType" id="shipmentType">
+                        <select class="form-select" name="shipmentType" id="shipmentType">
                             <option value=""></option>
                             <option value="Domestic">Domestic</option>
                             <option value="Transborder">Transborder</option>
@@ -50,19 +58,19 @@
                             <option value="IntraState">IntraState</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="quoteDate" class="form-label">Date:</label>
-                        <input class="form-control input-sm" type="date" id="quoteDate" name="quoteDate" value="<%= todayDate %>"> 
+                        <input class="form-control" type="date" id="quoteDate" name="quoteDate" value="<%= todayDate %>"> 
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="quoteTime" class="form-label">Time:</label>
-                        <input class="form-control input-sm" type="time" id="quoteTime" name="quoteTime" value=""> 
+                        <input class="form-control" type="time" id="quoteTime" name="quoteTime" value=""> 
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-wrap gap-50">
-                    <div>
+                <div class="flex-container flex-row gap-50">
+                    <div class="input-lg">
                         <label for="client" class="form-label">Client / Bill To:</label>
-                        <select class="form-select input-lg" name="client" id="client" onchange="showAddClientModal(this.value, 'add-client')" required>
+                        <select class="form-select" name="client" id="client" onchange="showAddClientModal(this.value, 'add-client')" required>
                             <option></option>
                             <option value="new">-- Create New --</option>
                             <% addressList.forEach((address) => { %>
@@ -70,41 +78,41 @@
                             <% }) %>
                         </select>
                     </div>
-                    <div id="add-client-button" class="flex-container flex-column flex-end" onclick="openModal('add-client-modal')">
+                    <div id="add-client-button" class="self-align-end" onclick="openModal('add-client-modal')">
                         <div class="add-address-button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
                             <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
                           </svg>
                         </div>
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="quoteNumber" class="form-label">Quote #:</label>
-                        <input class="form-control input-sm" type="text" id="quoteNumber" name="quoteNumber" required>  
+                        <input class="form-control" type="text" id="quoteNumber" name="quoteNumber" required>  
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="paymentTerms" class="form-label">Terms:</label>
-                        <select class="form-select input-sm" name="paymentTerms" id="paymentTerms" onchange="showThirdpartyInput(this.value)" required>
+                        <select class="form-select" name="paymentTerms" id="paymentTerms" onchange="showThirdpartyInput(this.value)" required>
                             <option value=""></option>
                             <option value="PPD">Prepaid</option>
                             <option value="COL">Collect</option>
                             <option value="TP">Third Party</option>
                         </select>
                     </div>
-                    <div id="thirdPartyInformationPanel">
+                    <div id="thirdPartyInformationPanel" class="input-sm">
                         <label for="thirdPartyInformation" id="" class="form-label">Third Party Bill To:</label>
-                        <input class="form-control input-sm" type="text" id="thirdPartyInformation" name="thirdPartyInformation">  
+                        <input class="form-control" type="text" id="thirdPartyInformation" name="thirdPartyInformation">  
                     </div>
-                    <div>
+                    <div class="input-sm">
                         <label for="serviceLevel" class="form-label">Service Level:</label>
-                        <input class="form-control input-sm" type="text" id="serviceLevel" name="serviceLevel">
+                        <input class="form-control" type="text" id="serviceLevel" name="serviceLevel">
                     </div>
                 </div>
                 <div class="address-information">
                     <div class="address-form">
-                        <div class="flex-container flex-row flex-wrap gap-50">
-                            <div>
+                        <div class="flex-container flex-row gap-50">
+                            <div class="input-xl">
                                 <label for="shipper" class="form-label">Shipper:</label>
-                                <select class="form-select input-xlg" name="shipper" id="shipper" onchange="showAddClientModal(this.value, 'add-shipper')">
+                                <select class="form-select" name="shipper" id="shipper" onchange="showAddClientModal(this.value, 'add-shipper')">
                                     <option></option>
                                     <option value="new">-- Create New --</option>
                                     <% addressList.forEach((address) => { %>
@@ -112,32 +120,32 @@
                                     <% }) %>
                                 </select>
                             </div>
-                            <div id="add-shipper-button" class="flex-container flex-column flex-end" onclick="openModal('add-shipper-modal')">
+                            <div id="add-shipper-button" class="self-align-end" onclick="openModal('add-shipper-modal')">
                                 <div class="add-address-button">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                                  </svg>
+                                        <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                    </svg>
                                 </div>
                             </div>
                         </div>
-                        <div id="" class="flex-container flex-row flex-wrap gap-25 shipper-box">
-                            <div>
+                        <div class="flex-container flex-row gap-25 shipper-box">
+                            <div class="input-sm">
                                 <label for="genericShipperCity" class="form-label">City:</label>
-                                <input class="form-control input-sm" type="text" id="genericShipperCity" name="genericShipperCity">  
+                                <input class="form-control" type="text" id="genericShipperCity" name="genericShipperCity">  
                             </div>
-                            <div>
+                            <div class="input-xs">
                                 <label for="genericShipperState" class="form-label">State:</label>
-                                <input class="form-control input-xs" type="text" id="genericShipperState" name="genericShipperState">  
+                                <input class="form-control" type="text" id="genericShipperState" name="genericShipperState">  
                             </div>
-                            <div>
+                            <div class="input-xs">
                                 <label for="genericShipperCountry" class="form-label">Country:</label>
-                                <input class="form-control input-xs" type="text" id="genericShipperCountry" name="genericShipperCountry">  
+                                <input class="form-control" type="text" id="genericShipperCountry" name="genericShipperCountry">  
                             </div>
                         </div>
-                        <div class="flex-container flex-row flex-wrap gap-50">
-                            <div>
+                        <div class="flex-container flex-row gap-50">
+                            <div class="input-xl">
                                 <label for="consignee" class="form-label">Consignee:</label>
-                                <select class="form-select input-xlg" name="consignee" id="consignee" onchange="showAddClientModal(this.value, 'add-consignee')">
+                                <select class="form-select" name="consignee" id="consignee" onchange="showAddClientModal(this.value, 'add-consignee')">
                                     <option value=""></option>
                                     <option value="new">-- Create New --</option>
                                     <% addressList.forEach((address) => { %>
@@ -145,32 +153,32 @@
                                     <% }) %>
                                 </select>
                             </div>
-                            <div id="add-consignee-button" class="flex-container flex-column flex-end" onclick="openModal('add-consignee-modal')">
+                            <div id="add-consignee-button" class="self-align-end" onclick="openModal('add-consignee-modal')">
                                 <div class="add-address-button">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                                  </svg>
+                                        <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                    </svg>
                                 </div>
                             </div>
                         </div>
-                        <div id="" class="flex-container flex-row flex-wrap gap-25">
-                            <div>
+                        <div class="flex-container flex-row gap-25">
+                            <div class="input-sm">
                                 <label for="genericConsigneeCity" class="form-label">City:</label>
-                                <input class="form-control input-sm" type="text" id="genericConsigneeCity" name="genericConsigneeCity">  
+                                <input class="form-control" type="text" id="genericConsigneeCity" name="genericConsigneeCity">  
                             </div>
-                            <div>
+                            <div class="input-xs">
                                 <label for="genericConsigneeState" class="form-label">State:</label>
-                                <input class="form-control input-xs" type="text" id="genericConsigneeState" name="genericConsigneeState">  
+                                <input class="form-control" type="text" id="genericConsigneeState" name="genericConsigneeState">  
                             </div>
-                            <div>
+                            <div class="input-xs">
                                 <label for="genericConsigneeCounty" class="form-label">Country:</label>
-                                <input class="form-control input-xs" type="text" id="genericConsigneeCounty" name="genericConsigneeCounty">  
+                                <input class="form-control" type="text" id="genericConsigneeCountry" name="genericConsigneeCountry">  
                             </div>
                         </div>
                     </div>
                     <div class="address-form">
-                        <h4>Equipment Required:</h4>
                         <div class="equipment-checklist">
+                            <h4>Equipment Required:</h4>
                             <div class="flex-container flex-row flex-between">
                                 <div class="flex-container flex-column flex-start">
                                     <div class="form-check">
@@ -216,36 +224,34 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex-container flex-row flex-wrap gap-25">
-                            <div>
+                        <div class="flex-container flex-row gap-25">
+                            <div class="input-md">
                                 <label for="sbBroker" class="form-label">SB Broker:</label>
-                                <input class="form-control input-md" type="text" id="sbBroker" name="sbBroker">
+                                <input class="form-control" type="text" id="sbBroker" name="sbBroker">
                             </div>
-                        </div>
-                        <div class="flex-container flex-row flex-wrap gap-25">
-                            <div>
+                            <div class="input-md">
                                 <label for="nbBroker" class="form-label">NB Broker:</label>
-                                <input class="form-control input-md" type="text" id="nbBroker" name="nbBroker">
+                                <input class="form-control" type="text" id="nbBroker" name="nbBroker">
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex-container flex-row flex-start flex-wrap gap-50">
-                    <div>
+                <div class="flex-container flex-row flex-start gap-50">
+                    <div class="input-lg">
                         <label for="deliveryEta" class="form-label">ETA:</label>
-                        <input class="form-control input-lg" type="date" id="deliveryEta" name="deliveryEta">
+                        <input class="form-control" type="date" id="deliveryEta" name="deliveryEta" maxlength="30">
                     </div>
-                    <div>
+                    <div class="input-lg">
                         <label for="freightReadyDate" class="form-label">Ready Date / Time:</label>
-                        <input class="form-control input-lg" type="text" id="freightReadyDate" name="freightReadyDate">
+                        <input class="form-control" type="text" id="freightReadyDate" name="freightReadyDate" maxlength="30">
                     </div>
-                    <div>
+                    <div class="input-lg">
                         <label for="pickupAppointmentDate" class="form-label">Pick-up Appointment:</label>
-                        <input class="form-control input-lg" type="text" id="pickupAppointment" name="pickupAppointment">
+                        <input class="form-control" type="text" id="pickupAppointment" name="pickupAppointment" maxlength="30">
                     </div>
-                    <div>
+                    <div class="input-lg">
                         <label for="deliveryAppointmentDate" class="form-label">Delivery Appointment:</label>
-                        <input class="form-control input-lg" type="text" id="deliveryAppointment" name="deliveryAppointment">
+                        <input class="form-control" type="text" id="deliveryAppointment" name="deliveryAppointment" maxlength="30">
                     </div>  
                 </div>
             </div>
@@ -255,7 +261,6 @@
                         <div class="dimension-table">
                             <div class="flex-container flex-between gap-50">
                                 <h4>Shipments Dims:</h4>
-                                <h4>CUFT: </h4>    
                             </div>
                             <div class="flex-container flex-row gap-10">
                                 <input class="form-control input-xs" type="text" placeholder="L" id="l1" name="l1" onchange="calculateCUFT(1)">
@@ -327,130 +332,125 @@
                                 <input class="form-control input-xs" type="text" placeholder="#" id="c10" name="c10" onchange="calculateCUFT(10)">
                                 <input class="form-control input-xs" type="text" placeholder="CF" id="cf10" name="cf10" value="" readonly>
                             </div>
-                            <div class="flex-container flex-row flex-between gap-25">
-                                <div class="flex-container flex-row flex-start gap-10">
-                                    <div>
-                                        <label for="totalWeight" class="form-label">Total Weight:</label>
-                                        <input class="form-control input-sm" type="text" id="totalWeight" name="totalWeight">
-                                    </div>
-                                    <div>
-                                        <label for="weightMeasurement" class="form-label">Measurement:</label>
-                                        <select class="form-select input-xs" name="weightMeasurement" id="weightMeasurement">
-                                            <option value="lbs">lbs.</option>
-                                            <option value="kgs">kgs.</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label for="totalCUFT" class="form-label">Total CUFT:</label>
-                                    <input class="form-control input-sm" type="text" id="totalCUFT" name="totalCUFT" value="0" readonly>
-                                </div>
-                            </div>
                         </div>
-                        <div class="flex-container flex-between flex-wrap gap-50">
-                            <div>
-                                <label for="dryTemp" class="form-label">Dry / Temp Controlled:</label>
-                                <select class="form-select input-lg" name="dryTemp" id="dryTemp">
-                                    <option value="Dry" selected>Dry</option>
-                                    <option value="Temp">Temp Controlled</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="temp" class="form-label">Temp:</label>
-                                <input class="form-control input-lg" type="text" id="temperature" name="temperature">
+                        <div>
+                            <div class="flex-container flex-row flex-start gap-10">
+                                <div class="input-md">
+                                    <label for="totalPieces" class="form-label">Total Pieces:</label>
+                                    <input class="form-control" type="text" id="totalPieces" name="totalPieces">
+                                </div>
+                                <div class="input-md">
+                                    <label for="totalWeight" class="form-label">Total Weight:</label>
+                                    <input class="form-control" type="text" id="totalWeight" name="totalWeight">
+                                </div>
+                                <div class="input-sm self-align-end">
+                                    <select class="form-select" name="weightMeasurement" id="weightMeasurement">
+                                        <option value="lbs">lbs.</option>
+                                        <option value="kgs">kgs.</option>
+                                    </select>
+                                </div>
+                                <div class="input-sm">
+                                    <label for="totalCUFT" class="form-label">Total CUFT:</label>
+                                    <input class="form-control" type="text" id="totalCUFT" name="totalCUFT" value="0" readonly>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="details-column">
-                        <div class="dimension-table">
-                            <div class="flex-container flex-row flex-wrap gap-10">
-                                <div>
+                        <div class="reference-columns">
+                            <div class="flex-container flex-start gap-25">
+                                <div class="input-lg">
                                     <label for="commodity" class="form-label">Commodity:</label>
-                                    <input class="form-control input-lg" type="text" id="commodity" name="commodity">
+                                    <input class="form-control" type="text" id="commodity" name="commodity">
                                 </div>
-                                <div>
-                                    <label for="totalPieces" class="form-label">Total Pieces:</label>
-                                    <input class="form-control input-xs" type="text" id="totalPieces" name="totalPieces">
+                                <div class="input-md">
+                                    <label for="dryTemp" class="form-label">Dry / Temp Controlled:</label>
+                                    <select class="form-select" name="dryTemp" id="dryTemp">
+                                        <option value="Dry" selected>Dry</option>
+                                        <option value="Temp">Temp Controlled</option>
+                                    </select>
+                                </div>
+                                <div class="input-sm">
+                                    <label for="temp" class="form-label">Temp:</label>
+                                    <input class="form-control" type="text" id="temperature" name="temperature">
                                 </div>
                             </div>
-                            <div class="flex-container flex-row flex-wrap gap-10">
-                                <div>
+                            <div class="flex-container flex-row gap-25">
+                                <div class="input-sm">
                                     <label for="stackable" class="form-label">Stackable?:</label>
-                                    <select class="form-select input-xs" name="stackable" id="stackable">
+                                    <select class="form-select" name="stackable" id="stackable">
                                         <option value="Non-Stackable">Non-Stackable</option>
                                         <option value="Stackable">Stackable</option>
                                     </select>
                                 </div>
-                                <div>
+                                <div class="input-sm">
                                     <label for="tarp" class="form-label">Tarp?:</label>
-                                    <select class="form-select input-xs" name="tarp" id="tarp">
+                                    <select class="form-select" name="tarp" id="tarp">
                                         <option value="false" selected>No</option>
                                         <option value="true">Yes</option>
                                     </select>
                                 </div>
-                                <div>
+                                <div class="input-sm">
                                     <label for="tailgate" class="form-label">Power Tailgate?:</label>
-                                    <select class="form-select input-xs" name="tailgate" id="tailgate">
+                                    <select class="form-select" name="tailgate" id="tailgate">
                                         <option value="false" selected>No</option>
                                         <option value="true">Yes</option>
                                     </select>
                                 </div>
-                                <div>
+                                <div class="input-sm">
                                     <label for="team-required" class="form-label">Team Required?:</label>
-                                    <select class="form-select input-xs" name="teamRequired" id="team-required">
+                                    <select class="form-select" name="teamRequired" id="team-required">
                                         <option value="false" selected>No</option>
                                         <option value="true">Yes</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="dimension-table">
-                            <div class="flex-container flex-row flex-wrap gap-10">
-                                <div class="flex-container flex-between gap-50">
-                                    <h4>PO & Reference Numbers:</h4>    
-                                </div>
-                                <div>
+                        <div class="reference-columns">
+                            <h4>PO & Reference Numbers:</h4>    
+                            <div class="flex-container flex-row gap-25">
+                                <div class="input-xs">
                                     <label for="poNumber" class="form-label">PO #:</label>
-                                    <input class="form-control input-xs" type="text" id="poNumber" name="poNumber">
+                                    <input class="form-control" type="text" id="poNumber" name="poNumber">
                                 </div>
-                                <div>
+                                <div class="input-xs">
                                     <label for="soNumber" class="form-label">SO #:</label>
-                                    <input class="form-control input-xs" type="text" id="soNumber" name="soNumber">
+                                    <input class="form-control" type="text" id="soNumber" name="soNumber">
                                 </div>
-                                <div>
+                                <div class="input-xs">
                                     <label for="refNumber" class="form-label">Ref #:</label>
-                                    <input class="form-control input-xs" type="text" id="refNumber" name="refNumber">
+                                    <input class="form-control" type="text" id="refNumber" name="refNumber">
                                 </div>
-                                <div>
+                                <div class="input-xs">
                                     <label for="invNumber" class="form-label">Inv #:</label>
-                                    <input class="form-control input-xs" type="text" id="invNumber" name="invNumber">
+                                    <input class="form-control" type="text" id="invNumber" name="invNumber">
                                 </div>
                             </div>
                         </div>
-                        <div class="dimension-table">
-                            <div class="flex-container flex-between gap-50">
-                                <h4>Dangerous Goods:</h4>    
-                            </div>
-                            <div class="flex-container flex-row flex-wrap gap-10">
-                                <div>
+                        <div class="reference-columns">
+                            <h4>Dangerous Goods:</h4>    
+                            <div class="flex-container flex-row gap-25">
+                                <div class="input-sm">
                                     <label for="un" class="form-label">UN#:</label>
-                                    <input class="form-control input-sm" type="text" id="un" name="un">
+                                    <input class="form-control" type="text" id="un" name="un">
                                 </div>
-                                <div>
+                                <div class="input-sm">
                                     <label for="class" class="form-label">Class:</label>
-                                    <input class="form-control input-sm" type="text" id="class" name="class">
+                                    <input class="form-control" type="text" id="class" name="class">
                                 </div>
-                                <div>
+                                <div class="input-sm">
                                     <label for="pg" class="form-label">PG:</label>
-                                    <input class="form-control input-xs" type="text" id="pg" name="pg">
+                                    <input class="form-control" type="text" id="pg" name="pg">
                                 </div>
-                                <div>
+                            </div>
+                            <div class="flex-container flex-row gap-25">
+                                <div class="input-lg">
                                     <label for="dgDescription" class="form-label">Description:</label>
-                                    <input class="form-control input-xl" type="text" id="dgDescription" name="dgDescription">
+                                    <input class="form-control" type="text" id="dgDescription" name="dgDescription">
                                 </div>
-                                <div>
+                                <div class="input-lg">
                                     <label for="emergencyContact" class="form-label">Emergency Contact:</label>
-                                    <input class="form-control input-xl" type="text" id="emergencyContact" name="emergencyContact">
+                                    <input class="form-control" type="text" id="emergencyContact" name="emergencyContact">
                                 </div>
                             </div>
                         </div>
@@ -472,64 +472,64 @@
         <div class="modal-body">
             <div class="costing-body-split">
                 <div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-25">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-25">
+                        <div class="input-lg">
                             <label for="newClientCompany" class="form-label">Company:</label>
-                            <input class="form-control input-lg" type="text" id="newClientCompany" name="newClientCompany">  
+                            <input class="form-control" type="text" id="newClientCompany" name="newClientCompany">  
                         </div>
-                        <div>
+                        <div class="input-lg">
                             <label for="newClientAttention" class="form-label">Attention:</label>
-                            <input class="form-control input-lg" type="text" id="newClientAttention" name="newClientAttention">  
+                            <input class="form-control" type="text" id="newClientAttention" name="newClientAttention">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap">
-                        <div>
+                    <div class="flex-container flex-row">
+                        <div class="input-xl">
                             <label for="newClientAddressOne" class="form-label">Address Line 1:</label>
-                            <input class="form-control input-xlg" type="text" id="newClientAddressOne" name="newClientAddressOne">  
+                            <input class="form-control" type="text" id="newClientAddressOne" name="newClientAddressOne">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap">
-                        <div>
+                    <div class="flex-container flex-row">
+                        <div class="input-xl">
                             <label for="newClientAddressTwo" class="form-label">Address Line 2:</label>
-                            <input class="form-control input-xlg" type="text" id="newClientAddressTwo" name="newClientAddressTwo">  
+                            <input class="form-control" type="text" id="newClientAddressTwo" name="newClientAddressTwo">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-10">
+                        <div class="input-sm">
                             <label for="newClientCity" class="form-label">City:</label>
-                            <input class="form-control input-sm" type="text" id="newClientCity" name="newClientCity">  
+                            <input class="form-control" type="text" id="newClientCity" name="newClientCity">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="newClientState" class="form-label">State:</label>
-                            <input class="form-control input-xs" type="text" id="newClientState" name="newClientState">  
+                            <input class="form-control" type="text" id="newClientState" name="newClientState">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="newClientPostal" class="form-label">Postal:</label>
-                            <input class="form-control input-xs" type="text" id="newClientPostal" name="newClientPostal">  
+                            <input class="form-control" type="text" id="newClientPostal" name="newClientPostal">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="newClientCountry" class="form-label">Country:</label>
-                            <input class="form-control input-xs" type="text" id="newClientCountry" name="newClientCountry">  
+                            <input class="form-control" type="text" id="newClientCountry" name="newClientCountry">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-10">
+                        <div class="input-sm">
                             <label for="newClientPhone" class="form-label">Phone:</label>
-                            <input class="form-control input-sm" type="text" id="newClientPhone" name="newClientPhone">  
+                            <input class="form-control" type="text" id="newClientPhone" name="newClientPhone">  
                         </div>
-                        <div>
+                        <div class="input-sm">
                             <label for="newClientFax" class="form-label">Fax:</label>
-                            <input class="form-control input-sm" type="text" id="newClientFax" name="newClientFax">  
+                            <input class="form-control" type="text" id="newClientFax" name="newClientFax">  
                         </div>
-                        <div>
+                        <div class="input-sm">
                             <label for="newClientEmail" class="form-label">Email:</label>
-                            <input class="form-control input-sm" type="email" id="newClientEmail" name="newClientEmail">  
+                            <input class="form-control" type="email" id="newClientEmail" name="newClientEmail">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-10">
+                        <div class="input-lg">
                             <label for="newClientSalesRep" class="form-label">Sales Rep:</label>
-                            <input class="form-control input-lg" type="text" id="newClientSalesRep" name="newClientSalesRep">  
+                            <input class="form-control" type="text" id="newClientSalesRep" name="newClientSalesRep">  
                         </div>
                     </div>
                 </div>
@@ -590,66 +590,66 @@
         <div class="modal-body">
             <div class="costing-body-split">
                 <div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-25">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-25">
+                        <div class="input-lg">
                             <label for="newShipperCompany" class="form-label">Company:</label>
-                            <input class="form-control input-lg" type="text" id="newShipperCompany" name="newShipperCompany">  
+                            <input class="form-control" type="text" id="newShipperCompany" name="newShipperCompany">  
                         </div>
-                        <div>
+                        <div class="input-lg">
                             <label for="newShipperAttention" class="form-label">Attention:</label>
-                            <input class="form-control input-lg" type="text" id="newShipperAttention" name="newShipperAttention">  
+                            <input class="form-control" type="text" id="newShipperAttention" name="newShipperAttention">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap">
-                        <div>
+                    <div class="flex-container flex-row">
+                        <div class="input-xl">
                             <label for="newShipperAddressOne" class="form-label">Address Line 1:</label>
-                            <input class="form-control input-xlg" type="text" id="newShipperAddressOne" name="newShipperAddressOne">  
+                            <input class="form-control" type="text" id="newShipperAddressOne" name="newShipperAddressOne">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap">
-                        <div>
+                    <div class="flex-container flex-row">
+                        <div class="input-xl">
                             <label for="newShipperAddressTwo" class="form-label">Address Line 2:</label>
-                            <input class="form-control input-xlg" type="text" id="newShipperAddressTwo" name="newShipperAddressTwo">  
+                            <input class="form-control" type="text" id="newShipperAddressTwo" name="newShipperAddressTwo">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-10">
+                        <div class="input-sm">
                             <label for="newShipperCity" class="form-label">City:</label>
-                            <input class="form-control input-sm" type="text" id="newShipperCity" name="newShipperCity">  
+                            <input class="form-control" type="text" id="newShipperCity" name="newShipperCity">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="newShipperState" class="form-label">State:</label>
-                            <input class="form-control input-xs" type="text" id="newShipperState" name="newShipperState">  
+                            <input class="form-control" type="text" id="newShipperState" name="newShipperState">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="newShipperPostal" class="form-label">Postal:</label>
-                            <input class="form-control input-xs" type="text" id="newShipperPostal" name="newShipperPostal">  
+                            <input class="form-control" type="text" id="newShipperPostal" name="newShipperPostal">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="newShipperCountry" class="form-label">Country:</label>
-                            <input class="form-control input-xs" type="text" id="newShipperCountry" name="newShipperCountry">  
+                            <input class="form-control" type="text" id="newShipperCountry" name="newShipperCountry">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-10">
+                        <div class="input-sm">
                             <label for="newShipperPhone" class="form-label">Phone:</label>
-                            <input class="form-control input-sm" type="text" id="newShipperPhone" name="newShipperPhone">  
+                            <input class="form-control" type="text" id="newShipperPhone" name="newShipperPhone">  
                         </div>
-                        <div>
+                        <div class="input-sm">
                             <label for="newShipperFax" class="form-label">Fax:</label>
-                            <input class="form-control input-sm" type="text" id="newShipperFax" name="newShipperFax">  
+                            <input class="form-control" type="text" id="newShipperFax" name="newShipperFax">  
                         </div>
-                        <div>
+                        <div class="input-sm">
                             <label for="newShipperEmail" class="form-label">Email:</label>
-                            <input class="form-control input-sm" type="email" id="newShipperEmail" name="newShipperEmail">  
+                            <input class="form-control" type="email" id="newShipperEmail" name="newShipperEmail">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-10">
+                        <div class="input-lg">
                             <label for="newShipperSalesRep" class="form-label">Sales Rep:</label>
-                            <input class="form-control input-lg" type="text" id="newShipperSalesRep" name="newShipperSalesRep">  
+                            <input class="form-control" type="text" id="newShipperSalesRep" name="newShipperSalesRep">  
                         </div>
-                        <div class="form-check">
+                        <div class="form-check self-align-end">
                             <input class="form-check-input" type="checkbox" id="shipperSameAsClient" name="shipperSameAsClient">
                             <label class="form-check-label" for="shipperSameAsClient">Same As Client?</label>
                         </div>
@@ -712,66 +712,66 @@
         <div class="modal-body">
             <div class="costing-body-split">
                 <div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-25">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-25">
+                        <div class="input-lg">
                             <label for="newConsigneeCompany" class="form-label">Company:</label>
-                            <input class="form-control input-lg" type="text" id="newConsigneeCompany" name="newConsigneeCompany">  
+                            <input class="form-control" type="text" id="newConsigneeCompany" name="newConsigneeCompany">  
                         </div>
-                        <div>
+                        <div class="input-lg">
                             <label for="newConsigneeAttention" class="form-label">Attention:</label>
-                            <input class="form-control input-lg" type="text" id="newConsigneeAttention" name="newConsigneeAttention">  
+                            <input class="form-control" type="text" id="newConsigneeAttention" name="newConsigneeAttention">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap">
-                        <div>
+                    <div class="flex-container flex-row">
+                        <div class="input-xl">
                             <label for="newConsigneeAddressOne" class="form-label">Address Line 1:</label>
-                            <input class="form-control input-xlg" type="text" id="newConsigneeAddressOne" name="newConsigneeAddressOne">  
+                            <input class="form-control" type="text" id="newConsigneeAddressOne" name="newConsigneeAddressOne">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-wrap">
-                        <div>
+                    <div class="flex-container flex-row">
+                        <div class="input-xl">
                             <label for="newConsigneeAddressTwo" class="form-label">Address Line 2:</label>
-                            <input class="form-control input-xlg" type="text" id="newConsigneeAddressTwo" name="newConsigneeAddressTwo">  
+                            <input class="form-control" type="text" id="newConsigneeAddressTwo" name="newConsigneeAddressTwo">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-10">
+                        <div class="input-sm">
                             <label for="newConsigneeCity" class="form-label">City:</label>
-                            <input class="form-control input-sm" type="text" id="newConsigneeCity" name="newConsigneeCity">  
+                            <input class="form-control" type="text" id="newConsigneeCity" name="newConsigneeCity">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="newConsigneeState" class="form-label">State:</label>
-                            <input class="form-control input-xs" type="text" id="newConsigneeState" name="newConsigneeState">  
+                            <input class="form-control" type="text" id="newConsigneeState" name="newConsigneeState">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="newConsigneePostal" class="form-label">Postal:</label>
-                            <input class="form-control input-xs" type="text" id="newConsigneePostal" name="newConsigneePostal">  
+                            <input class="form-control" type="text" id="newConsigneePostal" name="newConsigneePostal">  
                         </div>
-                        <div>
+                        <div class="input-xs">
                             <label for="newConsigneeCountry" class="form-label">Country:</label>
-                            <input class="form-control input-xs" type="text" id="newConsigneeCountry" name="newConsigneeCountry">  
+                            <input class="form-control" type="text" id="newConsigneeCountry" name="newConsigneeCountry">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-10">
+                        <div class="input-sm">
                             <label for="newConsigneePhone" class="form-label">Phone:</label>
-                            <input class="form-control input-sm" type="text" id="newConsigneePhone" name="newConsigneePhone">  
+                            <input class="form-control" type="text" id="newConsigneePhone" name="newConsigneePhone">  
                         </div>
-                        <div>
+                        <div class="input-sm">
                             <label for="newConsigneeFax" class="form-label">Fax:</label>
-                            <input class="form-control input-sm" type="text" id="newConsigneeFax" name="newConsigneeFax">  
+                            <input class="form-control" type="text" id="newConsigneeFax" name="newConsigneeFax">  
                         </div>
-                        <div>
+                        <div class="input-sm">
                             <label for="newConsigneeEmail" class="form-label">Email:</label>
-                            <input class="form-control input-sm" type="email" id="newConsigneeEmail" name="newConsigneeEmail">  
+                            <input class="form-control" type="email" id="newConsigneeEmail" name="newConsigneeEmail">  
                         </div>
                     </div>
-                    <div class="flex-container flex-row flex-between flex-wrap gap-10">
-                        <div>
+                    <div class="flex-container flex-row flex-between gap-10">
+                        <div class="input-lg">
                             <label for="newConsigneeSalesRep" class="form-label">Sales Rep:</label>
-                            <input class="form-control input-lg" type="text" id="newConsigneeSalesRep" name="newConsigneeSalesRep">  
+                            <input class="form-control" type="text" id="newConsigneeSalesRep" name="newConsigneeSalesRep">  
                         </div>
-                        <div class="form-check">
+                        <div class="form-check self-align-end">
                             <input class="form-check-input" type="checkbox" id="consigneeSameAsClient" name="consigneeSameAsClient">
                             <label class="form-check-label" for="consigneeSameAsClient">Same As Client?</label>
                         </div>

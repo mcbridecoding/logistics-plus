@@ -160,36 +160,36 @@
         </div>
         <div class="modal-body">
             <div class="flex-container flex-row flex-start gap-25">
-                <div>
+                <div class="input-xl">
                     <label for="vendor" class="form-label">Vendor:</label>
-                    <select name="vendor" id="" class="form-select input-xlg">
+                    <select name="vendor" id="" class="form-select">
                         <option value=""></option>
                         <% vendorList.forEach((vendor) => { %>
                             <option value="<%= vendor._id %>"><%= vendor.company %> - <%= vendor.addressOne %>. <%= vendor.city %>. <%= vendor.state %></option>
                         <% }) %>
                     </select>
                 </div>
-                <div>
+                <div class="input-lg">
                     <label for="vendorItemId" class="form-label">Item Id:</label>
-                    <input class="form-control input-lg" type="text" id="vendorItemId" name="vendorItemId">  
+                    <input class="form-control" type="text" id="vendorItemId" name="vendorItemId">  
                 </div>
             </div>
-            <div class="flex-container flex-row flex-between">
-                <div>
+            <div class="flex-container flex-row flex-start gap-25">
+                <div class="input-md">
                     <label for="itemCost" class="form-label">Cost:</label>
-                    <input class="form-control input-md" type="text" id="vendorItemCost" name="vendorItemCost">  
+                    <input class="form-control" type="text" id="vendorItemCost" name="vendorItemCost">  
                 </div>
-                <div>
+                <div class="input-sm">
                     <label for="vendorItemCurrency" class="form-label">Currency:</label>
-                    <select name="vendorItemCurrency" id="" class="form-select input-sm">
+                    <select name="vendorItemCurrency" id="" class="form-select">
                         <option value=""></option>
                         <option value="CAD">CAD</option>
                         <option value="USD">USD</option>
                     </select>  
                 </div>
-                <div>
+                <div class=" input-lg">
                     <label for="url" class="form-label">URL:</label>
-                    <input class="form-control input-lg" type="text" id="url" name="url">  
+                    <input class="form-control" type="text" id="url" name="url">  
                 </div>
             </div>
             <div class="modal-button-group">
@@ -249,9 +249,9 @@
         </div>
         <div class="modal-body">
             <div class="flex-container flex-row flex-start gap-25">
-                <div>
+                <div class="input-lg">
                     <label for="vendor" class="form-label">Vendor:</label>
-                    <select name="vendor" id="" class="form-select input-xlg">
+                    <select name="vendor" id="" class="form-select">
                         <option value=""></option>
                         <% vendorList.forEach((vendorList) => { %>
                             <% if (vendorList._id == vendor.company.id) { %>
@@ -262,19 +262,19 @@
                         <% }) %>
                     </select>
                 </div>
-                <div>
+                <div class="input-lg">
                     <label for="vendorItemId" class="form-label">Item Id:</label>
-                    <input class="form-control input-lg" type="text" id="vendorItemId" name="vendorItemId" value="<%= vendor.itemId %>">  
+                    <input class="form-control" type="text" id="vendorItemId" name="vendorItemId" value="<%= vendor.itemId %>">  
                 </div>
             </div>
-            <div class="flex-container flex-row flex-between">
-                <div>
+            <div class="flex-container flex-row flex-start gap-25">
+                <div class="input-md">
                     <label for="itemCost" class="form-label">Cost:</label>
-                    <input class="form-control input-md" type="text" id="vendorItemCost" name="vendorItemCost" value="<%= vendor.cost %>">  
+                    <input class="form-control" type="text" id="vendorItemCost" name="vendorItemCost" value="<%= vendor.cost %>">  
                 </div>
-                <div>
+                <div class="input-sm">
                     <label for="vendorItemCurrency" class="form-label">Currency:</label>
-                    <select name="vendorItemCurrency" id="" class="form-select input-sm">
+                    <select name="vendorItemCurrency" id="" class="form-select">
                         <% if (vendor.currency === 'CAD') { %>
                             <option value=""></option>
                             <option value="CAD" selected>CAD</option>
@@ -290,9 +290,9 @@
                         <% } %>
                     </select>  
                 </div>
-                <div>
+                <div class="input-lg">
                     <label for="url" class="form-label">URL:</label>
-                    <input class="form-control input-lg" type="text" id="url" name="url" value="<%= vendor.url %>">  
+                    <input class="form-control" type="text" id="url" name="url" value="<%= vendor.url %>">  
                 </div>
             </div>
             <div class="modal-button-group">

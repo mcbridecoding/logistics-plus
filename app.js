@@ -7,6 +7,7 @@ const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
 const crypto = require('crypto');
 const pdfService = require('./public/javascript/pdfService');
+const { name } = require('ejs');
 require('dotenv').config();
 
 const app = express();
@@ -87,6 +88,7 @@ const orderSchema = new mongoose.Schema({
     quoteTaker: String,
     freightSize: String,
     shipmentType: String,
+    importExport: String,
     quoteDate: Object,
     client: Object,
     quoteNumber: String,
@@ -399,33 +401,6 @@ function calculateNextOrder(previousNumber) {
     } else return String(nextOrder); 
 }
 
-async function printPurchaseOrder(purchaseOrder, soldTo, vendor, shipTo, taxes, res) {
-    const stream = res.writeHead(200, {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment;filename=PO#${purchaseOrder.purchaseOrderNumber}.pdf`  
-    });
-
-    pdfService.buildPurchaseOrder(
-        (chunk) => stream.write(chunk),
-        () => stream.end(),
-        purchaseOrder,
-        soldTo,
-        vendor,
-        shipTo,
-        taxes,
-    ); 
-}
-
-async function printPurchaseOrders(pos, res) {
-    pos.forEach(async (purchaseOrder) => {
-        let soldTo = await AddressBook.findOne({ _id: purchaseOrder.soldTo.id });
-        let vendor = await AddressBook.findOne({ _id: purchaseOrder.vendor.id });
-        let shipTo = await AddressBook.findOne({ _id: purchaseOrder.shipTo.id });
-
-        printPurchaseOrder(purchaseOrder, soldTo, vendor, shipTo, taxes, res);
-    });
-}
-
 async function printInvoice(invoice, owner, soldTo, shipTo, taxes, res) {
     const stream = res.writeHead(200, {
         'Content-Type': 'application/pdf',
@@ -443,6 +418,39 @@ async function printInvoice(invoice, owner, soldTo, shipTo, taxes, res) {
     ); 
 }
 
+async function printPurchaseOrder(purchaseOrder, soldTo, vendor, shipTo, taxes, res) {    
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment;filename=PO#${purchaseOrder.purchaseOrderNumber}.pdf`  
+    });
+
+    pdfService.buildPurchaseOrder(
+        (chunk) => stream.write(chunk),
+        () => stream.end(),
+        purchaseOrder,
+        soldTo,
+        vendor,
+        shipTo,
+        taxes,
+    );
+}
+
+async function printLogisticsCallSheet(quote, customer, shipper, consignee, res) {
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment;filename=${quote.quoteNumber}.pdf`  
+    });
+
+    pdfService.buildLogisticsCallSheet(
+        (chunk) => stream.write(chunk),
+        () => stream.end(),
+        quote,
+        customer,
+        shipper, 
+        consignee
+    );
+}
+
 async function findOwnerName(id) {
     const owner = await AddressBook.findOne({ _id: id });
     return owner.company;
@@ -453,7 +461,7 @@ async function findItemDetails(id) {
     return item;
 }
 
-async function calculateInvoiceTotal(lineItems, discount) {    
+async function calculateInvoiceTotal(lineItems, discount, gstExempt) {    
     const subTotals = [];
     lineItems.forEach((item) => {
         subTotals.push(Number(item.lineTotal));
@@ -463,7 +471,10 @@ async function calculateInvoiceTotal(lineItems, discount) {
     const disc = subTotal * (Number(discount) / 100);
     subTotal = subTotal - disc;
     const pst = subTotal * (taxes.PST / 100);
-    const gst = subTotal * (taxes.GST / 100);
+    let gst = subTotal * (taxes.GST / 100);
+    if (gstExempt) {
+        gst = 0;
+    }
     const total = subTotal + gst + pst;
     
     return total;
@@ -777,7 +788,7 @@ app.route('/inventory/delete-item-id=:id')
         const message = {
             messageText: 'Item Removed Successfully!',
             page: 'Product Inquiry',
-            link: '/inventory/product-inquiry'
+            link: '/warehousing'
         }
 
         Inventory.findByIdAndRemove(itemId, (err) => {
@@ -971,7 +982,7 @@ app.route('/invoicing/edit-invoice/id=:id')
 
         const lineTotals = await Invoice.findOne({ _id: editId });
 
-        const lineTotal = await calculateInvoiceTotal(lineTotals.lineItems, lineTotals.discount);
+        const lineTotal = await calculateInvoiceTotal(lineTotals.lineItems, lineTotals.discount, true);
 
         const invoiceTotal = currency.format(lineTotal).slice(2);
 
@@ -1040,6 +1051,7 @@ app.route('/invoicing/new-order')
             date: req.body.date,
             dueDate: req.body.dueDate,
             terms: req.body.terms,
+            lineItems: [],
             soldTo: soldTo,
             shipTo: shipTo,
             orderStatus:  {status: 'open'},
@@ -1266,6 +1278,18 @@ app.route('/login')
         });
     });
 
+app.route('/logistics/print-logistics-callsheet-id=:id')
+    .get(async (req, res) => {
+        const orderId = req.params.id;
+        const quote = await Order.findOne({ _id: orderId });
+
+        const customer = await AddressBook.findOne({ _id: quote.client.id });
+        const shipper = await AddressBook.findOne({ _id: quote.shipper.id });
+        const consignee = await AddressBook.findOne({ _id: quote.consignee.id });
+
+        printLogisticsCallSheet(quote, customer, shipper, consignee, res);
+    })
+
 app.route('/logout')
     .get((req, res) => {
         req.logOut(err => {
@@ -1440,6 +1464,212 @@ app.route('/orders')
         res.render('orders', {});
     });
 
+app.route('/orders/edit-order-id=:id')
+    .post(async(req, res) => {
+        const editId = req.params.id;
+
+        const addressInformation = await addNewAddress(req);
+        
+        let dv = false;
+        let rf = false;
+        let du = false;
+        let fd = false;
+        let sd = false;
+        let sb = false;
+        let dd = false;
+        let fu = false;
+        let rl = false;
+        
+        if (req.body.dv === 'on') {
+            dv = true;
+        }
+        if (req.body.rf === 'on') {
+            rf = true;
+        }
+        if (req.body.du === 'on') {
+            du = true;
+        }
+        if (req.body.fd === 'on') {
+            fd = true;
+        }
+        if (req.body.sd === 'on') {
+            sd = true;
+        }
+        if (req.body.sb === 'on') {
+            sb = true;
+        }
+        if (req.body.dd === 'on') {
+            dd = true;
+        }
+        if (req.body.fu === 'on') {
+            fu = true;
+        }
+        if (req.body.rl === 'on') {
+            rl = true;
+        }
+
+        Order.findByIdAndUpdate(editId, {
+            quoteTaker: req.body.quoteTaker,
+            freightSize: req.body.freightSize,
+            importExport: req.body.importExport,
+            shipmentType: req.body.shipmentType,
+            quoteDate: {
+                date: req.body.quoteDate,
+                time: req.body.quoteTime
+            },
+            client: {
+                id: addressInformation.newClient.id,
+                company: addressInformation.newClient.company
+            },
+            quoteNumber: req.body.quoteNumber,
+            paymentTerms: req.body.paymentTerms,
+            thirdPartyInformation: req.body.thirdPartyInformation,
+            shipper: {
+                id: addressInformation.newShipper.id,
+                company: addressInformation.newShipper.company
+            },
+            genericShipper: {
+                city: req.body.genericShipperCity,
+                state: req.body.genericShipperState,
+                country: req.body.genericShipperCountry
+            },
+            consignee: {
+                id: addressInformation.newConsignee.id,
+                company: addressInformation.newConsignee.company
+            },
+            genericConsignee: {
+                city: req.body.genericConsigneeCity,
+                state: req.body.genericConsigneeState,
+                country: req.body.genericConsigneeCountry
+            },
+            broker: {
+                sb: req.body.sbBroker,
+                nb: req.body.nbBroker
+            },
+            equipmentRequired: {
+                dv: dv,
+                rf: rf,
+                du: du,
+                fd: fd,
+                sd: sd,
+                sb: sb,
+                dd: dd,
+                fu: fu,
+                rl: rl
+            },
+            freightReady: req.body.freightReadyDate,
+            serviceLevel: req.body.serviceLevel,
+            deliveryEta: req.body.deliveryEta,
+            pickupAppointment: req.body.pickupAppointment, 
+            deliveryAppointment: req.body.deliveryAppointment,
+            shipmentDims: {
+                row1: {
+                    l: req.body.l1,
+                    w: req.body.w1,
+                    h: req.body.h1,
+                    c: req.body.c1,
+                    cf: req.body.cf1,
+                },
+                row2: {                   
+                    l: req.body.l2,
+                    w: req.body.w2,
+                    h: req.body.h2,
+                    c: req.body.c2,
+                    cf: req.body.cf2,
+                },
+                row3: {
+                    l: req.body.l3,
+                    w: req.body.w3,
+                    h: req.body.h3,
+                    c: req.body.c3,
+                    cf: req.body.cf3,
+                },
+                row4: {
+                    l: req.body.l4,
+                    w: req.body.w4,
+                    h: req.body.h4,
+                    c: req.body.c4,
+                    cf: req.body.cf4,
+                },
+                row5: {
+                    l: req.body.l5,
+                    w: req.body.w5,
+                    h: req.body.h5,
+                    c: req.body.c5,
+                    cf: req.body.cf5,
+                },
+                row6: {
+                    l: req.body.l6,
+                    w: req.body.w6,
+                    h: req.body.h6,
+                    c: req.body.c6,
+                    cf: req.body.cf6,
+                },
+                row7: {
+                    l: req.body.l7,
+                    w: req.body.w7,
+                    h: req.body.h7,
+                    c: req.body.c7,
+                    cf: req.body.cf7,
+                },
+                row8: {
+                    l: req.body.l8,
+                    w: req.body.w8,
+                    h: req.body.h8,
+                    c: req.body.c8,
+                    cf: req.body.cf8,
+                },
+                row9: {
+                    l: req.body.l9,
+                    w: req.body.w9,
+                    h: req.body.h9,
+                    c: req.body.c9,
+                    cf: req.body.cf9,
+                },
+                row10: {
+                    l: req.body.l10,
+                    w: req.body.w10,
+                    h: req.body.h10,
+                    c: req.body.c10,
+                    cf: req.body.cf10,
+                },
+                totalCuft: req.body.totalCUFT
+            },
+            dryTemp: req.body.dryTemp,
+            temperature: req.body.temperature,
+            commodity: req.body.commodity,
+            totalPieces: req.body.totalPieces,
+            totalWeight: {
+                weight: req.body.totalWeight,
+                measurement: req.body.weightMeasurement
+            },
+            stackable: req.body.stackable,
+            tarp: req.body.tarp,
+            tailgate: req.body.tailgate,
+            teamRequired: req.body.teamRequired,
+            referenceNumbers: {
+                poNumber: req.body.poNumber,
+                soNumber: req.body.invNumber,
+                refNumber: req.body.refNumber,
+                invNumber: req.body.invNumber
+            },
+            dangerousGoods: {
+                un: req.body.un,
+                class: req.body.class,
+                pg: req.body.pg,
+                dgDescription: req.body.dgDescription,
+                emergencyContact: req.body.emergencyContact
+            },
+        }, (err, docs) => {
+            if (err) {
+                console.log(`Error: ${err}`);
+            } else {
+                console.log(docs);
+                res.redirect('/orders');
+            }
+        })
+    });
+
 app.route('/orders/new-order')
     .get(async(req, res) => {
         const date = new Date();
@@ -1455,15 +1685,15 @@ app.route('/orders/new-order')
     .post(async(req,res) => {
         const addressInformation = await addNewAddress(req);
         
-        var dv = false;
-        var rf = false;
-        var du = false;
-        var fd = false;
-        var sd = false;
-        var sb = false;
-        var dd = false;
-        var fu = false;
-        var rl = false;
+        let dv = false;
+        let rf = false;
+        let du = false;
+        let fd = false;
+        let sd = false;
+        let sb = false;
+        let dd = false;
+        let fu = false;
+        let rl = false;
         
         if (req.body.dv === 'on') {
             dv = true;
@@ -1496,6 +1726,7 @@ app.route('/orders/new-order')
         const newJob = new Order({
             quoteTaker: req.body.quoteTaker,
             freightSize: req.body.freightSize,
+            importExport: req.body.importExport,
             shipmentType: req.body.shipmentType,
             quoteDate: {
                 date: req.body.quoteDate,
@@ -1827,7 +2058,7 @@ app.route('/purchasing/edit-po/id=:id')
 
         const lineTotals = await Purchasing.findOne({ _id: editId });
 
-        const lineTotal = await calculateInvoiceTotal(lineTotals.lineItems, 0);
+        const lineTotal = await calculateInvoiceTotal(lineTotals.lineItems, 0, false);
 
         const invoiceTotal = currency.format(lineTotal).slice(2);
 
@@ -1897,6 +2128,7 @@ app.route('/purchasing/new-order')
             soldTo: soldTo,
             vendor: vendor,
             shipTo: shipTo,
+            lineItems: [],
             paidVia: req.body.paidVia,
             orderStatus:  {status: 'open'},
             shipMethod: req.body.shipVia,
