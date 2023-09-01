@@ -15,6 +15,7 @@
             <div class="quote-sections">
                 <div id="shipment-header-button" class="quote-selection" onclick="openShipmentHeader()">Shipment Header</div>
                 <div id="shipment-detail-button" class="quote-selection" onclick="openShipmentDetails()">Shipment Details</div>
+                <div id="carrier-rates-button" class="quote-selection" onclick="openCarrierRates()">Carrier Rates</div>
                 <div id="shipment-bol-button" class="quote-selection" onclick="openShipmentBOL()">BOL</div>
                 <div id="shipment-checklist-button" class="quote-selection" onclick="openShipmentChecklist()">Shipment Checklist</div>
                 <div id="shipment-costing-button" class="quote-selection" onclick="openShippingCost()">Pricing</div>
@@ -211,15 +212,15 @@
                     <div id="" class="flex-container flex-row gap-25 shipper-box">
                         <div class="input-sm">
                             <label for="genericShipperCity" class="form-label">City:</label>
-                            <input class="form-control" type="text" id="genericShipperCity" name="genericShipperCity" value="<%= order.genericShipper.city %>">  
+                            <input class="form-control" type="text" id="genericShipperCity" name="genericShipperCity" value="<%= order.genericShipper.city %>" readonly>  
                         </div>
                         <div class="input-xs">
                             <label for="genericShipperState" class="form-label">State:</label>
-                            <input class="form-control" type="text" id="genericShipperState" name="genericShipperState" value="<%= order.genericShipper.state %>">  
+                            <input class="form-control" type="text" id="genericShipperState" name="genericShipperState" value="<%= order.genericShipper.state %>" readonly>  
                         </div>
                         <div class="input-xs">
                             <label for="genericShipperCountry" class="form-label">Country:</label>
-                            <input class="form-control" type="text" id="genericShipperCountry" name="genericShipperCountry" value="<%= order.genericShipper.country %>">  
+                            <input class="form-control" type="text" id="genericShipperCountry" name="genericShipperCountry" value="<%= order.genericShipper.country %>" readonly>  
                         </div>
                     </div>
                     <div class="flex-container flex-row gap-50">
@@ -248,15 +249,15 @@
                     <div id="" class="flex-container flex-row gap-25">
                         <div class="input-sm">
                             <label for="genericConsigneeCity" class="form-label">City:</label>
-                            <input class="form-control" type="text" id="genericConsigneeCity" name="genericConsigneeCity" value="<%= order.genericConsignee.city %>">  
+                            <input class="form-control" type="text" id="genericConsigneeCity" name="genericConsigneeCity" value="<%= order.genericConsignee.city %>" readonly>  
                         </div>
                         <div class="input-xs">
                             <label for="genericConsigneeState" class="form-label">State:</label>
-                            <input class="form-control" type="text" id="genericConsigneeState" name="genericConsigneeState" value="<%= order.genericConsignee.state %>">  
+                            <input class="form-control" type="text" id="genericConsigneeState" name="genericConsigneeState" value="<%= order.genericConsignee.state %>" readonly>  
                         </div>
                         <div class="input-xs">
                             <label for="genericConsigneeCounty" class="form-label">Country:</label>
-                            <input class="form-control" type="text" id="genericConsigneeCountry" name="genericConsigneeCountry" value="<%= order.genericConsignee.country %>">  
+                            <input class="form-control" type="text" id="genericConsigneeCountry" name="genericConsigneeCountry" value="<%= order.genericConsignee.country %>" readonly>  
                         </div>
                     </div>
                 </div>
@@ -373,6 +374,53 @@
                     <label for="deliveryAppointmentDate" class="form-label">Delivery Appointment:</label>
                     <input class="form-control" type="text" id="deliveryAppointment" name="deliveryAppointment" value="<%= order.deliveryAppointment %>" maxlength="30">
                 </div>  
+            </div>
+        </div>
+        <div id="carrier-rates" class="new-quote-form">
+            <div class="bol-header">
+                <a href="/orders/carrier-rates-order-id=<%= order._id %>">+ Add Carrier Rates</a>
+            </div>
+            <div class="flex-container carrier-rates-table">
+                <table class="table table-secondary table-striped table-hover table-bordered fixed-head">
+                    <thead>
+                        <tr class="align-center">
+                            <th scope="col" class="tbl-fixed-25">#</th>
+                            <th scope="col" class="">Name</th>
+                            <th scope="col" class="">Carrier</th>
+                            <th scope="col" class="">Telephone #</th>
+                            <th scope="col" class="">Date</th>
+                            <th scope="col" class="">Notes</th>
+                            <th scope="col" class="">Truck / Trailer</th>
+                            <th scope="col" class="tbl-fixed-50">Asked</th>
+                            <th scope="col" class="tbl-fixed-50">Quote</th>
+                            <th scope="col" class="tbl-fixed-50">Equip</th>
+                            <th scope="col" class="">Currency</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.carrierRates.forEach((rate, index) => { %>
+                        <tr class="align-center">
+                            <td><%= index + 1 %></td>
+                            <td class="no-overflow"><%= rate.dispatchName %></td>
+                            <td class="no-overflow"><%= rate.carrierName %></td>
+                            <td class="no-overflow"><%= rate.carrierPhone %></td>
+                            <td class="no-overflow"><%= rate.date %></td>
+                            <td class="align-left comments" onclick="openModal('<%= rate._id %>-comments')"><%= rate.carrierNotes %></td>
+                            <td class="no-overflow"><%= rate.carrierTruck %> / <%= rate.carrierTrailer %></td>
+                            <td class="no-overflow"><%= rate.asked %></td>
+                            <td class="no-overflow"><%= rate.carrierQuoteValue %></td>
+                            <td class="no-overflow"><%= rate.carrierEquipment %></td>
+                            <td class="no-overflow"><%= rate.carrierQuoteCurrency %></td>
+                            <td class="table-options" onclick="openModal('<%= rate._id %>-view')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                </svg>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div id="shipment-bol" class="new-quote-form">
@@ -1342,5 +1390,143 @@
             <div onclick="closeModal('add-consignee-modal')" class="modal-button">Close</div>
         </div>
     </div>
+</div>
 </form>
+<% order.carrierRates.forEach((rate, index) => { %>
+<div id="<%= rate._id %>-comments" class="modal-frame">
+    <div class="modal-header">
+        <h3>Line <%= index + 1 %> - Comments</h3>
+        <div class="close-button" onclick="closeModal('<%= rate._id %>-comments')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="modal-body">
+        <p><%= rate.carrierNotes %></p>
+    </div>
+</div>
+<div id="<%= rate._id %>-view" class="modal-frame modal-frame-expanded">
+    <div class="modal-header">
+        <h2>View Rate</h2>
+        <div class="close-button" onclick="closeModal('<%= rate._id %>-view')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="modal-body">
+        <h2>Lane:</h2>
+        <div class="flex-container flex-row flex-start gap-25">
+            <div class="input-xs">
+                <label for="name" class="form-label">Name:</label>
+                <input class="form-control" type="text" id="name" name="name" value="<%= rate.name %>" readonly>
+            </div>
+            <div class="input-sm">
+                <label for="quote" class="form-label">Quote #:</label>
+                <input class="form-control" type="text" id="quote" name="quote" value="<%= rate.quote %>" readonly>
+            </div>
+            <div class="input-sm">
+                <label for="date" class="form-label">Date:</label>
+                <input class="form-control" type="date" id="date" name="date" value="<%= rate.date %>" readonly>
+            </div>
+            <div class="input-sm">
+                <label for="pickupCity" class="form-label">From City:</label>
+                <input class="form-control" type="text" id="pickupCity" name="pickupCity" value="<%= rate.shipper.city %>" readonly> 
+            </div>
+            <div class="input-xs">
+                <label for="pickupState" class="form-label">From State:</label>
+                <input class="form-control" type="text" id="pickupState" name="pickupState" value="<%= rate.shipper.state %>" readonly>
+            </div>
+            <div class="input-sm">
+                <label for="deliveryCity" class="form-label">To City:</label>
+                <input class="form-control" type="text" id="deliveryCity" name="deliveryCity" value="<%= rate.consignee.city %>" readonly>
+            </div>
+            <div class="input-xs">
+                <label for="deliveryState" class="form-label">To State:</label>
+                <input class="form-control" type="text" id="deliveryState" name="deliveryState" value="<%= rate.consignee.state %>" readonly> 
+            </div>
+        </div>
+        <h2>Carrier:</h2>
+        <div class="flex-container flex-row flex-start gap-25">
+            <div class="input-md">
+                <label for="dispatchName" class="form-label">Dispatch Name:</label>
+                <input class="form-control" type="text" id="dispatchName" name="dispatchName" value="<%= rate.dispatchName %>" readonly>
+            </div>
+            <div class="input-lg">
+                <label for="carrierName" class="form-label">Carrier Name:</label>
+                <input class="form-control" type="text" id="carrierName" name="carrierName" value="<%= rate.carrierName %>" readonly>
+            </div>
+            <div class="input-sm">
+                <label for="carrierPhone" class="form-label">Carrier Phone #:</label>
+                <input class="form-control" type="text" id="carrierPhone" name="carrierPhone" value="<%= rate.carrierPhone %>" readonly>
+            </div>
+            <div class="input-sm">
+                <label for="carrierEquipment" class="form-label">Equipment:</label>
+                <input class="form-control" type="text" id="carrierEquipment" name="carrierEquipment" value="<%= rate.carrierEquipment %>" readonly>
+            </div>
+        </div>
+        <div class="flex-container flex-row flex-start gap-25">
+            <div class="input-sm">
+                <label for="asked" class="form-label">Asked:</label>
+                <input class="form-control" type="text" id="asked" name="asked" value="<%= rate.asked %>" readonly>
+            </div>
+            <div class="input-sm">
+                <label for="carrierQuoteValue" class="form-label">Quote:</label>
+                <input class="form-control" type="text" id="carrierQuoteValue" name="carrierQuoteValue" value="<%= rate.carrierQuoteValue %>" readonly>
+            </div>
+            <div class="input-xs">
+                <label for="carrierQuoteCurrency" class="form-label">Currency:</label>
+                <select class="form-select" name="carrierQuoteCurrency" id="carrierQuoteCurrency" disabled>
+                    <% if (rate.carrierQuoteCurrency === 'CDN') { %>
+                        <option value="CDN" selected>CDN</option>
+                        <option value="USD">USD</option>
+                    <% } else { %>
+                        <option value="CDN">CDN</option>
+                        <option value="USD" selected>USD</option>
+                    <% } %>
+                </select>
+            </div>
+            <div class="input-sm">
+                <label for="carrierQuote" class="form-label">Quote #:</label>
+                <input class="form-control" type="text" id="carrierQuote" name="carrierQuote" value="<%= rate.carrierQuote %>" readonly>
+            </div>
+        </div>
+        <div class="flex-container flex-row flex-start gap-25">
+            <div class="input-xs">
+                <label for="carrierTruck" class="form-label">Truck #:</label>
+                <input class="form-control" type="text" id="carrierTruck" name="carrierTruck" value="<%= rate.carrierTruck %>" readonly>
+            </div>
+            <div class="input-xs">
+                <label for="carrierTrailer" class="form-label">Trailer #:</label>
+                <input class="form-control" type="text" id="carrierTrailer" name="carrierTrailer" value="<%= rate.carrierTrailer %>" readonly>
+            </div>
+            <div class="input-xs">
+                <label for="pickupDate" class="form-label">Pick-up Date:</label>
+                <input class="form-control" type="text" id="pickupDate" name="pickupDate" value="<%= rate.pickupDate %>" readonly>
+            </div>
+            <div class="input-xs">
+                <label for="deliveryDate" class="form-label">Delivery Date:</label>
+                <input class="form-control" type="text" id="deliveryDate" name="deliveryDate" value="<%= rate.deliveryDate %>" readonly>
+            </div>
+            <div class="input-xs">
+                <label for="papsPars" class="form-label">PAPS / PARS:</label>
+                <input class="form-control" type="text" id="papsPars" name="papsPars" value="<%= rate.papsPars %>" readonly>
+            </div>
+            <div class="input-xs">
+                <label for="crossing" class="form-label">Crossing:</label>
+                <input class="form-control" type="text" id="crossing" name="crossing" value="<%= rate.crossing %>" readonly>
+            </div>
+        </div>
+        <div class="flex-container flex-row flex-start gap-25">
+            <div class="input-lg">
+                <label for="carrierNotes" class="form-label">Notes:</label>
+                <textarea name="carrierNotes" id="carrierNotes" rows="4" cols="" class="form-control" readonly> <%= rate.carrierNotes %></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<% }) %>
 <%- include('partials/footer') %>

@@ -96,6 +96,7 @@ function openShipmentHeader() {
     closeShipmentChecklist();
     closeShippingCost();
     closeShipmentBOL();
+    closeCarrierRates();
 }
 
 function closeShipmentHeader() {
@@ -115,6 +116,7 @@ function openShipmentDetails() {
     closeShipmentChecklist();
     closeShippingCost();
     closeShipmentBOL();
+    closeCarrierRates();
 }
 
 function closeShipmentDetails() {
@@ -134,6 +136,7 @@ function openShipmentChecklist() {
     closeShipmentDetails();
     closeShippingCost();
     closeShipmentBOL();
+    closeCarrierRates();
 }
 
 function closeShipmentChecklist() {
@@ -153,6 +156,7 @@ function openShippingCost() {
     closeShipmentDetails();
     closeShipmentChecklist();
     closeShipmentBOL();
+    closeCarrierRates();
 }
 
 function closeShippingCost() {
@@ -172,6 +176,7 @@ function openShipmentBOL() {
     closeShipmentDetails();
     closeShipmentChecklist();    
     closeShippingCost();
+    closeCarrierRates();
 }
 
 function closeShipmentBOL() {
@@ -179,6 +184,26 @@ function closeShipmentBOL() {
     document.getElementById('shipment-bol-button').style.backgroundColor = '#242424';
     document.getElementById('shipment-bol-button').style.color = '#ffff';
     document.getElementById('shipment-bol-button').style.fontWeight = '100';
+}
+
+function openCarrierRates() {
+    document.getElementById('carrier-rates').style.display = 'flex';
+    document.getElementById('carrier-rates-button').style.backgroundColor = '#2B2A4C';
+    document.getElementById('carrier-rates-button').style.color = '#EA906C';
+    document.getElementById('carrier-rates-button').style.fontWeight = 'bold';
+
+    closeShipmentHeader();
+    closeShipmentDetails();
+    closeShipmentChecklist();    
+    closeShippingCost();
+    closeShipmentBOL();
+}
+
+function closeCarrierRates() {
+    document.getElementById('carrier-rates').style.display = 'none';
+    document.getElementById('carrier-rates-button').style.backgroundColor = '#242424';
+    document.getElementById('carrier-rates-button').style.color = '#ffff';
+    document.getElementById('carrier-rates-button').style.fontWeight = '100';
 }
 
 function calculateCUFT(row) {

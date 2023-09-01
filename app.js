@@ -125,7 +125,8 @@ const orderSchema = new mongoose.Schema({
     tracingNotes: String,
     customerPricing: Object,
     carrierPricing: Object,
-    brokerPricing: Object
+    brokerPricing: Object,
+    carrierRates: Array
 });
 
 const purchasingSchema = new mongoose.Schema({
@@ -438,7 +439,7 @@ async function printPurchaseOrder(purchaseOrder, soldTo, vendor, shipTo, taxes, 
 async function printLogisticsCallSheet(quote, customer, shipper, consignee, res) {
     const stream = res.writeHead(200, {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment;filename=${quote.quoteNumber}.pdf`  
+        'Content-Disposition': `attachment;filename=${quote.quoteNumber}-callsheet.pdf`  
     });
 
     pdfService.buildLogisticsCallSheet(
@@ -448,6 +449,19 @@ async function printLogisticsCallSheet(quote, customer, shipper, consignee, res)
         customer,
         shipper, 
         consignee
+    );
+}
+
+async function printCarrierRateSheet(quote, res) {
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment;filename=${quote.quoteNumber}-carrier-rates.pdf`
+    });
+
+    pdfService.buildCarrierRateSheet(
+        (chunk) => stream.write(chunk),
+        () => stream.end(),
+        quote
     );
 }
 
@@ -484,6 +498,8 @@ const taxes = {
     PST: process.env.PST,
     GST: process.env.GST
 }
+
+let currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'CAD' });
 
 app.route('/')
     .get((req, res) => {
@@ -966,7 +982,6 @@ app.route('/invoicing/delete-invoice')
 app.route('/invoicing/edit-invoice/id=:id')
     .post(async (req, res) => {
         const editId = req.params.id;
-        let currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'CAD' });
         const soldToCompany = await findOwnerName(req.body.soldTo); 
         const shipToCompany = await findOwnerName(req.body.shipTo);
 
@@ -1290,6 +1305,14 @@ app.route('/logistics/print-logistics-callsheet-id=:id')
         printLogisticsCallSheet(quote, customer, shipper, consignee, res);
     })
 
+app.route('/logistics/print-carrier-ratesheet-id=:id')
+    .get(async (req, res) => {
+        const orderId = req.params.id;
+        const quote = await Order.findOne({ _id: orderId });
+
+        printCarrierRateSheet(quote, res);
+    })
+
 app.route('/logout')
     .get((req, res) => {
         req.logOut(err => {
@@ -1469,6 +1492,31 @@ app.route('/orders/edit-order-id=:id')
         const editId = req.params.id;
 
         const addressInformation = await addNewAddress(req);
+
+        const genericShipper = {};
+        const genericConsignee = {};
+
+        if (req.body.shipper === '') {
+            genericShipper.city = req.body.genericShipperCity,
+            genericShipper.state = req.body.genericShipperState,
+            genericShipper.country = req.body.genericShipperCountry
+        } else {
+            let shipper = await AddressBook.findOne({ _id: req.body.shipper });
+            genericShipper.city = shipper.city;
+            genericShipper.state = shipper.state;
+            genericShipper.country = shipper.country;
+        }
+
+        if (req.body.consignee === '') {
+            genericConsignee.city = req.body.genericConsigneeCity,
+            genericConsignee.state = req.body.genericConsigneeState,
+            genericConsignee.country = req.body.genericConsigneeCountry
+        } else {
+            let consignee = await AddressBook.findOne({ _id: req.body.consignee });
+            genericConsignee.city = consignee.city;
+            genericConsignee.state = consignee.state;
+            genericConsignee. country = consignee.country;
+        }
         
         let dv = false;
         let rf = false;
@@ -1528,20 +1576,12 @@ app.route('/orders/edit-order-id=:id')
                 id: addressInformation.newShipper.id,
                 company: addressInformation.newShipper.company
             },
-            genericShipper: {
-                city: req.body.genericShipperCity,
-                state: req.body.genericShipperState,
-                country: req.body.genericShipperCountry
-            },
+            genericShipper: genericShipper,
             consignee: {
                 id: addressInformation.newConsignee.id,
                 company: addressInformation.newConsignee.company
             },
-            genericConsignee: {
-                city: req.body.genericConsigneeCity,
-                state: req.body.genericConsigneeState,
-                country: req.body.genericConsigneeCountry
-            },
+            genericConsignee: genericConsignee,
             broker: {
                 sb: req.body.sbBroker,
                 nb: req.body.nbBroker
@@ -1673,7 +1713,7 @@ app.route('/orders/edit-order-id=:id')
 app.route('/orders/new-order')
     .get(async(req, res) => {
         const date = new Date();
-        const todayDate = `${date.getFullYear()}-${dateStringFormat(date.getUTCMonth() +1)}-${dateStringFormat(date.getUTCDate())}`
+        const todayDate = `${date.getFullYear()}-${dateStringFormat(date.getUTCMonth() +1)}-${dateStringFormat(date.getUTCDate())}`;
         
         const addressList = await AddressBook.find({}).sort({ company: 1} );
         
@@ -1684,6 +1724,31 @@ app.route('/orders/new-order')
     })
     .post(async(req,res) => {
         const addressInformation = await addNewAddress(req);
+
+        const genericShipper = {};
+        const genericConsignee = {};
+
+        if (req.body.shipper === '') {
+            genericShipper.city = req.body.genericShipperCity,
+            genericShipper.state = req.body.genericShipperState,
+            genericShipper.country = req.body.genericShipperCountry
+        } else {
+            let shipper = await AddressBook.findOne({ _id: req.body.shipper });
+            genericShipper.city = shipper.city;
+            genericShipper.state = shipper.state;
+            genericShipper.country = shipper.country;
+        }
+
+        if (req.body.consignee === '') {
+            genericConsignee.city = req.body.genericConsigneeCity,
+            genericConsignee.state = req.body.genericConsigneeState,
+            genericConsignee.country = req.body.genericConsigneeCountry
+        } else {
+            let consignee = await AddressBook.findOne({ _id: req.body.consignee });
+            genericConsignee.city = consignee.city;
+            genericConsignee.state = consignee.state;
+            genericConsignee. country = consignee.country;
+        }
         
         let dv = false;
         let rf = false;
@@ -1743,20 +1808,12 @@ app.route('/orders/new-order')
                 id: addressInformation.newShipper.id,
                 company: addressInformation.newShipper.company
             },
-            genericShipper: {
-                city: req.body.genericShipperCity,
-                state: req.body.genericShipperState,
-                country: req.body.genericShipperCountry
-            },
+            genericShipper: genericShipper,
             consignee: {
                 id: addressInformation.newConsignee.id,
                 company: addressInformation.newConsignee.company
             },
-            genericConsignee: {
-                city: req.body.genericConsigneeCity,
-                state: req.body.genericConsigneeState,
-                country: req.body.genericConsigneeCountry
-            },
+            genericConsignee: genericConsignee,
             broker: {
                 sb: req.body.sbBroker,
                 nb: req.body.nbBroker
@@ -1894,6 +1951,173 @@ app.route('/orders/view-order-id=:id')
             } else {
                 console.log(`Error: ${err}`);
             }
+        });
+    });
+
+app.route('/orders/carrier-rates-order-id=:id')
+    .get(async (req, res) => {
+        const date = new Date();
+        const todayDate = `${date.getFullYear()}-${dateStringFormat(date.getUTCMonth() +1)}-${dateStringFormat(date.getUTCDate())}`;
+        const order = await Order.findOne({ _id: req.params.id });
+
+        
+
+        const lane = {}
+
+        const carrierRates = order.carrierRates;
+        if (carrierRates.length === 0) {
+            lane.name = '',
+            lane.shipper = {
+                city: order.genericShipper.city,
+                state: order.genericShipper.state,
+            }
+            lane.consignee = {
+                city: order.genericConsignee.city,
+                state: order.genericConsignee.state,
+            }
+        } else {
+            lane.name = carrierRates[carrierRates.length - 1].name
+
+            lane.shipper = {
+                city: carrierRates[carrierRates.length - 1].shipper.city,
+                state: carrierRates[carrierRates.length - 1].shipper.state,
+            }
+    
+            lane.consignee = {
+                city: carrierRates[carrierRates.length - 1].consignee.city,
+                state: carrierRates[carrierRates.length - 1].consignee.state,
+            }
+        }
+
+        res.render('carrier-rates', {
+            todayDate: todayDate,
+            order: order,
+            lane: lane,
+        });
+    })
+    .post((req, res) => {
+        const order = req.params.id;
+        const asked = currency.format(req.body.asked).slice(2);
+        const carrierQuoteValue = currency.format(req.body.carrierQuoteValue).slice(2);
+
+        const carrierRates = {
+            _id: crypto.randomUUID(),
+            name: req.body.name,
+            quote: req.body.quote,
+            date: req.body.date,
+            shipper: {
+                city: req.body.pickupCity,
+                state: req.body.pickupState
+            },
+            consignee: {
+                city: req.body.deliveryCity,
+                state: req.body.deliveryState
+            },
+            dispatchName: req.body.dispatchName,
+            carrierName: req.body.carrierName,
+            carrierPhone: req.body.carrierPhone,
+            carrierEquipment: req.body.carrierEquipment.toUpperCase(),
+            asked: asked,
+            carrierQuoteValue: carrierQuoteValue,
+            carrierQuoteCurrency: req.body. carrierQuoteCurrency.toUpperCase(),
+            carrierQuote: req.body.carrierQuote.toUpperCase(),
+            carrierTruck: req.body.carrierTruck.toUpperCase(),
+            carrierTrailer: req.body.carrierTrailer.toUpperCase(),
+            pickupDate: req.body.pickupDate.toUpperCase(),
+            deliveryDate: req.body.deliveryDate.toUpperCase(),
+            papsPars: req.body.papsPars.toUpperCase(),
+            crossing: req.body.crossing,
+            carrierNotes: req.body.carrierNotes
+        }
+
+        Order.findOneAndUpdate({ _id: order }, {
+            $push : { carrierRates: carrierRates }
+        },(err, success) => { 
+            if (!err) { 
+                console.log(`${success}`);
+                res.redirect(`/orders/carrier-rates-order-id=${order}`);
+            } else { 
+                console.log(`Error: ${err}`) 
+            } 
+        });
+    });
+
+app.route('/orders/order=:orderId/delete-line-id=:lineId')
+    .get((req, res) => {
+        const orderId = req.params.orderId;
+        const lineId = req.params.lineId;
+
+        Order.findOneAndUpdate({ _id: orderId }, {
+            $pull: {
+                carrierRates: {
+                    _id: lineId
+                }
+            }
+        }, (err, success) => {
+            if (!err) { 
+                console.log(`${success}`); 
+                res.redirect(`/orders/carrier-rates-order-id=${orderId}`);
+            } else {
+                console.log(`Error: ${err}`);
+            } 
+        });
+    });
+
+app.route('/orders/order=:orderId/edit-line-id=:lineId')
+    .post(async (req, res) => {
+        const orderId = req.params.orderId;
+        const lineId = req.params.lineId;
+
+        let asked = req.body.asked;
+        let carrierQuoteValue = req.body.carrierQuoteValue;
+
+        if (asked[0] === '$') {
+            asked = asked.slice(1);
+        }
+
+        if (carrierQuoteValue[0] === '$') {
+            carrierQuoteValue = carrierQuoteValue.slice(1);
+        }
+
+        Order.findOneAndUpdate({ 'carrierRates._id': lineId }, {
+            $set: {
+                'carrierRates.$': {
+                    _id: lineId,
+                    name: req.body.name,
+                    quote: req.body.quote,
+                    date: req.body.date,
+                    shipper: {
+                        city: req.body.pickupCity,
+                        state: req.body.pickupState
+                    },
+                    consignee: {
+                        city: req.body.deliveryCity,
+                        state: req.body.deliveryState
+                    },
+                    dispatchName: req.body.dispatchName,
+                    carrierName: req.body.carrierName,
+                    carrierPhone: req.body.carrierPhone,
+                    carrierEquipment: req.body.carrierEquipment.toUpperCase(),
+                    asked: currency.format(asked).slice(2),
+                    carrierQuoteValue: currency.format(carrierQuoteValue).slice(2),
+                    carrierQuoteCurrency: req.body. carrierQuoteCurrency.toUpperCase(),
+                    carrierQuote: req.body.carrierQuote.toUpperCase(),
+                    carrierTruck: req.body.carrierTruck.toUpperCase(),
+                    carrierTrailer: req.body.carrierTrailer.toUpperCase(),
+                    pickupDate: req.body.pickupDate.toUpperCase(),
+                    deliveryDate: req.body.deliveryDate.toUpperCase(),
+                    papsPars: req.body.papsPars.toUpperCase(),
+                    crossing: req.body.crossing,
+                    carrierNotes: req.body.carrierNotes
+                }
+            }
+        }, (err, success) => {
+            if (!err) { 
+                console.log(`${success}`); 
+                res.redirect(`/orders/carrier-rates-order-id=${orderId}`);
+            } else {
+                console.log(`Error: ${err}`);
+            } 
         });
     });
 
