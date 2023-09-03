@@ -285,12 +285,13 @@ body {
 
 .carrier-rates-table {
     overflow-y: scroll;
+    opacity: 0.90;
 }
 
 .carrier-rates-table thead th {
     position: sticky;
     top: 0px;
-  }
+}
 
 .table {
     border-collapse: collapse;
@@ -492,6 +493,20 @@ body {
     cursor: pointer;
 }
 
+.default-header a {
+    font-size: 20px;
+    text-decoration: none;
+    color: #242424;
+}
+
+.default-header a:link {
+    text-decoration: none;
+}
+
+.default-header a:visited {
+    text-decoration: none;
+}
+
 .default-body {
     padding: 15px 0 0 0;
 }
@@ -560,6 +575,23 @@ body {
 
 .equipment-checklist .form-check {
     width: 100%;
+}
+
+#forms {
+    display: none;
+}
+
+.forms-tables {
+    border-bottom: 1px solid #cccc;
+    overflow-y: scroll;
+    min-height: 200px;
+    max-height: 300px;
+    padding: 5px;
+}
+
+.forms-table thead th {
+    position: sticky;
+    top: 0px;
 }
 
 .flex-container {
@@ -1053,6 +1085,10 @@ body {
     width: 100%;
 }
 
+.new-quote-form .default-header {
+    padding: 0 25px 0 0;
+}
+
 .new-quote-menu {
     align-items: stretch;
     background-color: #242424;
@@ -1213,6 +1249,148 @@ body {
 
 #order-report div {
     animation: var(--fade-in)   
+}
+
+.order-body {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    min-height: calc(100vh - 130px);
+    max-height: calc(100vh - 130px);
+    width: 100%;
+}
+
+.order-search-column {
+    align-self: stretch;
+    align-items: flex-start;
+    border-right: 1px solid #242424;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: 2s;
+    max-width: 100px;
+    min-width: 100px;
+}
+
+.order-search-frame {
+    align-items: flex-start;
+    animation: var(--fade-in);
+    border-bottom: 1px solid #242424;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+#order-search-frame {
+    align-items: flex-start;
+    animation: var(--fade-in);
+    display: none;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.order-search-frame:last-child {
+    border-bottom: 0px;
+}
+
+.order-search-frame h3 {
+    border-bottom: 1px solid #cccc;
+    font-size: 20px;
+    padding: 10px 15px;
+    width: 100%;
+}
+
+.order-search-fields {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    justify-content: flex-start;
+    padding: 10px 30px 10px 15px;
+    width: 100%;
+}
+
+.order-search-fields .search-button {
+    align-self: flex-end;
+    margin: 10px 0 5px 0;
+}
+
+.form-control, .form-select {
+    flex-grow: 1;
+}
+
+.order-search-fields .search-button {
+    width: 55%;
+}
+
+.order-report {
+    align-self: stretch;
+    align-items: flex-start;
+    background-color: var(--nav-panel-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.order-table {
+    background-color: #ffff;
+    flex-grow: 2;
+    margin: 0px 5px 5px 5px;
+    height: 100%;
+    width: calc(100% - 10px);
+}
+
+.order-options {
+    align-items: flex-start;
+    display: flex;
+    flex-shrink: 1;
+    flex-direction: row;
+    gap: 15px;
+    justify-content: flex-start;
+    padding: 5px 5px 0px 10px;
+    width: 100%;
+}
+
+.order-tabs {
+    align-items: center;
+    background-color: var(--nav-button-color);
+    border-top: 1px solid #ffff;
+    border-left: 1px solid #ffff;
+    border-right: 1px solid #ffff;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    color: #ffff;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    font-family: var(--button-text);
+    font-size: 20px;
+    height: 50px;
+    justify-content: center;
+    width: 150px;
+}
+
+#order-open-button {
+    color: var(--nav-panel-color);
+    cursor: pointer;
+    margin: 15px 25px 15px 15px;
+    transition: 2s;
+}
+
+#order-open-button:hover {
+    color: var(--nav-button-color);
+    cursor: pointer;
+}
+
+#order-open-button  svg{
+    height: 50px;
+    width: 50px;
 }
 
 .owner-box {
@@ -1572,6 +1750,13 @@ body {
 .reference-columns h4 {
     border-bottom: 2px solid #ccc;
     padding: 10px 0 5px 0;
+    width: 100%;
+}
+
+.reference-columns textarea {
+    align-self: stretch;
+    overflow: hidden;
+    max-height: 75px;
     width: 100%;
 }
 

@@ -16,7 +16,7 @@
                 <div id="shipment-header-button" class="quote-selection" onclick="openShipmentHeader()">Shipment Header</div>
                 <div id="shipment-detail-button" class="quote-selection" onclick="openShipmentDetails()">Shipment Details</div>
                 <div id="carrier-rates-button" class="quote-selection" onclick="openCarrierRates()">Carrier Rates</div>
-                <div id="shipment-bol-button" class="quote-selection" onclick="openShipmentBOL()">BOL</div>
+                <div id="forms-button" class="quote-selection" onclick="openForms()">Forms</div>
                 <div id="shipment-checklist-button" class="quote-selection" onclick="openShipmentChecklist()">Shipment Checklist</div>
                 <div id="shipment-costing-button" class="quote-selection" onclick="openShippingCost()">Pricing</div>
             </div>
@@ -381,7 +381,7 @@
                 <a href="/orders/carrier-rates-order-id=<%= order._id %>">+ Add Carrier Rates</a>
             </div>
             <div class="flex-container carrier-rates-table">
-                <table class="table table-secondary table-striped table-hover table-bordered fixed-head">
+                <table class="table table-secondary table-striped table-hover table-bordered">
                     <thead>
                         <tr class="align-center">
                             <th scope="col" class="tbl-fixed-25">#</th>
@@ -423,13 +423,28 @@
                 </table>
             </div>
         </div>
-        <div id="shipment-bol" class="new-quote-form">
-            <div class="bol-header">
-                <h3>BOL Menu</h3>
+        <div id="forms" class="new-quote-form">
+            <div class="default-header">
+                <h3>Load Confirmations</h3>
+                <a href="#">+ Add</a>
             </div>
-            <div class="bol-body">
-                <table class="table table-light table-striped table-hover table-bordered">
-                    <thead></thead>
+            <div class="flex-container forms-tables">
+                <table class="table table-secondary table-striped table-hover table-bordered fixed-head">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Carrier</th>
+                            <th scope="col">Shipper</th>
+                            <th scope="col">Consignee</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -659,6 +674,14 @@
                             <div class="input-lg">
                                 <label for="emergencyContact" class="form-label">Emergency Contact:</label>
                                 <input class="form-control" type="text" id="emergencyContact" name="emergencyContact" value="<%= order.dangerousGoods.emergencyContact %>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reference-columns">
+                        <div class="flex-container flex-row gap-25">
+                            <div class="input-lg">
+                                <label for="orderNotes" class="form-label">Notes:</label>
+                                <textarea class="form-control" name="orderNotes"><%= order.notes %></textarea>
                             </div>
                         </div>
                     </div>

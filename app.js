@@ -126,7 +126,8 @@ const orderSchema = new mongoose.Schema({
     customerPricing: Object,
     carrierPricing: Object,
     brokerPricing: Object,
-    carrierRates: Array
+    carrierRates: Array,
+    notes: String
 });
 
 const purchasingSchema = new mongoose.Schema({
@@ -1700,6 +1701,7 @@ app.route('/orders/edit-order-id=:id')
                 dgDescription: req.body.dgDescription,
                 emergencyContact: req.body.emergencyContact
             },
+            notes: req.body.orderNotes,
         }, (err, docs) => {
             if (err) {
                 console.log(`Error: ${err}`);
@@ -1932,6 +1934,7 @@ app.route('/orders/new-order')
                 dgDescription: req.body.dgDescription,
                 emergencyContact: req.body.emergencyContact
             },
+            notes: req.body.orderNotes
         }); 
         newJob.save();
         res.redirect(`/orders/view-order-id=${newJob._id}`);   

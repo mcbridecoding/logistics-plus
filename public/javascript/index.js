@@ -95,7 +95,7 @@ function openShipmentHeader() {
     closeShipmentDetails();
     closeShipmentChecklist();
     closeShippingCost();
-    closeShipmentBOL();
+    closeForms();
     closeCarrierRates();
 }
 
@@ -115,7 +115,7 @@ function openShipmentDetails() {
     closeShipmentHeader();
     closeShipmentChecklist();
     closeShippingCost();
-    closeShipmentBOL();
+    closeForms();
     closeCarrierRates();
 }
 
@@ -135,7 +135,7 @@ function openShipmentChecklist() {
     closeShipmentHeader();
     closeShipmentDetails();
     closeShippingCost();
-    closeShipmentBOL();
+    closeForms();
     closeCarrierRates();
 }
 
@@ -155,7 +155,7 @@ function openShippingCost() {
     closeShipmentHeader();
     closeShipmentDetails();
     closeShipmentChecklist();
-    closeShipmentBOL();
+    closeForms();
     closeCarrierRates();
 }
 
@@ -166,11 +166,11 @@ function closeShippingCost() {
     document.getElementById('shipment-costing-button').style.fontWeight = '100';
 }
 
-function openShipmentBOL() {
-    document.getElementById('shipment-bol').style.display = 'flex';
-    document.getElementById('shipment-bol-button').style.backgroundColor = '#2B2A4C';
-    document.getElementById('shipment-bol-button').style.color = '#EA906C';
-    document.getElementById('shipment-bol-button').style.fontWeight = 'bold';
+function openForms() {
+    document.getElementById('forms').style.display = 'flex';
+    document.getElementById('forms-button').style.backgroundColor = '#2B2A4C';
+    document.getElementById('forms-button').style.color = '#EA906C';
+    document.getElementById('forms-button').style.fontWeight = 'bold';
 
     closeShipmentHeader();
     closeShipmentDetails();
@@ -179,11 +179,11 @@ function openShipmentBOL() {
     closeCarrierRates();
 }
 
-function closeShipmentBOL() {
-    document.getElementById('shipment-bol').style.display = 'none';
-    document.getElementById('shipment-bol-button').style.backgroundColor = '#242424';
-    document.getElementById('shipment-bol-button').style.color = '#ffff';
-    document.getElementById('shipment-bol-button').style.fontWeight = '100';
+function closeForms() {
+    document.getElementById('forms').style.display = 'none';
+    document.getElementById('forms-button').style.backgroundColor = '#242424';
+    document.getElementById('forms-button').style.color = '#ffff';
+    document.getElementById('forms-button').style.fontWeight = '100';
 }
 
 function openCarrierRates() {
@@ -196,7 +196,7 @@ function openCarrierRates() {
     closeShipmentDetails();
     closeShipmentChecklist();    
     closeShippingCost();
-    closeShipmentBOL();
+    closeForms();
 }
 
 function closeCarrierRates() {
@@ -393,4 +393,30 @@ function openFolder(openId, closeId) {
 function closeFolder(closeId) {
     let folder = document.getElementById(closeId);
     folder.style.display = 'none';
+}
+
+function openOrdersSubMenu() {
+    let button = document.getElementById('order-open-button');
+    let panel = document.getElementById('order-search-column');
+
+    const searchFields = document.getElementById('order-search-frame');
+
+    if (button.dataset.value === 'open') {
+        button.style.transform = 'rotate(180deg)';
+        button.dataset.value = 'closed';
+
+        panel.style.minWidth = '450px';
+        panel.style.maxWidth = '450px';
+
+        searchFields.style.display = 'flex';
+    } else {
+        button.style.transform = 'rotate(0deg)';
+        button.dataset.value = 'open';
+        
+        panel.style.minWidth = '100px';
+        panel.style.maxWidth = '100px';
+
+        searchFields.style.display = 'none';
+    }
+
 }
