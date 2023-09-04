@@ -186,9 +186,9 @@
             </div>
             <div class="modal-body">
                 <div class="flex-container flex-row gap-25">
-                    <div>
+                    <div class="input-sm">
                         <label for="status" class="form-label">Status:</label>
-                        <select class="form-select input-sm" name="status" id="" required>
+                        <select class="form-select" name="status" id="" required>
                             <% if (invoice.orderStatus.status === 'open') { %>
                                 <option value="closed">Closed</option>
                                 <option value="open" selected>Open</option>
@@ -198,17 +198,17 @@
                             <% } %>
                         </select>
                     </div>
-                    <div class="">                    
+                    <div class="input-sm">                    
                         <label for="paymentDate" class="form-label">Paid Date:</label>
-                        <input class="form-control input-sm" type="date" id="" name="paymentDate" value="<%= invoice.orderStatus.paymentDate %>">
+                        <input class="form-control" type="date" id="" name="paymentDate" value="<%= invoice.orderStatus.paymentDate %>">
                     </div> 
-                    <div class="">                    
+                    <div class="input-sm">                    
                         <label for="paymentType" class="form-label">Paid Via:</label>
-                        <input class="form-control input-sm" type="text" id="" name="paymentType" value="<%= invoice.orderStatus.paymentType %>" autocomplete="on">
+                        <input class="form-control" type="text" id="" name="paymentType" value="<%= invoice.orderStatus.paymentType %>" autocomplete="on">
                     </div>
-                    <div class="">                    
+                    <div class="input-lg">                    
                         <label for="invoiceNote" class="form-label">Note:</label>
-                        <input class="form-control input-lg" type="text" id="" name="invoiceNote" value="<%= invoice.orderStatus.invoiceNote %>">
+                        <input class="form-control" type="text" id="" name="invoiceNote" value="<%= invoice.orderStatus.invoiceNote %>">
                     </div>
                 </div>
                 <div class="modal-button-group">

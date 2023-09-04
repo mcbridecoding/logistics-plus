@@ -755,6 +755,16 @@ app.route('/delete-user/id=:id')
         });
     });
 
+app.route('/error')
+    .get((req, res) => {
+        const message = {
+            messageText: '',
+            page: '',
+            link: ''
+        }
+        res.render('success', {message: message});
+    });
+
 app.route('/inventory/add-item')
     .post((req, res) => {
         const newItem = new Inventory({
@@ -1484,8 +1494,21 @@ app.route('/success')
     });
 
 app.route('/orders')
-    .get((req, res) => {
-        res.render('orders', {});
+    .get(async (req, res) => {
+        const customerList = await AddressBook.find({ customer: true }).sort({ company: 1 });
+        
+        // carrier list to be made up of the carrier in the quotes
+        const carrierList = [];
+        // create function to split up the date into columns
+
+        const orders = [];
+        const ltl = [];
+        const tl = [];
+        
+        res.render('orders', {
+            customerList: customerList,
+            carrierList: carrierList,
+        });
     });
 
 app.route('/orders/edit-order-id=:id')
@@ -1938,6 +1961,21 @@ app.route('/orders/new-order')
         }); 
         newJob.save();
         res.redirect(`/orders/view-order-id=${newJob._id}`);   
+    });
+
+app.route('/orders/search-by-quote')
+    .post(async (req, res) => {
+        const quoteId = await Order.findOne({ quoteNumber: req.body.quoteId.toUpperCase() });
+        if (quoteId === null ) {
+            const message = {
+                messageText: 'Record Does not Exist.',
+                page: 'Orders',
+                link: '/orders'
+            }
+            res.render('error', { message: message });
+        } else {
+            res.redirect(`/orders/view-order-id=${quoteId._id}`);
+        }
     });
 
 app.route('/orders/view-order-id=:id')

@@ -22,22 +22,27 @@
             </div>
             <div id="order-search-frame">
                 <div class="order-search-frame">
-                    <h3>Search by Quote#:</h3>
-                    <div class="order-search-fields">
-                        <input class="form-control" type="text">
-                        <button class="search-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                            </svg>
-                            Search
-                        </button>
-                    </div>
+                    <form action="/orders/search-by-quote" method="POST">
+                        <h3>Search by Quote#:</h3>
+                        <div class="order-search-fields">
+                            <input class="form-control" type="text" name="quoteId" placeholder="Quote#">
+                            <button class="search-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                </svg>
+                                Search
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 <div class="order-search-frame">
                     <h3>Search by Customer:</h3>
                     <div class="order-search-fields">
                         <select class="form-select" name="" id="">
-                            <option value=""></option>
+                                <option value=""></option>
+                            <% customerList.forEach((customer) => { %>
+                                <option value="<%= customer._id %>"><%= customer.company %></option>
+                            <% }) %>
                         </select>
                         <button class="search-button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
@@ -52,6 +57,9 @@
                     <div class="order-search-fields">
                         <select class="form-select" name="" id="">
                             <option value=""></option>
+                            <% carrierList.forEach((carrier) => { %>
+                                <option value="<%= carrier._id %>"><%= carrier.company %></option>
+                            <% }) %>
                         </select>
                         <button class="search-button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
@@ -112,48 +120,98 @@
                 </div>
             </div> 
             <div class="order-table carrier-rates-table">
-                    <table class="table table-secondary table-striped table-hover table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Company</th>
-                                <th scope="col">Quoted</th>
-                                <th scope="col">Equipment</th>
-                                <th scope="col">Skids</th>
-                                <th scope="col">Dims / Feet</th>
-                                <th scope="col">ST / RK</th>
-                                <th scope="col">CUFT</th>
-                                <th scope="col">LBS</th>
-                                <th scope="col">Quote #</th>
-                                <th scope="col">We Used</th>
-                                <th scope="col">Notes</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>                                
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                    </svg>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <table class="table table-secondary table-striped table-hover table-bordered">
+                    <thead>
+                        <tr class="align-center">
+                            <th scope="col" colspan="14">Customer</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Company</th>
+                            <th scope="col">Quoted</th>
+                            <th scope="col">Equipment</th>
+                            <th scope="col">Skids</th>
+                            <th scope="col">Dims / Feet</th>
+                            <th scope="col">ST / RK</th>
+                            <th scope="col">CUFT</th>
+                            <th scope="col">LBS</th>
+                            <th scope="col">Quote #</th>
+                            <th scope="col">We Used</th>
+                            <th scope="col">Notes</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>                                
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                </svg>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="order-table carrier-rates-table">
+                <table class="table table-secondary table-striped table-hover table-bordered">
+                    <thead>
+                        <tr class="align-center">
+                            <th scope="col" colspan="14">Carrier</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Company</th>
+                            <th scope="col">Quoted</th>
+                            <th scope="col">Equipment</th>
+                            <th scope="col">Skids</th>
+                            <th scope="col">Dims / Feet</th>
+                            <th scope="col">ST / RK</th>
+                            <th scope="col">CUFT</th>
+                            <th scope="col">LBS</th>
+                            <th scope="col">Quote #</th>
+                            <th scope="col">We Used</th>
+                            <th scope="col">Notes</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>                                
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                </svg>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

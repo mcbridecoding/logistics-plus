@@ -245,7 +245,7 @@ body {
 }
 
 .card-body img {
-    width: 200px;
+    width: 180px;
 }
 
 #carrier-rates {
@@ -1281,6 +1281,11 @@ body {
     flex-direction: column;
     flex-grow: 1;
     justify-content: flex-start;
+    width: 100%;
+}
+
+.order-search-frame form {
+    height: 100%;
     width: 100%;
 }
 

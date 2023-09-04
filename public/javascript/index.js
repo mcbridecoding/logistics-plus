@@ -399,7 +399,7 @@ function openOrdersSubMenu() {
     let button = document.getElementById('order-open-button');
     let panel = document.getElementById('order-search-column');
 
-    const searchFields = document.getElementById('order-search-frame');
+    let searchFields = document.getElementById('order-search-frame');
 
     if (button.dataset.value === 'open') {
         button.style.transform = 'rotate(180deg)';

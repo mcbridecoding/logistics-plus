@@ -1,0 +1,22 @@
+<%- include('partials/header') %>
+
+<div class="message-box">
+    <div class="card">
+        <div class="card-header">
+           <h1>Error</h1>
+        </div>
+        <div class="card-body">
+            <div>
+                <h5><%= message.messageText %></h5>
+                <img src="/images/error_icon.png" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="redirect-buttons">
+        <a class="options-button" href="/">Home</a>
+        <a class="options-button" href="<%= message.link %>"><%= message.page %></a>       
+    </div>
+</div>
+
+
+<%- include('partials/footer') %>
