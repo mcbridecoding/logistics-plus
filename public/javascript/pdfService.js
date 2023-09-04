@@ -3,8 +3,8 @@ const PDFDocument = require('pdfkit-table')
 function buildInvoice(dataCallback, endCallback, invoice, owner, soldTo, shipTo, taxes) {
     const doc = new PDFDocument({ size: 'Letter', margins: { left: 45, right: 55, bottom: 5 } });
 
-    doc.registerFont('Heading Font', 'public/javascript/fonts/Dosis-SemiBold.ttf');
-    doc.registerFont('Body Font', 'public/javascript/fonts/Dosis-Light.ttf');
+    doc.registerFont('Heading Font', 'public/fonts/Dosis-SemiBold.ttf');
+    doc.registerFont('Body Font', 'public/fonts/Dosis-Light.ttf');
 
     const docWidth = 612;
     const docHeight = 792;
@@ -181,8 +181,8 @@ function buildInvoice(dataCallback, endCallback, invoice, owner, soldTo, shipTo,
 function buildPurchaseOrder(dataCallback, endCallback, order, soldTo, vendor, shipTo, taxes) {
     const doc = new PDFDocument({ size: 'Letter', margins: { left: 45, right: 55, bottom: 5 } });
 
-    doc.registerFont('Heading Font', 'public/javascript/fonts/Dosis-SemiBold.ttf');
-    doc.registerFont('Body Font', 'public/javascript/fonts/Dosis-Light.ttf');
+    doc.registerFont('Heading Font', 'public/fonts/Dosis-SemiBold.ttf');
+    doc.registerFont('Body Font', 'public/fonts/Dosis-Light.ttf');
 
     const docWidth = 612;
     const docHeight = 792;
@@ -326,8 +326,8 @@ function buildPurchaseOrder(dataCallback, endCallback, order, soldTo, vendor, sh
 function buildLogisticsCallSheet(dataCallback, endCallback, quote, customer, shipper, consignee) {
     const doc = new PDFDocument({ size: 'Letter', margins: { left: 35, right: 35, bottom: 5 } });
 
-    doc.registerFont('Heading Font', 'public/javascript/fonts/Dosis-SemiBold.ttf');
-    doc.registerFont('Body Font', 'public/javascript/fonts/Dosis-Light.ttf');
+    doc.registerFont('Heading Font', 'public/fonts/Dosis-SemiBold.ttf');
+    doc.registerFont('Body Font', 'public/fonts/Dosis-Light.ttf');
 
     const docWidth = 612;
     const docHeight = 792;
@@ -810,8 +810,8 @@ function buildLogisticsCallSheet(dataCallback, endCallback, quote, customer, shi
 function buildCarrierRateSheet(dataCallback, endCallback, quote) {
     const doc = new PDFDocument({ size: 'Letter', layout: 'Landscape', margins: { left: 35, right: 35, bottom: 5 } });
 
-    doc.registerFont('Heading Font', 'public/javascript/fonts/Dosis-SemiBold.ttf');
-    doc.registerFont('Body Font', 'public/javascript/fonts/Dosis-Light.ttf');
+    doc.registerFont('Heading Font', 'public/fonts/Dosis-SemiBold.ttf');
+    doc.registerFont('Body Font', 'public/fonts/Dosis-Light.ttf');
 
     const docWidth = 792;
     const docHeight = 612;
